@@ -1,3 +1,5 @@
+import os
+import psutil
 import multiprocessing
 
 from django.core.management.base import BaseCommand
@@ -7,10 +9,21 @@ from .hands import *
 from .utils import ServicesUtil
 
 
+SERVER_SIZE = os.environ.get('SERVER_SIZE', 'auto')
+if SERVER_SIZE == 'auto':
+    cpu_count = psutil.cpu_count()
+    mem_total = psutil.virtual_memory().total / 1024 / 1024 / 1024
+
+    if cpu_count < 4 or mem_total < 7:
+        SERVER_SIZE = 'small'
+    else:
+        SERVER_SIZE = 'large'
+
 class Services(TextChoices):
     gunicorn = 'gunicorn', 'gunicorn'
     celery_ansible = 'celery_ansible', 'celery_ansible'
     celery_default = 'celery_default', 'celery_default'
+    celery_mix = 'celery_mix', 'celery_mix'
     beat = 'beat', 'beat'
     flower = 'flower', 'flower'
     ws = 'ws', 'ws'
@@ -27,17 +40,24 @@ class Services(TextChoices):
             cls.flower: services.FlowerService,
             cls.celery_default: services.CeleryDefaultService,
             cls.celery_ansible: services.CeleryAnsibleService,
+            cls.celery_mix: services.CeleryMixService,
             cls.beat: services.BeatService,
         }
         return services_map.get(name)
 
     @classmethod
     def web_services(cls):
-        return [cls.gunicorn, cls.flower]
+        if SERVER_SIZE == 'small':
+            return [cls.gunicorn]
+        else:
+            return [cls.gunicorn, cls.flower]
 
     @classmethod
     def celery_services(cls):
-        return [cls.celery_ansible, cls.celery_default]
+        if SERVER_SIZE == 'small':
+            return [cls.celery_mix]
+        else:
+            return [cls.celery_ansible, cls.celery_default]
 
     @classmethod
     def task_services(cls):
@@ -103,8 +123,11 @@ class BaseActionCommand(BaseCommand):
 
     def initial_util(self, *args, **options):
         service_names = options.get('services')
+        worker = options.get('worker')
+        if SERVER_SIZE == 'small':
+            worker = '1'
         service_kwargs = {
-            'worker_gunicorn': options.get('worker')
+            'worker_gunicorn': worker
         }
         services = Services.get_service_objects(service_names=service_names, **service_kwargs)
 
