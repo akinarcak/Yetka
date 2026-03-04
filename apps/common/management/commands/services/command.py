@@ -23,7 +23,6 @@ class Services(TextChoices):
     gunicorn = 'gunicorn', 'gunicorn'
     celery_ansible = 'celery_ansible', 'celery_ansible'
     celery_default = 'celery_default', 'celery_default'
-    celery_mix = 'celery_mix', 'celery_mix'
     beat = 'beat', 'beat'
     flower = 'flower', 'flower'
     ws = 'ws', 'ws'
@@ -40,7 +39,6 @@ class Services(TextChoices):
             cls.flower: services.FlowerService,
             cls.celery_default: services.CeleryDefaultService,
             cls.celery_ansible: services.CeleryAnsibleService,
-            cls.celery_mix: services.CeleryMixService,
             cls.beat: services.BeatService,
         }
         return services_map.get(name)
@@ -55,7 +53,7 @@ class Services(TextChoices):
     @classmethod
     def celery_services(cls):
         if SERVER_SIZE == 'small':
-            return [cls.celery_mix]
+            return [cls.celery_default]
         else:
             return [cls.celery_ansible, cls.celery_default]
 
@@ -89,10 +87,11 @@ class Services(TextChoices):
             service_class = cls.get_service_object_class(s.value)
             if not service_class:
                 continue
-            kwargs.update({
+            service_kwargs = kwargs.get(s.value, {})
+            service_kwargs.update({
                 'name': s.value
             })
-            service_object = service_class(**kwargs)
+            service_object = service_class(**service_kwargs)
             service_objects.append(service_object)
         return service_objects
 
@@ -121,14 +120,27 @@ class BaseActionCommand(BaseCommand):
         parser.add_argument('-w', '--worker', type=int, nargs="?", default=4)
         parser.add_argument('-f', '--force', nargs="?", const=True)
 
+    def get_services_kwargs(self, options):
+        worker = options.get('worker', 4)
+        default_queue = 'celery'
+
+        if SERVER_SIZE == 'small':
+            worker = 1
+            default_queue = 'celery,ansible'
+
+        return {
+            'gunicorn': {
+                'worker': worker
+            },
+            'celery_default': {
+                'queue': default_queue
+            }
+        }
+
     def initial_util(self, *args, **options):
         service_names = options.get('services')
-        worker = options.get('worker')
-        if SERVER_SIZE == 'small':
-            worker = '1'
-        service_kwargs = {
-            'worker_gunicorn': worker
-        }
+
+        service_kwargs = self.get_services_kwargs(options)
         services = Services.get_service_objects(service_names=service_names, **service_kwargs)
 
         kwargs = {
@@ -147,7 +159,6 @@ class BaseActionCommand(BaseCommand):
 
     def _handle_start(self):
         self.util.start_and_watch()
-        os._exit(0)
 
     def _handle_stop(self):
         self.util.stop()
