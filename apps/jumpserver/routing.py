@@ -14,6 +14,7 @@ from ops.urls.ws_urls import urlpatterns as ops_urlpatterns
 from settings.urls.ws_urls import urlpatterns as setting_urlpatterns
 from terminal.urls.ws_urls import urlpatterns as terminal_urlpatterns
 from common.utils import get_logger
+import socket
 
 logger = get_logger(__name__)
 
