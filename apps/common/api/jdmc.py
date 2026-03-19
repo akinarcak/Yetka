@@ -1,7 +1,7 @@
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 
-from common.permissions import OnlySuperUser
+from common.permissions import OnlyAdminSuperUser
 from common.jdmc import request_jdmc
 from common.utils import get_logger
 
@@ -14,7 +14,7 @@ logger = get_logger(__file__)
 
 class JdmcSSOTokenAPI(RetrieveAPIView):
 
-    permission_classes = [OnlySuperUser]
+    permission_classes = [OnlyAdminSuperUser]
 
     def retrieve(self, request, *args, **kwargs):
         logger.info(f'User {request.user.username} is requesting JDMC SSO token')
