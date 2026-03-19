@@ -6,3 +6,4 @@ from .patch import *
 from .permission import *
 from .serializer import *
 from .webhook import *
+from .jdmc import *

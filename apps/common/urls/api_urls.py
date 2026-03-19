@@ -15,3 +15,6 @@ urlpatterns = [
 
 if settings.WEBHOOK_ENABLED:
     urlpatterns.append(path('webhook/', api.WebhookApi.as_view(), name='webhooks'))
+
+if settings.JDMC_ENABLED:
+    urlpatterns.append(path('jdmc/sso-token/', api.JdmcSSOTokenAPI.as_view(), name='jdmc-sso-token'))
