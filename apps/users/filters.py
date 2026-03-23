@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from django_filters import rest_framework as filters
 
 from common.drf.filters import BaseFilterSet
-from common.utils import is_uuid
+from common.utils import is_uuid, text_hmac_sha256
 from rbac.models import Role, OrgRoleBinding, SystemRoleBinding
 from users.models.user import User
 
@@ -23,15 +23,20 @@ class UserFilter(BaseFilterSet):
     is_password_expired = filters.BooleanFilter(method='filter_long_time')
     is_long_time_no_login = filters.BooleanFilter(method='filter_long_time')
     is_login_blocked = filters.BooleanFilter(method='filter_is_blocked')
+    email = filters.CharFilter(method='filter_email')
 
     class Meta:
         model = User
         fields = (
-            'id', 'username', 'email', 'name',
+            'id', 'username', 'name',
             'groups', 'group_id', 'exclude_group_id',
             'source', 'org_roles', 'system_roles',
             'is_active', 'is_first_login', 'mfa_level'
         )
+
+    def filter_email(self, queryset, name, value):
+        q = Q(email_lookup=text_hmac_sha256(value))
+        return queryset.filter(q)
 
     def filter_is_blocked(self, queryset, name, value):
         from users.utils import LoginBlockUtil

@@ -5,6 +5,8 @@ import logging
 import os
 import re
 import time
+import hmac
+import hashlib
 from contextlib import contextmanager
 from urllib.parse import unquote
 
