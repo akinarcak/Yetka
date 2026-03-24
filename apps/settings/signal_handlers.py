@@ -82,7 +82,9 @@ def monkey_patch_settings(sender, **kwargs):
 
 
 @receiver(post_migrate, dispatch_uid='settings.signal_handlers.init_sqlite_db')
-def init_sqlite_db(sender, **kwargs):
+def init_sqlite_db(sender, app_config, **kwargs):
+    if app_config.name != 'settings':
+         return
     db_path = settings.LEAK_PASSWORD_DB_PATH
     if not os.path.isfile(db_path):
         # 这里处理一下历史数据，有可能用户 copy 了旧的文件到 目录下
