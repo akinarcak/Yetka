@@ -222,9 +222,9 @@ class Config(dict):
         'ANNOUNCEMENT_ENABLED': True,
         'ANNOUNCEMENT': {},
 
-        'THROTTLE_RATES_ANON': '60/min',
-        'THROTTLE_RATES_USER': '180/min',
-        'THROTTLE_RATES_SERVICE_ACCOUNT': '300/min',
+        'THROTTLE_RATES_ANON': '128/min',
+        'THROTTLE_RATES_USER': '1024/min',
+        'THROTTLE_RATES_SERVICE_ACCOUNT': '4096/min',
 
         # 文件上传下载限流 (防止DOS攻击)
         'THROTTLE_FILE_TRANSFER': '50/hour',
