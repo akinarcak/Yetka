@@ -222,9 +222,12 @@ class Config(dict):
         'ANNOUNCEMENT_ENABLED': True,
         'ANNOUNCEMENT': {},
 
-        'THROTTLE_RATES_ANON': '60/min',
-        'THROTTLE_RATES_USER': '180/min',
-        'THROTTLE_RATES_SERVICE_ACCOUNT': '300/min',
+        'THROTTLE_RATES_ANON': '128/min',
+        'THROTTLE_RATES_USER': '1024/min',
+        'THROTTLE_RATES_SERVICE_ACCOUNT': '4096/min',
+
+        # 文件上传下载限流 (防止DOS攻击)
+        'THROTTLE_FILE_TRANSFER': '50/hour',
 
         # Security
         'X_FRAME_OPTIONS': 'SAMEORIGIN',
@@ -261,6 +264,10 @@ class Config(dict):
         'MFA_CUSTOM_FILE_MD5': '',
 
         'SMS_CUSTOM_FILE_MD5': '',
+
+        'AUTH_CUSTOM_SSO': False,
+        'AUTH_CUSTOM_SSO_FILE_MD5': '',
+        'AUTH_CUSTOM_SSO_QUERY_PARAMS': ['token'],
 
         # 临时密码
         'AUTH_TEMP_TOKEN': False,
@@ -706,6 +713,8 @@ class Config(dict):
 
         'LIMIT_SUPER_PRIV': False,
 
+        'LOG_KEEP_MIN_DAYS': 1,
+
         # Chat AI
         'CHAT_AI_ENABLED': False,
         'CHAT_AI_METHOD': 'api',
@@ -749,11 +758,19 @@ class Config(dict):
         'OAUTH2_PROVIDER_REFRESH_TOKEN_EXPIRE_SECONDS': 60 * 60 * 24 * 7,
         'VENDOR': 'jumpserver',
 
+        # JDMC
+        'JDMC_ENABLED': False,
+        'JDMC_SOCK_PATH': '',
+
+        # WEBHOOK
+        'WEBHOOK_ENABLED': False,
+        'WEBHOOK_TOKEN': '',
+
         # x-forwarded-for 相关
         'TRUSTED_IP_VERIFY_ENABLED': False,
         'TRUSTED_IP_SOURCE_HEADER': '',
-        'TRUSTED_IP_VERIFY_SIGNATURE_HEADER': '',
-        'TRUSTED_IP_VERIFY_KEY_PATH': '',
+        'TRUSTED_IP_SIGN_HEADER': '',
+        'TRUSTED_IP_SIGN_KEY': '',
     }
 
     old_config_map = {
