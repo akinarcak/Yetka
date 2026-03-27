@@ -15,6 +15,10 @@ WEBHOOK_OPTIONS_RECORD = [
     {
         'sender': 'jdmc',
         'event': 'license_updated',
+    },
+    {
+        'sender': 'jdmc',
+        'event': 'backup_done',
     }
 ]
 
