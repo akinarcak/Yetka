@@ -19,6 +19,7 @@ from django.utils import timezone
 from rest_framework import status
 
 from .utils import set_current_request
+from common.utils.common import text_hmac_sha256
 
 IGNORE_CSRF_CHECK = '*' in os.getenv("DOMAINS", "").split(',')
 
@@ -201,3 +202,57 @@ class CsrfCheckMiddleware(CsrfViewMiddleware):
             request._dont_enforce_csrf_checks = True
             return True
         return super()._origin_verified(request)
+
+
+class HmacSignAuthMiddleware:
+    """
+    在响应中写入客户端可读会话状态 Cookie（名：jms_session_sign），
+    供边缘代理、网关或安全设备（含 WAF）基于 Cookie 做访问策略，不特指某一种产品。
+
+    取值约定（均为非空，便于写规则）：
+    - 已登录：<hex_hmac>:<username>|<session_id>，HMAC 与 text_hmac_sha256 一致（消息会先 strip/lower）
+    - 有会话 Cookie 但未认证：expired（含会话过期、登出后会话仍存在、或仅匿名会话等）
+    - 请求未带会话 Cookie：unauth（首次访问等）
+    """
+
+    SIGN_COOKIE_NAME = 'jms_session_sign'
+    MARKER_UNAUTH = 'unauth'
+    MARKER_EXPIRED = 'expired'
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        enabled = os.getenv("HMAC_SIGN_AUTH_ENABLED", "").lower() in ("1", "true", "yes")
+        hmac_sign_key = os.getenv("HMAC_SIGN_KEY", "")
+
+        if not enabled or not hmac_sign_key:
+            raise MiddlewareNotUsed
+
+        self.hmac_sign_key = hmac_sign_key
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        return self._set_session_sign_cookie(request, response)
+
+    def _set_session_sign_cookie(self, request, response):
+        session_cookie_name = settings.SESSION_COOKIE_NAME
+        has_session_cookie = bool(request.COOKIES.get(session_cookie_name))
+
+        if request.user.is_authenticated:
+            session_id = request.session.session_key
+            if not session_id:
+                value = self.MARKER_EXPIRED
+            else:
+                username = request.user.username
+                sign_data = f'{username}|{session_id}'
+                signature = text_hmac_sha256(sign_data, self.hmac_sign_key)
+                value = f'{signature}:{sign_data}'
+        elif has_session_cookie:
+            value = self.MARKER_EXPIRED
+        else:
+            value = self.MARKER_UNAUTH
+
+        response.set_cookie(
+            self.SIGN_COOKIE_NAME,
+            value,
+        )
+        return response
