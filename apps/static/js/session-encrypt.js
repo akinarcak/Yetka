@@ -1,14 +1,14 @@
-function fillKey(key, keyLength) {
-    let KeyLength = keyLength || 16
-    if (key.length > KeyLength) {
-        key = key.slice(0, KeyLength)
+function fillKey(key) {
+    const keyLength = 16
+    if (key.length > keyLength) {
+        key = key.slice(0, keyLength)
     }
-    const filledKey = Buffer.alloc(KeyLength)
+    const filledKey = Buffer.alloc(keyLength)
     const keys = Buffer.from(key)
     for (let i = 0; i < keys.length; i++) {
         filledKey[i] = keys[i]
     }
-    return filledKey.toString('hex')
+    return filledKey
 }
 
 function aesEncrypt(text, originKey) {
