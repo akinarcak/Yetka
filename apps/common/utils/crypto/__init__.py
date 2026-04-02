@@ -21,15 +21,9 @@ class Crypto:
     def __init__(self):
         crypt_algo = settings.SECURITY_DATA_CRYPTO_ALGO
         if not crypt_algo:
-            if settings.GMSSL_ENABLED:
-                if settings.PIICO_DEVICE_ENABLE:
-                    piico_driver_path = settings.PIICO_DRIVER_PATH if settings.PIICO_DRIVER_PATH \
-                        else "./lib/libpiico_ccmu.so"
-                    device = piico.open_piico_device(piico_driver_path)
-                    self.cryptor_map["piico_gm"] = get_piico_gm_sm4_ecb_crypto(device)
-                    crypt_algo = 'piico_gm'
-                else:
-                    crypt_algo = 'gm'
+            if settings.PIICO_DEVICE_ENABLE:
+                crypto, crypt_algo = self.get_piico_gm_crypto()
+                self.cryptor_map[crypt_algo] = crypto
             else:
                 crypt_algo = 'aes'
         cryptor = self.cryptor_map.get(crypt_algo, None)
@@ -39,6 +33,20 @@ class Crypto:
             )
         others = set(self.cryptor_map.values()) - {cryptor}
         self.cryptos = [cryptor, *others]
+
+    def get_gm_crypto(self):
+        if settings.PIICO_DEVICE_ENABLE:
+            crypto, crypt_algo = self.get_piico_gm_crypto()
+            self.cryptor_map[crypt_algo] = crypto
+        else:
+            crypt_algo = 'gm'
+
+    def get_piico_gm_crypto(self):
+        piico_driver_path = settings.PIICO_DRIVER_PATH if settings.PIICO_DRIVER_PATH \
+            else "./lib/libpiico_ccmu.so"
+        device = piico.open_piico_device(piico_driver_path)
+        crypto = get_piico_gm_sm4_ecb_crypto(device)
+        return crypto, 'piico_gm'
 
     @property
     def encryptor(self):
