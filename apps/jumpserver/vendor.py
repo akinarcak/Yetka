@@ -13,7 +13,7 @@ VENDOR_THEMES_DIR = settings.VENDOR_TEMPLATES_DIR / "themes"
 
 
 def is_default_vendor() -> bool:
-    return settings.VENDOR == DEFAULT_VENDOR
+    return settings.VENDOR.lower() == DEFAULT_VENDOR
 
 
 def find_theme_path(theme_dirs, theme_name: str) -> Path | None:
@@ -43,6 +43,8 @@ def _build_theme_info() -> dict:
     theme_name = DEFAULT_THEME if is_default_vendor() else settings.VENDOR
 
     theme_path = find_theme_path(search_dirs, theme_name) or default_theme_path
+    if not theme_path:
+        return {}
     return json.loads(theme_path.read_text(encoding="utf-8"))
 
 
