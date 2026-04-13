@@ -11,7 +11,7 @@
 
     {% include '_head_css_js.html' %}
     <link href="{% static "css/jumpserver.css" %}" rel="stylesheet">
-    <script src="{% static "js/jumpserver.js" %}?v=10></script>
+    <script src="{% static "js/jumpserver.js" %}?v=10"></script>
     <style>
         .passwordBox {
             max-width: 560px;
@@ -45,27 +45,27 @@
 
 <body class=" gray-bg
     ">
-    <div class="passwordBox animated fadeInDown">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ibox-content">
-                    <h2 class="font-bold">
-                        {% block title %}{% endblock %}
-                    </h2>
-                    <div class="ibox-context-margin">
-                        {% block content %} {% endblock %}
-                    </div>
+<div class="passwordBox animated fadeInDown">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox-content">
+                <h2 class="font-bold">
+                    {% block title %}{% endblock %}
+                </h2>
+                <div class="ibox-context-margin">
+                    {% block content %} {% endblock %}
                 </div>
             </div>
         </div>
-        <hr/>
-        <div class="row">
-            <div class="col-md-12">
-                {% include '_copyright.html' %}
-            </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_copyright.html' %}
         </div>
     </div>
-    </body>
-    {% include '_foot_js.html' %}
-    {% block custom_foot_js %} {% endblock %}
+</div>
+</body>
+{% include '_foot_js.html' %}
+{% block custom_foot_js %} {% endblock %}
 </html>
