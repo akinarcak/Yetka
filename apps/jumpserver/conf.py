@@ -767,6 +767,8 @@ class Config(dict):
         'TRUSTED_IP_SOURCE_HEADER': '',
         'TRUSTED_IP_SIGN_HEADER': '',
         'TRUSTED_IP_SIGN_KEY': '',
+
+        'REMOTE_APP_STORE_URL': 'https://apps.fit2cloud.com/jumpserver'
     }
 
     old_config_map = {
