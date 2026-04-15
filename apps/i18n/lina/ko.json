@@ -1692,6 +1692,6 @@
     "ReportRecipientsLabel": "수신자",
     "ReportRecipientsTip": "현재 이메일 전송만 지원합니다",
     "ReportSchedulePriorityTip": "interval 과 crontab 이 모두 설정된 경우 crontab 이 우선합니다",
-    "FooterContentTooLong": "바닥글 내용은 200자를 초과할 수 없습니다.",
+    "FooterContentTooLong200": "바닥글 내용은 200자를 초과할 수 없습니다.",
     "ImageFileCorruptedOrUnreadable": "이미지 파일이 손상되었거나 읽을 수 없습니다. 파일을 확인한 후 다시 시도해 주세요."
 }

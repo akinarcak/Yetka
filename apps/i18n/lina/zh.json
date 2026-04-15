@@ -1701,6 +1701,6 @@
     "ReportRecipientsLabel": "收件人",
     "ReportRecipientsTip": "当前仅支持邮件发送",
     "ReportSchedulePriorityTip": "如果同时设置了 interval 和 crontab，则优先考虑 crontab",
-    "FooterContentTooLong": "页脚内容不能超过 200 个字符",
+    "FooterContentTooLong200": "页脚内容不能超过 200 个字符",
     "ImageFileCorruptedOrUnreadable": "图像文件已损坏或无法读取，请检查文件并重试。"
 }

@@ -1693,6 +1693,6 @@
     "ReportRecipientsLabel": "Destinatários",
     "ReportRecipientsTip": "Atualmente suporta apenas envio por e-mail",
     "ReportSchedulePriorityTip": "Se ambos, intervalo e crontab, estiverem definidos, o crontab terá prioridade",
-    "FooterContentTooLong": "O conteúdo do rodapé não pode exceder 200 caracteres.",
+    "FooterContentTooLong200": "O conteúdo do rodapé não pode exceder 200 caracteres.",
     "ImageFileCorruptedOrUnreadable": "O arquivo de imagem está corrompido ou não pode ser lido. Verifique o arquivo e tente novamente."
 }

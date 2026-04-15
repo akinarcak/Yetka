@@ -1692,6 +1692,6 @@
     "ReportRecipientsLabel": "Người nhận",
     "ReportRecipientsTip": "Hiện tại chỉ hỗ trợ gửi qua email",
     "ReportSchedulePriorityTip": "Nếu cả interval và crontab đều được đặt, crontab sẽ được ưu tiên",
-    "FooterContentTooLong": "Nội dung chân trang quá dài, vui lòng nhập nội dung dưới 200 ký tự",
+    "FooterContentTooLong200": "Nội dung chân trang quá dài, vui lòng nhập nội dung dưới 200 ký tự",
     "ImageFileCorruptedOrUnreadable": "Tệp hình ảnh đã bị hỏng hoặc không thể đọc được. Vui lòng kiểm tra tệp và thử lại."
 }

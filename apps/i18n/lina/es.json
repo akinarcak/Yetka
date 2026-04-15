@@ -1692,6 +1692,6 @@
     "ReportRecipientsLabel": "Receptores",
     "ReportRecipientsTip": "Actualmente solo admite envío por correo electrónico",
     "ReportSchedulePriorityTip": "Si se establecen tanto el intervalo como el crontab, el crontab tiene prioridad",
-    "FooterContentTooLong": "El contenido del pie de página no debe exceder los 200 caracteres",
+    "FooterContentTooLong200": "El contenido del pie de página no debe exceder los 200 caracteres",
     "ImageFileCorruptedOrUnreadable": "El archivo de imagen está dañado o no se puede leer. Verifica el archivo y vuelve a intentarlo."
 }
