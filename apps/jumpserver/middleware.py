@@ -223,12 +223,16 @@ class HmacSignAuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         enabled = os.getenv("HMAC_SIGN_AUTH_ENABLED", "").lower() in ("1", "true", "yes")
-        hmac_sign_key = os.getenv("HMAC_SIGN_KEY", "")
+        key_file_path = os.path.join(settings.PROJECT_DIR, "data", "unshare", "hmac.key")
 
-        if not enabled or not hmac_sign_key:
+        if os.path.isfile(key_file_path):
+            with open(key_file_path, 'r') as f:
+                self.hmac_sign_key = f.read().strip()
+        else:
+            self.hmac_sign_key = os.getenv("HMAC_SIGN_KEY", "")
+
+        if not enabled or not self.hmac_sign_key:
             raise MiddlewareNotUsed
-
-        self.hmac_sign_key = hmac_sign_key
 
     def __call__(self, request):
         response = self.get_response(request)
