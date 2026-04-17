@@ -244,13 +244,21 @@ class HmacSignAuthMiddleware:
 
         if request.user.is_authenticated:
             session_id = request.session.session_key
-            if not session_id:
-                value = self.MARKER_EXPIRED
+            username = request.user.username
+            sign_data = f'{username}|{session_id}'
+        elif request.path == '/api/v1/authentication/tokens/' \
+                            and response.status_code == 201:
+            user = response.data.get('user')
+            if not user:
+                sign_data = ''
             else:
-                username = request.user.username
-                sign_data = f'{username}|{session_id}'
-                signature = text_hmac_sha256(sign_data, self.hmac_sign_key)
-                value = f'{signature}:{sign_data}'
+                sign_data = f'{user["username"]}:{user["id"]}'
+        else:
+            sign_data = ''
+
+        if sign_data:
+            signature = text_hmac_sha256(sign_data, self.hmac_sign_key)
+            value = f'{signature}:{sign_data}'
         elif has_session_cookie:
             value = self.MARKER_EXPIRED
         else:
