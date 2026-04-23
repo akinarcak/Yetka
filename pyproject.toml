@@ -145,7 +145,7 @@ dependencies = [
     'azure-storage-blob==12.17.0',
     'esdk-obs-python==3.21.4',
     'oss2==2.18.1',
-    'aliyun-python-sdk-core<2.16.0',
+    'aliyun-python-sdk-core==2.15.2',
     'boto3==1.42.93',
     'botocore==1.42.93',
     's3transfer==0.16.0',
