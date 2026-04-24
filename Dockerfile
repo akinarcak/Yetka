@@ -31,6 +31,7 @@ ARG TOOLS="                           \
         cron                          \
         ca-certificates               \
         default-libmysqlclient-dev    \
+        libmariadb3                   \
         postgresql-client             \
         openssh-client                \
         sshpass                       \
