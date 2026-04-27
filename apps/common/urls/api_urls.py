@@ -12,7 +12,3 @@ urlpatterns = [
     path('resources/cache/', api.ResourcesIDCacheApi.as_view(), name='resources-cache'),
     path('countries/', api.CountryListApi.as_view(), name='resources-cache'),
 ]
-
-if settings.JDMC_ENABLED:
-    from xpack.plugins.jdmc.api import JdmcSSOTokenAPI
-    urlpatterns.append(path('jdmc/sso-token/', JdmcSSOTokenAPI.as_view(), name='jdmc-sso-token'))
