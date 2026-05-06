@@ -169,7 +169,7 @@ class BaseAssetViewSet(OrgBulkModelViewSet):
             return Response({'error': error}, status=400)
 
         with tmp_to_root_org():
-            asset_count = self.model.objects.order_by().count()
+            asset_count = Asset.objects.order_by().count()
 
         if not settings.XPACK_LICENSE_IS_VALID and asset_count >= 5000:
             error = _('The number of assets exceeds the limit of 5000')
