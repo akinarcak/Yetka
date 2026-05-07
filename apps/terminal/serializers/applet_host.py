@@ -40,7 +40,7 @@ class DeployOptionsSerializer(serializers.Serializer):
         If the release machine and the Core service are on the same network segment, 
         it is recommended to fill in the intranet address, otherwise fill in the current site URL 
         <br> 
-        eg: https://172.16.10.110 or https://dev.jumpserver.com
+        eg: https://172.16.10.110 or https://dev.example.com
         """)
     )
     IGNORE_VERIFY_CERTS = serializers.BooleanField(default=True, label=_("Ignore Certificate Verification"))

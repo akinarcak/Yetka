@@ -9483,7 +9483,7 @@ msgid ""
 "        it is recommended to fill in the intranet address, otherwise fill in "
 "the current site URL \n"
 "        <br> \n"
-"        eg: https://172.16.10.110 or https://dev.jumpserver.com\n"
+"        eg: https://172.16.10.110 or https://dev.example.com\n"
 "        "
 msgstr ""
 
