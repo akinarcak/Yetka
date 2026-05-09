@@ -785,6 +785,7 @@
     "LdapConnectTest": "Test Connection",
     "LdapLoginTest": "測試登入",
     "LeakPasswordList": "弱密碼列表",
+    "LicenseMaintenanceExpired": "授權服務時間已到期",
     "LeakedPassword": "泄露密碼",
     "Length": "長度",
     "LessEqualThan": "小於等於",
