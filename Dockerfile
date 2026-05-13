@@ -1,4 +1,4 @@
-FROM jumpserver/core-base:20260507_060403 AS stage-build
+FROM jumpserver/core-base:20260511_022944 AS stage-build
 
 ARG VERSION
 
@@ -36,7 +36,6 @@ ARG TOOLS="                           \
         postgresql-client             \
         openssh-client                \
         sshpass                       \
-        nmap                          \
         bubblewrap"
 
 ARG APT_MIRROR=http://deb.debian.org
