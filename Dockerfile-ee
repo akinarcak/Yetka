@@ -28,7 +28,7 @@ RUN set -ex \
     && rm -rf /root/.cache/
 
 RUN set -ex \
-    && wget -q -O /tmp/gmssl-install.sh \
+    && curl -fsSL -o /tmp/gmssl-install.sh \
         "https://github.com/guanzhi/GmSSL/releases/download/v${GMSSL_VERSION}/GmSSL-${GMSSL_VERSION}-Linux.sh" \
     && chmod +x /tmp/gmssl-install.sh \
     && /tmp/gmssl-install.sh --prefix=/usr/local \
