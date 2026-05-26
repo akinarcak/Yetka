@@ -6,7 +6,6 @@ cert:
   # 证书签发配置
   enroll:
     enabled: true
-    key_algo: SM2          # 签发密钥算法：SM2 或 RSA
     validity_days: 365     # 签发证书的有效期（天）
   pin:
     default: "88888888"
