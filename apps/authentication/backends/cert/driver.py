@@ -71,7 +71,7 @@ class CertVendorDriverConfig:
     @property
     def ca_key_pass(self):
         """CA 私钥密码，只从系统设置读取。"""
-        return getattr(settings, 'CA_KEY_PASS', '')
+        return str(getattr(settings, 'CA_KEY_PASS', ''))
 
     @property
     def driver_js_file(self):

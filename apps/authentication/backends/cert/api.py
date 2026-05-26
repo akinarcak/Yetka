@@ -131,7 +131,47 @@ class CertEnrollAPIView(APIView):
         return self._SM2_OID_DER in der
 
     def sign_cert_by_other(self, csr_pem):
-        pass
+        import datetime
+        from cryptography import x509
+        from cryptography.hazmat.primitives import hashes, serialization
+        from cryptography.hazmat.primitives.asymmetric import ec, rsa
+
+        csr = x509.load_pem_x509_csr(csr_pem.encode())
+        pub_key = csr.public_key()
+
+        if isinstance(pub_key, ec.EllipticCurvePublicKey):
+            raise NotImplementedError('ECDSA certificate signing is not supported')
+        if not isinstance(pub_key, rsa.RSAPublicKey):
+            raise ValueError('Unsupported key type: {}'.format(type(pub_key).__name__))
+
+        ca_key_path = cert_vd_cfg.ca_key_file
+        ca_cert_path = cert_vd_cfg.ca_cert_file
+        ca_key_pass = cert_vd_cfg.ca_key_pass
+        if not ca_key_path or not os.path.isfile(ca_key_path):
+            raise FileNotFoundError('CA_KEY_FILE not configured or not found')
+        if not ca_cert_path or not os.path.isfile(ca_cert_path):
+            raise FileNotFoundError('CA_CERT_FILE not configured or not found')
+
+        with open(ca_cert_path, 'rb') as f:
+            ca_cert = x509.load_pem_x509_certificate(f.read())
+        with open(ca_key_path, 'rb') as f:
+            password = ca_key_pass.encode() if ca_key_pass else None
+            ca_key = serialization.load_pem_private_key(f.read(), password=password)
+
+        validity_days = cert_vd_cfg.enroll_validity_days
+        now = datetime.datetime.now(datetime.timezone.utc)
+        cert = (
+            x509.CertificateBuilder()
+            .subject_name(csr.subject)
+            .issuer_name(ca_cert.subject)
+            .public_key(pub_key)
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(now)
+            .not_valid_after(now + datetime.timedelta(days=validity_days))
+            .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
+            .sign(ca_key, hashes.SHA256())
+        )
+        return cert.public_bytes(serialization.Encoding.PEM).decode('utf-8')
 
     def sign_cert_by_gmssl(self, csr_pem):
         """
