@@ -34,10 +34,10 @@ def _detect_cert_algorithm(pem_content):
 
 
 class CertSettingSerializer(serializers.Serializer):
-    PREFIX_TITLE = _('Certificate')
+    PREFIX_TITLE = _('UKey')
 
     AUTH_CERT = serializers.BooleanField(
-        default=False, label=_('Certificate')
+        default=False, label=_('UKey')
     )
     AUTH_CERT_CHALLENGE_TTL = serializers.IntegerField(
         default=300, label=_('Challenge TTL (seconds)'),

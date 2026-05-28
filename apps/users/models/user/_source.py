@@ -24,7 +24,7 @@ class Source(models.TextChoices):
     lark = "lark", _("Lark")
     slack = "slack", _("Slack")
     custom = "custom", "Custom"
-    cert = "cert", _("Certificate")
+    ukey = "ukey", _("UKey")
 
     @classmethod
     def as_dict(cls):
@@ -57,7 +57,7 @@ class SourceMixin:
         Source.slack: [settings.AUTH_BACKEND_SLACK],
         Source.dingtalk: [settings.AUTH_BACKEND_DINGTALK],
         Source.custom: [settings.AUTH_BACKEND_CUSTOM],
-        Source.cert: [settings.AUTH_BACKEND_CERT],
+        Source.ukey: [settings.AUTH_BACKEND_CERT],
     }
 
     @classmethod
