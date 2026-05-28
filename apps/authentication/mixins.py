@@ -24,7 +24,7 @@ from django.utils.translation import gettext as _
 from rest_framework.request import Request
 
 from acls.models import LoginACL
-from apps.jumpserver.settings.auth import AUTHENTICATION_BACKENDS_THIRD_PARTY
+from jumpserver.settings.auth import AUTHENTICATION_BACKENDS_THIRD_PARTY
 from common.utils import (
     get_request_ip_or_data, get_request_ip, get_logger, bulk_get, FlashMessageUtil,
     text_hmac_sha256
