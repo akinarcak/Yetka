@@ -11,6 +11,19 @@ class SCTUDevice(Device):
     def __init__(self):
         self.open("libhsctu_guomi_vpn.so")
 
+    def open(self, driver_path):
+        # load driver
+        self.__load_driver(driver_path)
+        # open device
+        self.__open_device()
+
+    def __load_driver(self, path):
+        # check driver status
+        if self._driver is not None:
+            raise Exception("already load driver")
+        # load driver
+        self._driver = cdll.LoadLibrary(path)
+
     def __open_device(self):
         device = c_void_p()
         ret = self._driver.HS_SDF_OpenDevice(pointer(device))
