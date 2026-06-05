@@ -14,7 +14,10 @@ class UKeySettingSerializer(serializers.Serializer):
         default=False, label=_('UKey')
     )
     AUTH_UKEY_CHALLENGE_TTL = serializers.IntegerField(
-        default=300, label=_('Challenge TTL (seconds)'),
+        default=300, 
+        min_value=60, 
+        max_value=3600,
+        label=_('Challenge TTL (seconds)'),
         help_text=_('Time-to-live (seconds) for authentication challenge codes')
     )
     AUTH_UKEY_DEFAULT_PIN = EncryptedField(
