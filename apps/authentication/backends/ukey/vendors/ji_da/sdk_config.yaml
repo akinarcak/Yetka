@@ -425,6 +425,10 @@ operations:
               - key: newPIN
                 label: "{{ '新 PIN' | trans }}"
                 type: password
+                validate:
+                  minLength: 4
+                  maxLength: 32
+                  message: "{{ 'PIN 码长度必须在 4-32 位之间' | trans }}"
               - key: newPIN2
                 label: "{{ '确认 PIN' | trans }}"
                 type: password
@@ -772,3 +776,7 @@ i18n:
     zh: "提交登录"
     zh_hant: "提交登入"
     en: "Submit Sign-In"
+  "PIN 码长度必须在 4-32 位之间":
+    zh: "PIN 码长度必须在 4-32 位之间"
+    zh_hant: "PIN 碼長度必須在 4-32 位之間"
+    en: "PIN code length must be between 4 and 32 characters"
