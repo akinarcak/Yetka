@@ -269,14 +269,15 @@ class Config(dict):
         'AUTH_CUSTOM_SSO_FILE_MD5': '',
         'AUTH_CUSTOM_SSO_QUERY_PARAMS': 'token',
 
-        'AUTH_CERT': False,
-        'AUTH_CERT_ENROLL_ENABLED': True,
-        'AUTH_CERT_ENROLL_VALIDITY_DAYS': 365,
-        'AUTH_CERT_CHALLENGE_TTL': 300,
-        'AUTH_CERT_DEFAULT_PIN': '',
-        'AUTH_CERT_CA_KEY_CONTENT': '',
-        'AUTH_CERT_CA_CERT_CONTENT': '',
-        'AUTH_CERT_CA_KEY_PASS': '',
+        'AUTH_UKEY': False,
+        'AUTH_UKEY_VENDOR': 'long_mai',
+        'AUTH_UKEY_ENROLL_ENABLED': True,
+        'AUTH_UKEY_ENROLL_VALIDITY_DAYS': 365,
+        'AUTH_UKEY_CHALLENGE_TTL': 300,
+        'AUTH_UKEY_DEFAULT_PIN': '',
+        'AUTH_UKEY_CA_KEY_CONTENT': '',
+        'AUTH_UKEY_CA_CERT_CONTENT': '',
+        'AUTH_UKEY_CA_KEY_PASS': '',
 
         # 临时密码
         'AUTH_TEMP_TOKEN': False,
@@ -595,6 +596,8 @@ class Config(dict):
         'SECURITY_COMMAND_BLACKLIST': [
             'reboot', 'shutdown', 'poweroff', 'halt', 'dd', 'half', 'top'
         ],
+        # The backslash only escapes the single quote in this Python string; it is not a forbidden character.
+        'SECURITY_ACCOUNT_USERNAME_FORBIDDEN_CHARS': '{[\'"`;|<>',
         'SECURITY_SERVICE_ACCOUNT_REGISTRATION': 'auto',
         'SECURITY_VIEW_AUTH_NEED_MFA': True,
         'SECURITY_ACCOUNT_SECRET_READ': True,

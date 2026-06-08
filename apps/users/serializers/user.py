@@ -140,9 +140,9 @@ class UserSerializer(
         label=_("Can public key authentication"),
         read_only=True,
     )
-    can_cert_auth = serializers.BooleanField(
-        source="can_use_cert_login",
-        label=_("Can certificate authentication"),
+    can_ukey_auth = serializers.BooleanField(
+        source="can_use_ukey_login",
+        label=_("Can UKey authentication"),
         read_only=True,
     )
     is_face_code_set = serializers.BooleanField(
@@ -187,6 +187,7 @@ class UserSerializer(
                     "email", "wechat", "phone", "mfa_level",
                     "source", *fields_xpack,
                     "created_by", "updated_by", "comment",  # 通用字段
+                    "ukey_sn",  # UKey SN号
                 ]
         )
         fields_date = [
@@ -196,7 +197,7 @@ class UserSerializer(
         fields_bool = [
             "is_superuser", "is_org_admin", "is_service_account",
             "is_valid", "is_expired", "is_active",  # 布尔字段
-            "is_otp_secret_key_bound", "can_public_key_auth", "can_cert_auth",
+            "is_otp_secret_key_bound", "can_public_key_auth", "can_ukey_auth",
             "mfa_enabled", "need_update_password", "is_face_code_set",
         ]
         # 包含不太常用的字段，可以没有

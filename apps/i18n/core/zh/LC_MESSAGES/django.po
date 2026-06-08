@@ -18,17 +18,17 @@ msgstr ""
 "X-Generator: Poedit 2.4.3\n"
 
 #: accounts/api/account/account.py:193
-#: accounts/serializers/account/account.py:181
-#: accounts/serializers/account/account.py:358
+#: accounts/serializers/account/account.py:182
+#: accounts/serializers/account/account.py:363
 msgid "Account already exists"
 msgstr "账号已存在"
 
-#: accounts/api/account/account.py:258
+#: accounts/api/account/account.py:281
 msgid "No valid assets found for account creation."
 msgstr "未找到可用于创建账户的有效资产。"
 
 #: accounts/api/account/application.py:87
-#: authentication/api/connection_token.py:463
+#: authentication/api/connection_token.py:468
 msgid "Account not found"
 msgstr "账号未找到"
 
@@ -209,7 +209,7 @@ msgstr "数据库"
 msgid "Discovery"
 msgstr "发现"
 
-#: accounts/const/account.py:28 accounts/serializers/account/account.py:28
+#: accounts/const/account.py:28 accounts/serializers/account/account.py:29
 #: settings/serializers/auth/sms.py:84
 msgid "Template"
 msgstr "模板"
@@ -374,7 +374,7 @@ msgstr "处理中"
 msgid "Can login"
 msgstr "可登录"
 
-#: accounts/const/automation.py:128 users/serializers/user.py:259
+#: accounts/const/automation.py:128 users/serializers/user.py:260
 msgid "Superuser"
 msgstr "超级用户"
 
@@ -412,7 +412,7 @@ msgid "Perms"
 msgstr "权限"
 
 #: accounts/const/automation.py:137 perms/serializers/permission.py:56
-#: users/serializers/user.py:250
+#: users/serializers/user.py:251
 msgid "Groups"
 msgstr "用户组"
 
@@ -451,8 +451,8 @@ msgstr "Vault 操作失败，请重试，或者检查 Vault 上的账号信息�
 #: accounts/models/account.py:85
 #: accounts/models/automations/check_account.py:59
 #: accounts/models/automations/gather_account.py:17
-#: accounts/serializers/account/account.py:227
-#: accounts/serializers/account/account.py:294
+#: accounts/serializers/account/account.py:228
+#: accounts/serializers/account/account.py:295
 #: accounts/serializers/automations/change_secret.py:115
 #: accounts/serializers/automations/change_secret.py:147
 #: accounts/serializers/automations/change_secret.py:188
@@ -481,8 +481,8 @@ msgid "Asset"
 msgstr "资产"
 
 #: accounts/models/account.py:89 accounts/models/template.py:16
-#: accounts/serializers/account/account.py:234
-#: accounts/serializers/account/account.py:305
+#: accounts/serializers/account/account.py:235
+#: accounts/serializers/account/account.py:306
 #: accounts/serializers/account/template.py:35
 #: authentication/serializers/connect_token_secret.py:51
 msgid "Su from"
@@ -502,7 +502,7 @@ msgstr "历史账号"
 msgid "Secret reset"
 msgstr "可改密"
 
-#: accounts/models/account.py:97 accounts/serializers/account/account.py:229
+#: accounts/models/account.py:97 accounts/serializers/account/account.py:230
 #: users/models/user/__init__.py:132
 msgid "Source"
 msgstr "来源"
@@ -529,7 +529,7 @@ msgstr "改密状态"
 
 #: accounts/models/account.py:107
 #: accounts/models/automations/check_account.py:64
-#: accounts/serializers/account/account.py:295
+#: accounts/serializers/account/account.py:296
 #: accounts/serializers/account/service.py:13
 #: accounts/serializers/automations/change_secret.py:117
 #: accounts/serializers/automations/change_secret.py:148
@@ -537,7 +537,7 @@ msgstr "改密状态"
 #: acls/templates/acls/asset_login_reminder.html:11
 #: assets/serializers/gateway.py:33 audits/models.py:60 audits/models.py:337
 #: audits/reporting.py:114 audits/serializers.py:246
-#: authentication/api/connection_token.py:475 ops/models/base.py:18
+#: authentication/api/connection_token.py:480 ops/models/base.py:18
 #: perms/models/asset_permission.py:75 settings/serializers/msg.py:33
 #: terminal/backends/command/models.py:18 terminal/models/session/session.py:31
 #: terminal/notifications.py:306 terminal/serializers/command.py:72
@@ -628,8 +628,8 @@ msgstr "图标"
 
 #: accounts/models/application.py:20 accounts/models/base.py:39
 #: accounts/models/mixins/vault.py:49
-#: accounts/serializers/account/account.py:495
-#: accounts/serializers/account/base.py:20
+#: accounts/serializers/account/account.py:500
+#: accounts/serializers/account/base.py:22
 #: authentication/models/temp_token.py:11
 #: authentication/templates/authentication/_access_key_modal.html:31
 #: settings/serializers/auth/radius.py:20
@@ -797,7 +797,8 @@ msgid "Status"
 msgstr "状态"
 
 #: accounts/models/automations/change_secret.py:51
-#: accounts/serializers/account/account.py:297 assets/const/automation.py:9
+#: accounts/serializers/account/account.py:298 assets/const/automation.py:9
+#: authentication/templates/authentication/login_ukey.html:208
 #: authentication/templates/authentication/passkey.html:177
 #: authentication/views/base.py:43 authentication/views/base.py:44
 #: authentication/views/base.py:45 common/const/choices.py:68
@@ -895,7 +896,7 @@ msgstr "重复密码"
 #: accounts/templates/accounts/push_account_report.html:79
 #: accounts/templates/accounts/push_account_report.html:119
 #: acls/serializers/base.py:19 acls/serializers/base.py:50 audits/models.py:204
-#: audits/reporting.py:241 authentication/backends/cert/forms.py:7
+#: audits/reporting.py:241 authentication/backends/ukey/forms.py:8
 #: authentication/forms.py:21 authentication/forms.py:23
 #: authentication/models/temp_token.py:10
 #: authentication/serializers/connect_token_secret.py:43
@@ -1024,8 +1025,8 @@ msgid "Verify asset account"
 msgstr "账号验证"
 
 #: accounts/models/base.py:37 accounts/models/base.py:66
-#: accounts/serializers/account/account.py:494
-#: accounts/serializers/account/base.py:17
+#: accounts/serializers/account/account.py:499
+#: accounts/serializers/account/base.py:19
 #: accounts/serializers/automations/change_secret.py:50
 #: authentication/serializers/connect_token_secret.py:42
 #: authentication/serializers/connect_token_secret.py:52
@@ -1051,7 +1052,7 @@ msgstr "特权账号"
 #: assets/models/cmd_filter.py:39 assets/models/label.py:22
 #: authentication/serializers/connect_token_secret.py:129 reports/models.py:18
 #: terminal/models/applet/applet.py:41
-#: terminal/models/virtualapp/virtualapp.py:23 users/serializers/user.py:262
+#: terminal/models/virtualapp/virtualapp.py:23 users/serializers/user.py:263
 msgid "Is active"
 msgstr "激活"
 
@@ -1201,19 +1202,19 @@ msgstr "改密并添加"
 msgid "Execution failed: {}"
 msgstr "执行失败：{}"
 
-#: accounts/serializers/account/account.py:31
+#: accounts/serializers/account/account.py:32
 msgid "Push now"
 msgstr "立即推送"
 
-#: accounts/serializers/account/account.py:36
+#: accounts/serializers/account/account.py:37
 msgid "Params"
 msgstr "参数"
 
-#: accounts/serializers/account/account.py:40
+#: accounts/serializers/account/account.py:41
 msgid "Exist policy"
 msgstr "账号存在策略"
 
-#: accounts/serializers/account/account.py:206 assets/models/label.py:21
+#: accounts/serializers/account/account.py:207 assets/models/label.py:21
 #: assets/models/platform.py:95 assets/serializers/asset/common.py:145
 #: assets/serializers/cagegory.py:12 assets/serializers/platform.py:174
 #: assets/serializers/platform.py:285 perms/serializers/user_permission.py:27
@@ -1224,7 +1225,7 @@ msgstr "账号存在策略"
 msgid "Category"
 msgstr "类别"
 
-#: accounts/serializers/account/account.py:207 acls/models/command_acl.py:24
+#: accounts/serializers/account/account.py:208 acls/models/command_acl.py:24
 #: acls/serializers/command_acl.py:19 assets/models/automations/base.py:27
 #: assets/models/automations/base.py:146 assets/models/cmd_filter.py:74
 #: assets/models/platform.py:96 assets/serializers/asset/common.py:146
@@ -1243,26 +1244,26 @@ msgstr "类别"
 msgid "Type"
 msgstr "类型"
 
-#: accounts/serializers/account/account.py:223
+#: accounts/serializers/account/account.py:224
 msgid "Asset not found"
 msgstr "资产不存在"
 
-#: accounts/serializers/account/account.py:236 assets/const/category.py:15
+#: accounts/serializers/account/account.py:237 assets/const/category.py:15
 #: assets/models/asset/common.py:180 assets/models/asset/ds.py:14
 #: assets/serializers/asset/common.py:181
 msgid "Directory service"
 msgstr "目录服务"
 
-#: accounts/serializers/account/account.py:278
+#: accounts/serializers/account/account.py:279
 #, python-brace-format
 msgid "Account already exists. Field(s): {fields} must be unique."
 msgstr "帐号已存在。字段：{fields} 必须是唯一的。"
 
-#: accounts/serializers/account/account.py:285
+#: accounts/serializers/account/account.py:286
 msgid "Has secret"
 msgstr "已托管密码"
 
-#: accounts/serializers/account/account.py:296 ops/models/celery.py:84
+#: accounts/serializers/account/account.py:297 ops/models/celery.py:84
 #: tickets/models/comment.py:13 tickets/models/ticket/general.py:49
 #: tickets/models/ticket/general.py:280 tickets/reporting.py:75
 #: tickets/serializers/super_ticket.py:14
@@ -1270,33 +1271,33 @@ msgstr "已托管密码"
 msgid "State"
 msgstr "审批状态"
 
-#: accounts/serializers/account/account.py:298
+#: accounts/serializers/account/account.py:299
 msgid "Changed"
 msgstr "已修改"
 
-#: accounts/serializers/account/account.py:406
+#: accounts/serializers/account/account.py:411
 #, python-format
 msgid "Asset does not support this secret type: %s"
 msgstr "资产不支持账号类型: %s"
 
-#: accounts/serializers/account/account.py:439
+#: accounts/serializers/account/account.py:444
 msgid "Account has exist"
 msgstr "账号已存在"
 
-#: accounts/serializers/account/account.py:464
-#: accounts/serializers/account/account.py:465
+#: accounts/serializers/account/account.py:469
+#: accounts/serializers/account/account.py:470
 msgid "At least one asset or node must be specified"
 msgstr "必须指定至少一个资产或节点"
 
-#: accounts/serializers/account/account.py:478
-#: accounts/serializers/account/account.py:485
-#: accounts/serializers/account/base.py:73
-#: accounts/serializers/account/base.py:88
+#: accounts/serializers/account/account.py:483
+#: accounts/serializers/account/account.py:490
+#: accounts/serializers/account/base.py:75
+#: accounts/serializers/account/base.py:94
 #: assets/serializers/asset/common.py:425
 msgid "Spec info"
 msgstr "特殊信息"
 
-#: accounts/serializers/account/account.py:496
+#: accounts/serializers/account/account.py:501
 #: authentication/serializers/connect_token_secret.py:173
 #: authentication/templates/authentication/_access_key_modal.html:30
 #: perms/models/perm_node.py:21 settings/models.py:215
@@ -1304,7 +1305,7 @@ msgstr "特殊信息"
 msgid "ID"
 msgstr "ID"
 
-#: accounts/serializers/account/account.py:506 acls/notifications.py:18
+#: accounts/serializers/account/account.py:511 acls/notifications.py:18
 #: acls/notifications.py:68 acls/serializers/base.py:103
 #: acls/templates/acls/asset_login_reminder.html:8
 #: acls/templates/acls/user_login_reminder.html:8
@@ -1324,12 +1325,12 @@ msgstr "ID"
 #: terminal/templates/terminal/_msg_command_warning.html:9
 #: terminal/templates/terminal/_msg_session_sharing.html:6
 #: tickets/models/comment.py:21 tickets/serializers/flow.py:15
-#: users/const.py:14 users/models/user/__init__.py:303
-#: users/models/user/__init__.py:330
+#: users/const.py:14 users/models/user/__init__.py:308
+#: users/models/user/__init__.py:341
 msgid "User"
 msgstr "用户"
 
-#: accounts/serializers/account/account.py:507 audits/reporting.py:94
+#: accounts/serializers/account/account.py:512 audits/reporting.py:94
 #: audits/reporting.py:216 audits/reporting.py:312 audits/reporting.py:399
 #: audits/reporting.py:487 audits/reporting.py:602
 #: authentication/templates/authentication/_access_key_modal.html:33
@@ -1338,11 +1339,11 @@ msgstr "用户"
 msgid "Date"
 msgstr "日期"
 
-#: accounts/serializers/account/base.py:33 terminal/serializers/storage.py:149
+#: accounts/serializers/account/base.py:35 terminal/serializers/storage.py:149
 msgid "Passphrase"
 msgstr "密钥密码"
 
-#: accounts/serializers/account/base.py:91
+#: accounts/serializers/account/base.py:97
 msgid ""
 "* If no username is required for authentication, enter null.  For AD "
 "accounts, use the format username@domain."
@@ -1814,7 +1815,12 @@ msgid ""
 "allowed."
 msgstr "如果密码以 `{{` 开始，并且以 `}}` 结束，则该密码是不允许的。"
 
-#: accounts/utils.py:63
+#: accounts/utils.py:76
+#, python-format
+msgid "Username contains invalid characters: %(chars)s"
+msgstr "用户名包含非法字符：%(chars)s"
+
+#: accounts/utils.py:84
 msgid "private key invalid or passphrase error"
 msgstr "密钥不合法或密钥密码错误"
 
@@ -1886,7 +1892,7 @@ msgstr "审批人"
 
 #: acls/models/base.py:81 perms/serializers/permission.py:54
 #: tickets/models/flow.py:23 users/models/preference.py:16
-#: users/serializers/group.py:21 users/serializers/user.py:429
+#: users/serializers/group.py:21 users/serializers/user.py:430
 msgid "Users"
 msgstr "用户"
 
@@ -1894,7 +1900,7 @@ msgstr "用户"
 #: assets/models/automations/base.py:25
 #: assets/serializers/automations/base.py:20 assets/serializers/domain.py:33
 #: assets/serializers/platform.py:182 assets/serializers/platform.py:214
-#: authentication/api/connection_token.py:474 ops/models/base.py:17
+#: authentication/api/connection_token.py:479 ops/models/base.py:17
 #: ops/models/job.py:157 ops/serializers/job.py:21
 #: perms/serializers/permission.py:58
 #: terminal/templates/terminal/_msg_command_execute_alert.html:16
@@ -2289,9 +2295,9 @@ msgid ">>> Start executing the task to test gateway connectivity"
 msgstr ">>> 开始执行测试网关可连接性任务"
 
 #: assets/const/automation.py:6 audits/const.py:6 audits/const.py:48
-#: audits/signal_handlers/activity_log.py:63 common/utils/ip/geoip/utils.py:42
+#: audits/signal_handlers/activity_log.py:63
+#: authentication/backends/ukey/views.py:148 common/utils/ip/geoip/utils.py:42
 #: common/utils/ip/geoip/utils.py:48 common/utils/ip/utils.py:104
-#: settings/serializers/auth/cert.py:31
 msgid "Unknown"
 msgstr "未知"
 
@@ -2487,7 +2493,7 @@ msgid "Any"
 msgstr "任意"
 
 #: assets/const/protocol.py:88 rbac/tree.py:65
-#: settings/serializers/security.py:281
+#: settings/serializers/security.py:285
 msgid "Security"
 msgstr "安全"
 
@@ -2759,7 +2765,7 @@ msgstr "资产自动化任务"
 #: assets/models/automations/base.py:140 assets/models/cmd_filter.py:41
 #: authentication/serializers/token.py:134 common/db/models.py:34
 #: ops/models/base.py:54 ops/models/job.py:240
-#: users/models/user/__init__.py:333
+#: users/models/user/__init__.py:344
 msgid "Date created"
 msgstr "创建日期"
 
@@ -2802,7 +2808,7 @@ msgid "User group"
 msgstr "用户组"
 
 #: assets/models/cmd_filter.py:42 authentication/serializers/token.py:133
-#: common/db/models.py:35 users/models/user/__init__.py:155
+#: common/db/models.py:35 users/models/user/__init__.py:159
 msgid "Date updated"
 msgstr "更新日期"
 
@@ -3534,10 +3540,9 @@ msgstr "导出"
 msgid "Connect"
 msgstr "连接"
 
-#: audits/const.py:31
-#: authentication/templates/authentication/cert_login.html:236
-#: authentication/templates/authentication/login.html:334
+#: audits/const.py:31 authentication/templates/authentication/login.html:334
 #: authentication/templates/authentication/login.html:408
+#: authentication/templates/authentication/login_ukey.html:228
 #: templates/_header_bar.html:101
 #: xpack/plugins/interface/templates/login_i18n.html:21
 msgid "Login"
@@ -4184,40 +4189,40 @@ msgstr "参数中的值必须包含 %s"
 msgid "This action require verify your MFA"
 msgstr "该操作需要验证您的 MFA, 请先开启并配置"
 
-#: authentication/api/connection_token.py:314
+#: authentication/api/connection_token.py:315
 msgid "Reusable connection token is not allowed, global setting not enabled"
 msgstr "不允许使用可重复使用的连接令牌，未启用全局设置"
 
-#: authentication/api/connection_token.py:436
+#: authentication/api/connection_token.py:441
 msgid "Anonymous account is not supported for this asset"
 msgstr "匿名账号不支持当前资产"
 
-#: authentication/api/connection_token.py:466
+#: authentication/api/connection_token.py:471
 msgid "Permission expired"
 msgstr "授权已过期"
 
-#: authentication/api/connection_token.py:499
+#: authentication/api/connection_token.py:504
 #, python-brace-format
 msgid "ACL action is reject: {}({})"
 msgstr "ACL 动作是拒绝: {}({})"
 
-#: authentication/api/connection_token.py:503
+#: authentication/api/connection_token.py:508
 msgid "ACL action is review"
 msgstr "ACL 动作是复核"
 
-#: authentication/api/connection_token.py:513
+#: authentication/api/connection_token.py:518
 msgid "ACL action is face verify"
 msgstr "ACL 动作是人脸验证"
 
-#: authentication/api/connection_token.py:518
+#: authentication/api/connection_token.py:523
 msgid "ACL action not supported for this asset"
 msgstr "资产登录规则不支持当前资产"
 
-#: authentication/api/connection_token.py:525
+#: authentication/api/connection_token.py:530
 msgid "ACL action is face online"
 msgstr "ACL 动作是人脸在线"
 
-#: authentication/api/connection_token.py:550
+#: authentication/api/connection_token.py:555
 msgid "No available face feature"
 msgstr "没有可用的人脸特征"
 
@@ -4271,22 +4276,6 @@ msgstr "认证管理"
 msgid "CAS Error"
 msgstr "CAS 错误"
 
-#: authentication/backends/cert/api.py:57
-msgid "Certificate enrollment is not enabled"
-msgstr "证书签发未开启"
-
-#: authentication/backends/cert/api.py:62
-msgid "CSR is required"
-msgstr "CSR 是必须的。"
-
-#: authentication/backends/cert/api.py:68
-msgid "Certificate signing failed"
-msgstr "证书签发失败"
-
-#: authentication/backends/cert/views.py:94
-msgid "Invalid credentials"
-msgstr "无效的证书"
-
 #: authentication/backends/drf.py:61
 msgid "Invalid token header. No credentials provided."
 msgstr "无效的令牌头。没有提供任何凭据。"
@@ -4336,6 +4325,63 @@ msgstr "凭证 ID"
 #: authentication/backends/saml2/views.py:257
 msgid "SAML2 Error"
 msgstr "SAML2 错误"
+
+#: authentication/backends/ukey/api.py:54
+msgid "Certificate enrollment is not enabled"
+msgstr "证书签发未开启"
+
+#: authentication/backends/ukey/api.py:59
+msgid "CSR is required"
+msgstr "CSR 是必须的。"
+
+#: authentication/backends/ukey/api.py:65
+msgid "Certificate signing failed"
+msgstr "证书签发失败"
+
+#: authentication/backends/ukey/exceptions.py:8
+msgid "Certificate authentication failed"
+msgstr "证书认证失败"
+
+#: authentication/backends/ukey/exceptions.py:16
+msgid "User does not exist"
+msgstr "用户不存在"
+
+#: authentication/backends/ukey/exceptions.py:20
+msgid "UKey SN mismatch"
+msgstr "UKey 序列号未匹配"
+
+#: authentication/backends/ukey/exceptions.py:24
+msgid "Invalid certificate format"
+msgstr "无效的证书格式"
+
+#: authentication/backends/ukey/exceptions.py:28
+msgid "Certificate chain verification failed"
+msgstr "证书链验证失败"
+
+#: authentication/backends/ukey/exceptions.py:32
+msgid "Certificate CN does not match the username"
+msgstr "证书 CN 没有匹配到用户名"
+
+#: authentication/backends/ukey/exceptions.py:36
+msgid "Certificate signature verification failed"
+msgstr "证书签名验证失败"
+
+#: authentication/backends/ukey/exceptions.py:40
+msgid "Certificate has expired or is not yet valid"
+msgstr "证书已过期或未生效"
+
+#: authentication/backends/ukey/exceptions.py:44
+msgid "Unsupported certificate algorithm"
+msgstr "不支持证书算法"
+
+#: authentication/backends/ukey/views.py:92
+msgid ""
+"Authentication challenge expired, please refresh the page and try again."
+msgstr "认证挑战码已过期，请刷新页面后重试。"
+
+#: authentication/backends/ukey/views.py:107
+msgid "Invalid credentials"
+msgstr "无效的证书"
 
 #: authentication/confirm/password.py:17
 msgid "Authentication failed password incorrect"
@@ -4689,7 +4735,7 @@ msgid "Input username"
 msgstr "自定义用户名"
 
 #: authentication/models/connection_token.py:46
-#: authentication/serializers/connection_token.py:20
+#: authentication/serializers/connection_token.py:21
 msgid "Input secret"
 msgstr "自定义密码"
 
@@ -4855,28 +4901,28 @@ msgstr "镜像端口"
 msgid "Image protocol"
 msgstr "镜像协议"
 
-#: authentication/serializers/connection_token.py:18
+#: authentication/serializers/connection_token.py:19
 msgid "Expired time"
 msgstr "过期时间"
 
-#: authentication/serializers/connection_token.py:22
+#: authentication/serializers/connection_token.py:23
 msgid "Ticket info"
 msgstr "工单信息"
 
-#: authentication/serializers/connection_token.py:23
+#: authentication/serializers/connection_token.py:24
 #: perms/models/asset_permission.py:77
 #: tickets/models/ticket/apply_application.py:28
 #: tickets/models/ticket/apply_asset.py:19
 msgid "Actions"
 msgstr "动作"
 
-#: authentication/serializers/connection_token.py:46
+#: authentication/serializers/connection_token.py:47
 #: perms/serializers/permission.py:66 perms/serializers/permission.py:87
-#: users/serializers/user.py:127 users/serializers/user.py:266
+#: users/serializers/user.py:127 users/serializers/user.py:267
 msgid "Is expired"
 msgstr "已过期"
 
-#: authentication/serializers/connection_token.py:47
+#: authentication/serializers/connection_token.py:48
 #: orgs/mixins/serializers.py:26 rbac/serializers/rolebinding.py:27
 msgid "Org name"
 msgstr "组织名称"
@@ -4912,7 +4958,7 @@ msgstr "SSH密钥不合法"
 
 #: authentication/serializers/token.py:93 perms/serializers/permission.py:65
 #: perms/serializers/permission.py:88 users/serializers/user.py:128
-#: users/serializers/user.py:263
+#: users/serializers/user.py:264
 msgid "Is valid"
 msgstr "是否有效"
 
@@ -5109,72 +5155,6 @@ msgstr "如果这次公钥更新不是由你发起的，那么你的账号可能
 msgid "Cancel"
 msgstr "取消"
 
-#: authentication/templates/authentication/cert_login.html:194
-msgid "UKey Authentication"
-msgstr "UKey 认证"
-
-#: authentication/templates/authentication/cert_login.html:199
-#: authentication/templates/authentication/cert_login.html:254
-msgid "Loading USB Key driver..."
-msgstr "正在加载 USB Key 驱动..."
-
-#: authentication/templates/authentication/cert_login.html:214
-msgid "Insert USB Key to auto-fetch"
-msgstr "请插入 USB Key 自动获取"
-
-#: authentication/templates/authentication/cert_login.html:242
-#: xpack/plugins/interface/templates/login_i18n.html:22
-msgid "More login methods"
-msgstr "更多登录方式"
-
-#: authentication/templates/authentication/cert_login.html:255
-msgid "Detecting USB Key..."
-msgstr "正在检测 USB Key..."
-
-#: authentication/templates/authentication/cert_login.html:256
-msgid "USB Key connected"
-msgstr "USB Key 已连接"
-
-#: authentication/templates/authentication/cert_login.html:257
-msgid "Please insert USB Key"
-msgstr "请插入 USB Key"
-
-#: authentication/templates/authentication/cert_login.html:258
-msgid "Driver unavailable"
-msgstr "驱动不可用"
-
-#: authentication/templates/authentication/cert_login.html:259
-msgid "USB Key SDK initialization failed"
-msgstr "USB Key SDK 初始化失败"
-
-#: authentication/templates/authentication/cert_login.html:260
-msgid "Verifying PIN..."
-msgstr "PIN 校验中..."
-
-#: authentication/templates/authentication/cert_login.html:261
-msgid "PIN verified"
-msgstr "PIN 校验通过"
-
-#: authentication/templates/authentication/cert_login.html:262
-msgid "PIN verification failed"
-msgstr "校验 PIN 失败"
-
-#: authentication/templates/authentication/cert_login.html:263
-msgid "Signing challenge code..."
-msgstr "正在对挑战码签名..."
-
-#: authentication/templates/authentication/cert_login.html:264
-msgid "Signing failed"
-msgstr "签名失败"
-
-#: authentication/templates/authentication/cert_login.html:265
-msgid "Failed to retrieve certificate"
-msgstr "获取证书失败"
-
-#: authentication/templates/authentication/cert_login.html:266
-msgid "No certificate detected, please contact administrator"
-msgstr "未检测到证书，请联系管理员制证"
-
 #: authentication/templates/authentication/face_capture.html:14
 msgid "Retry"
 msgstr "重试"
@@ -5211,6 +5191,72 @@ msgstr "下一步"
 msgid "Can't provide security? Please contact the administrator!"
 msgstr "如果不能提供 MFA 验证码，请联系管理员!"
 
+#: authentication/templates/authentication/login_ukey.html:194
+msgid "UKey Authentication"
+msgstr "UKey 认证"
+
+#: authentication/templates/authentication/login_ukey.html:199
+#: authentication/templates/authentication/login_ukey.html:246
+msgid "Loading UKey SDK..."
+msgstr "正在加载 UKey SDK 驱动..."
+
+#: authentication/templates/authentication/login_ukey.html:216
+msgid "Insert UKey to auto-fetch"
+msgstr "插入 UKey 自动获取"
+
+#: authentication/templates/authentication/login_ukey.html:234
+#: xpack/plugins/interface/templates/login_i18n.html:22
+msgid "More login methods"
+msgstr "更多登录方式"
+
+#: authentication/templates/authentication/login_ukey.html:247
+msgid "Detecting UKey..."
+msgstr "正在检测 UKey..."
+
+#: authentication/templates/authentication/login_ukey.html:248
+msgid "UKey connected"
+msgstr "UKey 已连接"
+
+#: authentication/templates/authentication/login_ukey.html:249
+msgid "Please insert UKey"
+msgstr "请插入 UKey"
+
+#: authentication/templates/authentication/login_ukey.html:250
+msgid "SDK unavailable"
+msgstr "SDK 不可用"
+
+#: authentication/templates/authentication/login_ukey.html:251
+msgid "UKey SDK initialization failed"
+msgstr "UKey SDK 初始化失败"
+
+#: authentication/templates/authentication/login_ukey.html:252
+msgid "Verifying PIN..."
+msgstr "PIN 校验中..."
+
+#: authentication/templates/authentication/login_ukey.html:253
+msgid "PIN verified"
+msgstr "PIN 校验通过"
+
+#: authentication/templates/authentication/login_ukey.html:254
+msgid "PIN verification failed"
+msgstr "校验 PIN 失败"
+
+#: authentication/templates/authentication/login_ukey.html:255
+msgid "Signing challenge code..."
+msgstr "正在对挑战码签名..."
+
+#: authentication/templates/authentication/login_ukey.html:256
+msgid "Signing failed"
+msgstr "签名失败"
+
+#: authentication/templates/authentication/login_ukey.html:257
+msgid "Failed to retrieve UKey cert"
+msgstr "获取 UKey 证书失败"
+
+#: authentication/templates/authentication/login_ukey.html:258
+msgid "No UKey cert detected, please contact administrator"
+msgstr "未检测到 UKey 证书，请联系管理员"
+
 #: authentication/templates/authentication/login_wait_confirm.html:72
 msgid "Refresh"
 msgstr "刷新"
@@ -5242,8 +5288,8 @@ msgstr "是否重试 ？"
 msgid "LAN"
 msgstr "局域网"
 
-#: authentication/utils.py:150 settings/serializers/auth/cert.py:37
-#: settings/serializers/auth/cert.py:40 users/models/user/_source.py:27
+#: authentication/utils.py:150 settings/serializers/auth/ukey.py:11
+#: settings/serializers/auth/ukey.py:14 users/models/user/_source.py:27
 msgid "UKey"
 msgstr ""
 
@@ -6049,16 +6095,16 @@ msgid ""
 "        work orders, and other notifications"
 msgstr "系统一些告警，工单等需要发送站内信时执行该任务"
 
-#: ops/ansible/inventory.py:136 ops/ansible/inventory.py:206
+#: ops/ansible/inventory.py:150 ops/ansible/inventory.py:220
 #: ops/models/job.py:69
 msgid "No account available"
 msgstr "无可用账号"
 
-#: ops/ansible/inventory.py:327 ops/ansible/inventory.py:369
+#: ops/ansible/inventory.py:341 ops/ansible/inventory.py:383
 msgid "Ansible disabled"
 msgstr "Ansible 已禁用"
 
-#: ops/ansible/inventory.py:385
+#: ops/ansible/inventory.py:399
 msgid "Skip hosts below:"
 msgstr "跳过以下主机: "
 
@@ -7421,10 +7467,8 @@ msgid "Passkey Auth"
 msgstr "Passkey 认证"
 
 #: settings/serializers/auth/base.py:27
-#, fuzzy
-#| msgid "Certificate"
-msgid "Certificate Auth"
-msgstr "证书"
+msgid "UKey Auth"
+msgstr "UKey 认证"
 
 #: settings/serializers/auth/base.py:29
 msgid "Email suffix"
@@ -7514,70 +7558,6 @@ msgid ""
 msgstr ""
 "用户属性映射，其中 `key` 是 CAS 服务用户属性名称，`value` 是本系统用户属性名"
 "称"
-
-#: settings/serializers/auth/cert.py:43
-msgid "Challenge TTL (seconds)"
-msgstr "挑战码的有效时长（秒）"
-
-#: settings/serializers/auth/cert.py:44
-msgid "Time-to-live (seconds) for authentication challenge codes"
-msgstr "认证挑战码的有效时长（秒）"
-
-#: settings/serializers/auth/cert.py:47
-msgid "USB-Key Default PIN"
-msgstr "USB Key 默认 PIN 码"
-
-#: settings/serializers/auth/cert.py:48
-msgid "Default USB Key PIN used for administrator reset"
-msgstr "管理员重置时使用的默认 PIN 码"
-
-#: settings/serializers/auth/cert.py:52
-msgid "Enrollment"
-msgstr "证书签发"
-
-#: settings/serializers/auth/cert.py:53
-msgid "Whether to enable user certificate enrollment"
-msgstr "是否启用用户证书签发"
-
-#: settings/serializers/auth/cert.py:56
-msgid "Enrollment Validity Days"
-msgstr "签发证书有效天数"
-
-#: settings/serializers/auth/cert.py:57
-msgid "Validity period (days) for issued certificates"
-msgstr "签发证书的有效期（天）"
-
-#: settings/serializers/auth/cert.py:60
-msgid "CA Key"
-msgstr "CA 私钥"
-
-#: settings/serializers/auth/cert.py:61
-msgid "PEM content of CA private key used for certificate enrollment"
-msgstr "用于证书签发的 CA 私钥 PEM 内容"
-
-#: settings/serializers/auth/cert.py:64
-msgid "CA Cert"
-msgstr "CA 证书"
-
-#: settings/serializers/auth/cert.py:65
-msgid ""
-"PEM content of CA certificate used for certificate enrollment and "
-"authentication"
-msgstr "用于证书签发和认证的 CA 证书 PEM 内容"
-
-#: settings/serializers/auth/cert.py:68
-msgid "CA Key Password"
-msgstr "CA 私钥密码"
-
-#: settings/serializers/auth/cert.py:69
-msgid ""
-"Password for CA private key used for certificate enrollment (leave blank if "
-"not set)"
-msgstr "用于证书签发的 CA 私钥加密密码（未设置密码请留空）"
-
-#: settings/serializers/auth/cert.py:72
-msgid "CA Cert Algorithm"
-msgstr "CA 证书算法"
 
 #: settings/serializers/auth/dingtalk.py:16
 msgid "Dingtalk"
@@ -8040,6 +8020,74 @@ msgstr "令牌有效期"
 #: xpack/plugins/cloud/serializers/account_attrs.py:237
 msgid "Unit: second"
 msgstr "单位: 秒"
+
+#: settings/serializers/auth/ukey.py:17
+msgid "Challenge TTL (seconds)"
+msgstr "挑战码的有效时长（秒）"
+
+#: settings/serializers/auth/ukey.py:18
+msgid "Time-to-live (seconds) for authentication challenge codes"
+msgstr "认证挑战码的有效时长（秒）"
+
+#: settings/serializers/auth/ukey.py:22
+msgid "UKey Default User PIN"
+msgstr "UKey 默认的用户 PIN 码"
+
+#: settings/serializers/auth/ukey.py:23
+msgid "UKey default user PIN used for administrator reset"
+msgstr "管理员重置时使用的用户默认 PIN 码"
+
+#: settings/serializers/auth/ukey.py:27
+msgid "Enrollment"
+msgstr "证书签发"
+
+#: settings/serializers/auth/ukey.py:28
+msgid "Whether to enable user certificate enrollment"
+msgstr "是否启用用户证书签发"
+
+#: settings/serializers/auth/ukey.py:31
+msgid "Enrollment Validity Days"
+msgstr "签发证书有效天数"
+
+#: settings/serializers/auth/ukey.py:32
+msgid "Validity period (days) for issued certificates"
+msgstr "签发证书的有效期（天）"
+
+#: settings/serializers/auth/ukey.py:35
+msgid "CA Key"
+msgstr "CA 私钥"
+
+#: settings/serializers/auth/ukey.py:36
+msgid "PEM content of CA private key used for certificate enrollment"
+msgstr "用于证书签发的 CA 私钥 PEM 内容"
+
+#: settings/serializers/auth/ukey.py:39
+msgid "CA Cert"
+msgstr "CA 证书"
+
+#: settings/serializers/auth/ukey.py:40
+msgid ""
+"PEM content of CA certificate used for certificate enrollment and "
+"authentication"
+msgstr "用于证书签发和认证的 CA 证书 PEM 内容"
+
+#: settings/serializers/auth/ukey.py:43
+msgid "CA Key Password"
+msgstr "CA 私钥密码"
+
+#: settings/serializers/auth/ukey.py:44
+msgid ""
+"Password for CA private key used for certificate enrollment (leave blank if "
+"not set)"
+msgstr "用于证书签发的 CA 私钥加密密码（未设置密码请留空）"
+
+#: settings/serializers/auth/ukey.py:47
+msgid "CA Cert Algorithm"
+msgstr "CA 证书算法"
+
+#: settings/serializers/auth/ukey.py:53
+msgid "Auto-Detect After Upload"
+msgstr "证书上传后自动检测"
 
 #: settings/serializers/auth/wecom.py:20
 msgid ""
@@ -8726,10 +8774,14 @@ msgid "Insecure command alert"
 msgstr "危险命令告警"
 
 #: settings/serializers/security.py:271
+msgid "Account username forbidden characters"
+msgstr ""
+
+#: settings/serializers/security.py:275
 msgid "Email recipient"
 msgstr "邮件收件人"
 
-#: settings/serializers/security.py:272
+#: settings/serializers/security.py:276
 msgid "Multiple user using , split"
 msgstr "多个用户，使用 , 分割"
 
@@ -10938,7 +10990,7 @@ msgstr "用户设置"
 msgid "Email lookup"
 msgstr "邮箱查找"
 
-#: users/models/user/__init__.py:82 users/serializers/user.py:264
+#: users/models/user/__init__.py:82 users/serializers/user.py:265
 msgid "Is service account"
 msgstr "服务账号"
 
@@ -10957,7 +11009,7 @@ msgstr "OTP 密钥"
 # msgid "Private key"
 # msgstr "ssh私钥"
 #: users/models/user/__init__.py:105 users/serializers/profile.py:86
-#: users/serializers/user.py:261
+#: users/serializers/user.py:262
 msgid "Is first login"
 msgstr "首次登录"
 
@@ -10973,27 +11025,31 @@ msgstr "需要更新密码"
 msgid "Face vector"
 msgstr "人脸向量"
 
-#: users/models/user/__init__.py:153
+#: users/models/user/__init__.py:154
+msgid "UKey SN"
+msgstr "UKey 序列号"
+
+#: users/models/user/__init__.py:157
 msgid "Date api key used"
 msgstr "API key 最后使用日期"
 
-#: users/models/user/__init__.py:298
+#: users/models/user/__init__.py:303
 msgid "Can not delete admin user"
 msgstr "无法删除管理员用户"
 
-#: users/models/user/__init__.py:312
+#: users/models/user/__init__.py:317
 msgid "Can invite user"
 msgstr "可以邀请用户"
 
-#: users/models/user/__init__.py:313
+#: users/models/user/__init__.py:318
 msgid "Can remove user"
 msgstr "可以移除用户"
 
-#: users/models/user/__init__.py:314
+#: users/models/user/__init__.py:319
 msgid "Can match user"
 msgstr "可以匹配用户"
 
-#: users/models/user/__init__.py:343
+#: users/models/user/__init__.py:354
 msgid "User password history"
 msgstr "用户密码历史"
 
@@ -11225,7 +11281,7 @@ msgstr "强制 MFA"
 msgid "Login blocked"
 msgstr "登录被锁定"
 
-#: users/serializers/user.py:130 users/serializers/user.py:270
+#: users/serializers/user.py:130 users/serializers/user.py:271
 msgid "Is OTP bound"
 msgstr "是否绑定了虚拟 MFA"
 
@@ -11242,30 +11298,30 @@ msgid "Can public key authentication"
 msgstr "可以使用公钥认证"
 
 #: users/serializers/user.py:145
-msgid "Can certificate authentication"
-msgstr "可以使用证书认证"
+msgid "Can UKey authentication"
+msgstr "可以 UKey 认证"
 
 #: users/serializers/user.py:149
 msgid "Is face code set"
 msgstr "是否存在人脸特征"
 
-#: users/serializers/user.py:235
+#: users/serializers/user.py:236
 msgid "Full name"
 msgstr "全称"
 
-#: users/serializers/user.py:238
+#: users/serializers/user.py:239
 msgid "Login username"
 msgstr "登录用户"
 
-#: users/serializers/user.py:241
+#: users/serializers/user.py:242
 msgid "Email address"
 msgstr "邮件地址"
 
-#: users/serializers/user.py:251
+#: users/serializers/user.py:252
 msgid "User groups to join"
 msgstr "用户组数量"
 
-#: users/serializers/user.py:255
+#: users/serializers/user.py:256
 msgid ""
 "User source identifies where the user was created, which could be AD or "
 "other sources.There are security settings that can restrict users to log in "
@@ -11274,32 +11330,32 @@ msgstr ""
 "用户来源标识用户的创建位置，可以是 AD 或其他来源。安全设置可以限制用户只能从"
 "指定来源登录系统。"
 
-#: users/serializers/user.py:265
+#: users/serializers/user.py:266
 msgid "Is org admin"
 msgstr "组织管理员"
 
-#: users/serializers/user.py:267
+#: users/serializers/user.py:268
 msgid "Avatar url"
 msgstr "头像路径"
 
-#: users/serializers/user.py:272
+#: users/serializers/user.py:273
 msgid "MFA level"
 msgstr "MFA"
 
-#: users/serializers/user.py:273
+#: users/serializers/user.py:274
 msgid "Multi-Factor Authentication"
 msgstr "认证"
 
-#: users/serializers/user.py:403
+#: users/serializers/user.py:404
 msgid "Has public keys"
 msgstr "有公钥"
 
-#: users/serializers/user.py:431
+#: users/serializers/user.py:432
 msgid ""
 "* For security, only a partial of users is displayed. You can search for more"
 msgstr "* 为安全起见，只显示部分用户。您可以搜索更多"
 
-#: users/serializers/user.py:467
+#: users/serializers/user.py:468
 msgid "name not unique"
 msgstr "名称重复"
 
@@ -12528,37 +12584,3 @@ msgstr "许可证导入成功"
 #: xpack/plugins/license/api.py:55
 msgid "Invalid license"
 msgstr "许可证无效"
-
-#~ msgid "Certificate"
-#~ msgstr "证书"
-
-#~ msgid "User invalid, disabled or expired"
-#~ msgstr "用户无效，已禁用或已过期"
-
-#~ msgid "Microsoft"
-#~ msgstr "微软"
-
-#~ msgid "Official"
-#~ msgstr "官方"
-
-#~ msgid ""
-#~ "macOS needs to download the client to connect RDP asset, which comes with "
-#~ "Windows"
-#~ msgstr "macOS 需要下载客户端来连接 RDP 资产，Windows 系统默认安装了该程序"
-
-#~ msgid "Windows Remote application publisher tools"
-#~ msgstr "Windows 远程应用发布服务器工具"
-
-#~ msgid ""
-#~ "OpenSSH is a program used to connect remote applications in the Windows "
-#~ "Remote Application Publisher"
-#~ msgstr "OpenSSH 是在 windows 远程应用发布服务器中用来连接远程应用的程序"
-
-#~ msgid "Periodic report"
-#~ msgstr "周期报表"
-
-#~ msgid "Privacy"
-#~ msgstr "隐私"
-
-#~ msgid "Closed"
-#~ msgstr "关闭的"
