@@ -47,15 +47,13 @@ urlpatterns = [
     path('login-confirm-ticket/status/', api.TicketStatusApi.as_view(), name='login-confirm-ticket-status'),
     path('user-session/', api.UserSessionApi.as_view(), name='user-session'),
 ]
+urlpatterns += [
+    path('ukey/', include(('authentication.backends.ukey.api_urls', 'ukey'), namespace='ukey'))
+]
 
 if settings.AUTH_CUSTOM_SSO:
     urlpatterns += [
         path('custom-sso/login/', api.CustomSSOLoginAPIView.as_view(), name='custom-sso-login'),
-    ]
-
-if settings.AUTH_UKEY:
-    urlpatterns += [
-        path('ukey/', include(('authentication.backends.ukey.api_urls', 'ukey'), namespace='ukey'))
     ]
 
 urlpatterns += router.urls + passkey_urlpatterns
