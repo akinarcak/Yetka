@@ -233,8 +233,8 @@ class Account(AbsConnectivity, LabeledMixin, BaseAccount, JSONFilterMixin):
         return escape(value)
 
     def update_last_login_date(self):
-        self.date_last_login = timezone.now()
-        self.save(update_fields=['date_last_login'])
+        date_last_login = timezone.now()
+        Account.objects.filter(id=self.id).update(date_last_login=date_last_login)
 
 
 def replace_history_model_with_mixin():

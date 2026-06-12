@@ -833,6 +833,7 @@
     "Lowercase": "Chữ cái thường",
     "LunaSetting": "Cấu hình Luna",
     "MFAAllUsers": "Toàn cầu kích hoạt: Tất cả người dùng",
+    "MaxExportSizeTips": "Để tránh xuất quá nhiều dữ liệu, tối đa chỉ có thể xuất {count} bản ghi",
     "MFAErrorMsg": "Lỗi MFA, vui lòng kiểm tra",
     "MFAOfUserFirstLoginPersonalInformationImprovementPage": "Kích hoạt xác thực nhiều yếu tố, để tài khoản an toàn hơn. <br/> Sau khi kích hoạt, bạn sẽ được đưa vào quy trình liên kết xác thực nhiều yếu tố khi đăng nhập lần tới; Bạn cũng có thể liên kết trực tiếp tại (Thông tin cá nhân-> Sửa đổi nhanh-> Thay đổi cài đặt nhiều yếu tố)!",
     "MFAOfUserFirstLoginUserGuidePage": "Để bảo vệ bạn và công ty khỏi các nguy cơ, hãy bảo quản cẩn thận tài khoản, mật khẩu và thông tin nhạy cảm quan trọng như khóa; (ví dụ: thiết lập mật khẩu phức tạp và kích hoạt xác thực đa yếu tố)<br/>Thông tin cá nhân như email và số điện thoại chỉ được sử dụng cho việc xác thực người dùng và thông báo tin nhắn nội bộ trên nền tảng.",
