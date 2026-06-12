@@ -133,13 +133,15 @@ class ChangeSecretRecordSerializer(serializers.ModelSerializer):
     def get_is_success(obj) -> bool:
         return obj.status == ChangeSecretRecordStatusChoice.success
 
+from common.serializers import SecretReadableCheckMixin
 
-class ChangeSecretRecordViewSecretSerializer(serializers.ModelSerializer):
+class ChangeSecretRecordViewSecretSerializer(SecretReadableCheckMixin, serializers.ModelSerializer):
     class Meta:
         model = ChangeSecretRecord
         fields = [
             'id', 'old_secret', 'new_secret',
         ]
+        secret_fields = ['old_secret', 'new_secret']
         read_only_fields = fields
 
 
