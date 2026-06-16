@@ -1620,7 +1620,7 @@
     "WeakPassword": " 弱いパスワード ",
     "WebCreate": "資産作成-Web",
     "WebHelpMessage": "Webタイプの資産はリモートアプリケーションに依存しています。システム設定でリモートアプリケーションを設定してください",
-    "DatabaseConnectivityTestHelpMessage": "REDIS、DB2、DAMENG、CLICKHOUSE タイプのデータベース資産では接続性テストはサポートされていません。",
+    "DatabaseConnectivityTestHelpMessage": "Redis、DB2、Dameng、ClickHouse タイプのデータベース資産では接続性テストはサポートされていません。",
     "WebSocketDisconnect": "WebSocket 切断",
     "WebTerminal": "Web端末",
     "WebUpdate": "アップデートアセット-Web",

@@ -1616,7 +1616,7 @@
     "WeakPassword": " Senha fraca ",
     "WebCreate": "Criar Ativo-Web",
     "WebHelpMessage": "Tipos de ativos da Web dependem de aplicativos remotos, vá para as configurações do sistema para configurar nos aplicativos remotos",
-    "DatabaseConnectivityTestHelpMessage": "O teste de conectividade não é compatível com ativos de banco de dados dos tipos REDIS, DB2, DAMENG e CLICKHOUSE.",
+    "DatabaseConnectivityTestHelpMessage": "O teste de conectividade não é compatível com ativos de banco de dados dos tipos Redis, DB2, Dameng e ClickHouse.",
     "WebSocketDisconnect": "WebSocket desconectado",
     "WebTerminal": "Terminal Web",
     "WebUpdate": "Atualizar ativo - Web",
