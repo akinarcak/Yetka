@@ -73,10 +73,12 @@ def update_site_url():
     if not host_ip:
         return
     if not site_url:
-        site_url = Setting.objects.create(name='SITE_URL', value=f'https://{host_ip}')
-    elif site_url.value == 'http://127.0.0.1':
-        site_url.value = f'https://{host_ip}'
+        site_url = Setting.objects.create(name='SITE_URL')
+
+    if site_url.cleaned_value == f'http://127.0.0.1' or not site_url.cleaned_value:
+        site_url.cleaned_value = f'https://{host_ip}'
         site_url.save()
+
 
 @receiver(post_migrate)
 def after_migrate_some_config(sender, app_config, **kwargs):
