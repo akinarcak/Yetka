@@ -1612,6 +1612,7 @@
     "WeakPassword": "弱密码",
     "WebCreate": "创建资产-Web",
     "WebHelpMessage": "Web 类型资产依赖于远程应用，请前往系统设置在远程应用中配置",
+    "DatabaseConnectivityTestHelpMessage": "REDIS、DB2、DAMENG、CLICKHOUSE 类型的数据库资产暂不支持可连接性测试。",
     "WebSocketDisconnect": "WebSocket 断开",
     "WebTerminal": "Web终端",
     "WebUpdate": "更新资产-Web",

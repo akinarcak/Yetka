@@ -1614,6 +1614,7 @@
     "WeakPassword": "Mật khẩu yếu",
     "WebCreate": "Tạo tài sản - Web",
     "WebHelpMessage": "Tài sản Web phụ thuộc vào ứng dụng từ xa, hãy truy cập cài đặt hệ thống để cấu hình trong ứng dụng từ xa",
+    "DatabaseConnectivityTestHelpMessage": "Kiểm tra kết nối không được hỗ trợ cho các tài sản cơ sở dữ liệu loại REDIS, DB2, DAMENG và CLICKHOUSE.",
     "WebSocketDisconnect": "Từ chối",
     "WebTerminal": "Giao diện Web",
     "WebUpdate": "Cập nhật tài sản-Web",

@@ -1604,6 +1604,7 @@
     "WeakPassword": "Weak password",
     "WebCreate": "Create asset - web",
     "WebHelpMessage": "Web type assets depend on remote applications, please go to system settings and configure in remote applications",
+    "DatabaseConnectivityTestHelpMessage": "Connectivity testing is not supported for REDIS, DB2, DAMENG, and CLICKHOUSE database assets.",
     "WebSocketDisconnect": "Websocket disconnected",
     "WebTerminal": "Web terminal",
     "WebUpdate": "Update the asset - web",
