@@ -1775,5 +1775,7 @@
     "SdkScriptLoadFailed": "SDK script load failed, please check network or driver service",
     "SdkStatus": "SDK Status",
     "OperationUnavailableWhenMismatch": "No available actions because Ukey does not match the user",
-    "InfoHiddenWhenMismatch": "Certificate information is hidden because Ukey does not match the user"
+    "InfoHiddenWhenMismatch": "Certificate information is hidden because Ukey does not match the user",
+    "Days": "day",
+    "NotLoggedInForMoreThan": "Not logged in for more than"
 }

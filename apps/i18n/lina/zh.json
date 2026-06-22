@@ -1786,5 +1786,7 @@
     "SdkScriptLoadFailed": "驱动脚本加载失败，请检查网络或驱动服务",
     "SdkStatus": "SDK 状态",
     "OperationUnavailableWhenMismatch": "Ukey 与用户不匹配没有操作可用",
-    "InfoHiddenWhenMismatch": "Ukey 与用户不匹配不显示证书信息"
+    "InfoHiddenWhenMismatch": "Ukey 与用户不匹配不显示证书信息",
+    "Days": "天",
+    "NotLoggedInForMoreThan": "未登录超过"
 }

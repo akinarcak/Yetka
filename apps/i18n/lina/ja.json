@@ -1702,5 +1702,7 @@
     "ReportRecipientsTip": "現在はメール送信のみ対応しています",
     "ReportSchedulePriorityTip": "interval と crontab の両方が設定されている場合、crontab が優先されます",
     "FooterContentTooLong200": "フッターの内容は200文字を超えることはできません。",
-    "ImageFileCorruptedOrUnreadable": "画像ファイルが破損しているか、読み取れません。ファイルを確認して、もう一度お試しください。"
+    "ImageFileCorruptedOrUnreadable": "画像ファイルが破損しているか、読み取れません。ファイルを確認して、もう一度お試しください。",
+    "Days": "空",
+    "NotLoggedInForMoreThan": "ログインしていない日数が"
 }
