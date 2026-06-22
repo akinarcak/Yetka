@@ -3884,7 +3884,7 @@ msgstr "Tài khoản thất bại"
 #: audits/reporting.py:29 audits/reporting.py:151 audits/reporting.py:267
 #: audits/reporting.py:349
 msgid "Unique IPs"
-msgstr ""
+msgstr "IP duy nhất"
 
 #: audits/reporting.py:91 audits/reporting.py:213 audits/reporting.py:309
 #: audits/reporting.py:396 audits/reporting.py:484 audits/reporting.py:599
@@ -3895,16 +3895,16 @@ msgstr "Phê duyệt"
 #: audits/reporting.py:93 audits/reporting.py:215 audits/reporting.py:311
 #: audits/reporting.py:398 audits/reporting.py:601 terminal/reporting.py:102
 msgid "Daily Trend"
-msgstr ""
+msgstr "Xu hướng hằng ngày"
 
 #: audits/reporting.py:94 audits/reporting.py:216 audits/reporting.py:602
 #: terminal/reporting.py:103
 msgid "Total"
-msgstr ""
+msgstr "Tổng số"
 
 #: audits/reporting.py:98
 msgid "Transfer Type Distribution"
-msgstr ""
+msgstr "Phân bố loại truyền tải"
 
 #: audits/reporting.py:99 audits/reporting.py:104 audits/reporting.py:109
 #: audits/reporting.py:114 audits/reporting.py:119 audits/reporting.py:124
@@ -3941,7 +3941,7 @@ msgstr "Tài khoản"
 #: audits/reporting.py:118 audits/reporting.py:326 audits/reporting.py:423
 #: terminal/reporting.py:132
 msgid "IP Top 10"
-msgstr ""
+msgstr "Top 10 IP"
 
 #: audits/reporting.py:123
 msgid "Filename Top 10"
@@ -3949,7 +3949,7 @@ msgstr "Tên tệp"
 
 #: audits/reporting.py:128
 msgid "Transfer Time Distribution"
-msgstr ""
+msgstr "Phân bố thời gian truyền tải"
 
 #: audits/reporting.py:129 audits/reporting.py:236 audits/reporting.py:332
 #: audits/reporting.py:429
@@ -3970,7 +3970,7 @@ msgstr "Tài khoản thất bại"
 
 #: audits/reporting.py:152
 msgid "Unique cities"
-msgstr ""
+msgstr "Thành phố duy nhất"
 
 #: audits/reporting.py:153
 msgid "Unique auth backends"
@@ -3994,15 +3994,15 @@ msgstr "Kích hoạt thông báo chuyển hướng đăng nhập"
 
 #: audits/reporting.py:240
 msgid "Failed User Top 10"
-msgstr ""
+msgstr "Top 10 người dùng thất bại"
 
 #: audits/reporting.py:245
 msgid "Failed IP Top 10"
-msgstr ""
+msgstr "Top 10 IP thất bại"
 
 #: audits/reporting.py:250
 msgid "Failed Reason Top 10"
-msgstr ""
+msgstr "Top 10 nguyên nhân thất bại"
 
 #: audits/reporting.py:258
 msgid "Password Change Report"
@@ -4010,7 +4010,7 @@ msgstr "Nhật ký thay đổi mật khẩu"
 
 #: audits/reporting.py:266 audits/reporting.py:346
 msgid "Unique operators"
-msgstr ""
+msgstr "Người thao tác duy nhất"
 
 #: audits/reporting.py:321 audits/reporting.py:413
 msgid "Operator Top 10"
@@ -4046,7 +4046,7 @@ msgstr "Loại tài nguyên"
 
 #: audits/reporting.py:428
 msgid "Operate Time Distribution"
-msgstr ""
+msgstr "Phân bố thời gian thao tác"
 
 #: audits/reporting.py:436
 msgid "Job Audit Report"
@@ -4058,7 +4058,7 @@ msgstr "Periodic"
 
 #: audits/reporting.py:444
 msgid "One-time jobs"
-msgstr ""
+msgstr "Tác vụ một lần"
 
 #: audits/reporting.py:445
 msgid "Adhoc jobs"
@@ -4070,7 +4070,7 @@ msgstr "Playbook"
 
 #: audits/reporting.py:447 audits/reporting.py:534
 msgid "Unique creators"
-msgstr ""
+msgstr "Người tạo duy nhất"
 
 #: audits/reporting.py:467 ops/const.py:40 ops/models/job.py:154
 #: ops/models/playbook.py:89 ops/models/variable.py:23
@@ -4083,11 +4083,11 @@ msgstr "Loại tạo"
 
 #: audits/reporting.py:491 audits/reporting.py:611
 msgid "Job Type Distribution"
-msgstr ""
+msgstr "Phân bố loại tác vụ"
 
 #: audits/reporting.py:496
 msgid "Module Distribution"
-msgstr ""
+msgstr "Phân bố mô-đun"
 
 #: audits/reporting.py:497 ops/models/adhoc.py:22 ops/models/job.py:151
 msgid "Module"
@@ -4131,7 +4131,7 @@ msgstr "Finished"
 
 #: audits/reporting.py:537
 msgid "Unique task ids"
-msgstr ""
+msgstr "ID tác vụ duy nhất"
 
 #: audits/reporting.py:538
 msgid "Average duration"
@@ -4139,7 +4139,7 @@ msgstr "Thay đổi mật khẩu"
 
 #: audits/reporting.py:606
 msgid "Status Distribution"
-msgstr ""
+msgstr "Phân bố trạng thái"
 
 #: audits/reporting.py:612 ops/serializers/job.py:91
 msgid "Job type"
@@ -4147,7 +4147,7 @@ msgstr "Loại tác vụ"
 
 #: audits/reporting.py:621 terminal/reporting.py:137
 msgid "Duration Distribution"
-msgstr ""
+msgstr "Phân bố thời lượng"
 
 #: audits/reporting.py:622 terminal/reporting.py:138
 msgid "Duration range"
@@ -4167,7 +4167,7 @@ msgstr "Phương thức xác thực"
 
 #: audits/serializers.py:139
 msgid "Diff"
-msgstr ""
+msgstr "Khác biệt"
 
 #: audits/serializers.py:172
 #, python-format

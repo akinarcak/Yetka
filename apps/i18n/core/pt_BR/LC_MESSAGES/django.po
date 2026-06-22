@@ -3854,7 +3854,7 @@ msgstr "Contas com falha"
 #: audits/reporting.py:29 audits/reporting.py:151 audits/reporting.py:267
 #: audits/reporting.py:349
 msgid "Unique IPs"
-msgstr ""
+msgstr "IPs únicos"
 
 #: audits/reporting.py:91 audits/reporting.py:213 audits/reporting.py:309
 #: audits/reporting.py:396 audits/reporting.py:484 audits/reporting.py:599
@@ -3865,16 +3865,16 @@ msgstr "Aprovação"
 #: audits/reporting.py:93 audits/reporting.py:215 audits/reporting.py:311
 #: audits/reporting.py:398 audits/reporting.py:601 terminal/reporting.py:102
 msgid "Daily Trend"
-msgstr ""
+msgstr "Tendência diária"
 
 #: audits/reporting.py:94 audits/reporting.py:216 audits/reporting.py:602
 #: terminal/reporting.py:103
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: audits/reporting.py:98
 msgid "Transfer Type Distribution"
-msgstr ""
+msgstr "Distribuição dos tipos de transferência"
 
 #: audits/reporting.py:99 audits/reporting.py:104 audits/reporting.py:109
 #: audits/reporting.py:114 audits/reporting.py:119 audits/reporting.py:124
@@ -3911,7 +3911,7 @@ msgstr "Conta"
 #: audits/reporting.py:118 audits/reporting.py:326 audits/reporting.py:423
 #: terminal/reporting.py:132
 msgid "IP Top 10"
-msgstr ""
+msgstr "Top 10 IPs"
 
 #: audits/reporting.py:123
 msgid "Filename Top 10"
@@ -3919,7 +3919,7 @@ msgstr "Nome do arquivo"
 
 #: audits/reporting.py:128
 msgid "Transfer Time Distribution"
-msgstr ""
+msgstr "Distribuição do tempo de transferência"
 
 #: audits/reporting.py:129 audits/reporting.py:236 audits/reporting.py:332
 #: audits/reporting.py:429
@@ -3940,7 +3940,7 @@ msgstr "Contas com falha"
 
 #: audits/reporting.py:152
 msgid "Unique cities"
-msgstr ""
+msgstr "Cidades únicas"
 
 #: audits/reporting.py:153
 msgid "Unique auth backends"
@@ -3964,15 +3964,15 @@ msgstr "Ativar aviso de redirecionamento de login"
 
 #: audits/reporting.py:240
 msgid "Failed User Top 10"
-msgstr ""
+msgstr "Top 10 usuários com falha"
 
 #: audits/reporting.py:245
 msgid "Failed IP Top 10"
-msgstr ""
+msgstr "Top 10 IPs com falha"
 
 #: audits/reporting.py:250
 msgid "Failed Reason Top 10"
-msgstr ""
+msgstr "Top 10 motivos de falha"
 
 #: audits/reporting.py:258
 msgid "Password Change Report"
@@ -3980,7 +3980,7 @@ msgstr "Registro de Alteração de Senha"
 
 #: audits/reporting.py:266 audits/reporting.py:346
 msgid "Unique operators"
-msgstr ""
+msgstr "Operadores únicos"
 
 #: audits/reporting.py:321 audits/reporting.py:413
 msgid "Operator Top 10"
@@ -4016,7 +4016,7 @@ msgstr "Tipo de recurso"
 
 #: audits/reporting.py:428
 msgid "Operate Time Distribution"
-msgstr ""
+msgstr "Distribuição do tempo de operação"
 
 #: audits/reporting.py:436
 msgid "Job Audit Report"
@@ -4028,7 +4028,7 @@ msgstr "Execução periódica"
 
 #: audits/reporting.py:444
 msgid "One-time jobs"
-msgstr ""
+msgstr "Tarefas de execução única"
 
 #: audits/reporting.py:445
 msgid "Adhoc jobs"
@@ -4040,7 +4040,7 @@ msgstr "Playbook"
 
 #: audits/reporting.py:447 audits/reporting.py:534
 msgid "Unique creators"
-msgstr ""
+msgstr "Criadores únicos"
 
 #: audits/reporting.py:467 ops/const.py:40 ops/models/job.py:154
 #: ops/models/playbook.py:89 ops/models/variable.py:23
@@ -4053,11 +4053,11 @@ msgstr "Tipo de Criação"
 
 #: audits/reporting.py:491 audits/reporting.py:611
 msgid "Job Type Distribution"
-msgstr ""
+msgstr "Distribuição dos tipos de tarefa"
 
 #: audits/reporting.py:496
 msgid "Module Distribution"
-msgstr ""
+msgstr "Distribuição de módulos"
 
 #: audits/reporting.py:497 ops/models/adhoc.py:22 ops/models/job.py:151
 msgid "Module"
@@ -4101,7 +4101,7 @@ msgstr "Concluída"
 
 #: audits/reporting.py:537
 msgid "Unique task ids"
-msgstr ""
+msgstr "IDs de tarefa únicos"
 
 #: audits/reporting.py:538
 msgid "Average duration"
@@ -4109,7 +4109,7 @@ msgstr "Rotação de senha"
 
 #: audits/reporting.py:606
 msgid "Status Distribution"
-msgstr ""
+msgstr "Distribuição de status"
 
 #: audits/reporting.py:612 ops/serializers/job.py:91
 msgid "Job type"
@@ -4117,7 +4117,7 @@ msgstr "Tipo de Tarefa"
 
 #: audits/reporting.py:621 terminal/reporting.py:137
 msgid "Duration Distribution"
-msgstr ""
+msgstr "Distribuição de duração"
 
 #: audits/reporting.py:622 terminal/reporting.py:138
 msgid "Duration range"
@@ -4137,7 +4137,7 @@ msgstr "Método de autenticação"
 
 #: audits/serializers.py:139
 msgid "Diff"
-msgstr ""
+msgstr "Diferença"
 
 #: audits/serializers.py:172
 #, python-format

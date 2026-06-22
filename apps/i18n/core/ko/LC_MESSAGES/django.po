@@ -3792,7 +3792,7 @@ msgstr "실패한 계정"
 #: audits/reporting.py:29 audits/reporting.py:151 audits/reporting.py:267
 #: audits/reporting.py:349
 msgid "Unique IPs"
-msgstr ""
+msgstr "고유 IP"
 
 #: audits/reporting.py:91 audits/reporting.py:213 audits/reporting.py:309
 #: audits/reporting.py:396 audits/reporting.py:484 audits/reporting.py:599
@@ -3803,16 +3803,16 @@ msgstr "승인"
 #: audits/reporting.py:93 audits/reporting.py:215 audits/reporting.py:311
 #: audits/reporting.py:398 audits/reporting.py:601 terminal/reporting.py:102
 msgid "Daily Trend"
-msgstr ""
+msgstr "일별 추이"
 
 #: audits/reporting.py:94 audits/reporting.py:216 audits/reporting.py:602
 #: terminal/reporting.py:103
 msgid "Total"
-msgstr ""
+msgstr "합계"
 
 #: audits/reporting.py:98
 msgid "Transfer Type Distribution"
-msgstr ""
+msgstr "전송 유형 분포"
 
 #: audits/reporting.py:99 audits/reporting.py:104 audits/reporting.py:109
 #: audits/reporting.py:114 audits/reporting.py:119 audits/reporting.py:124
@@ -3849,7 +3849,7 @@ msgstr "계정"
 #: audits/reporting.py:118 audits/reporting.py:326 audits/reporting.py:423
 #: terminal/reporting.py:132
 msgid "IP Top 10"
-msgstr ""
+msgstr "IP 상위 10"
 
 #: audits/reporting.py:123
 msgid "Filename Top 10"
@@ -3857,7 +3857,7 @@ msgstr "파일 이름"
 
 #: audits/reporting.py:128
 msgid "Transfer Time Distribution"
-msgstr ""
+msgstr "전송 시간 분포"
 
 #: audits/reporting.py:129 audits/reporting.py:236 audits/reporting.py:332
 #: audits/reporting.py:429
@@ -3878,7 +3878,7 @@ msgstr "실패한 계정"
 
 #: audits/reporting.py:152
 msgid "Unique cities"
-msgstr ""
+msgstr "고유 도시"
 
 #: audits/reporting.py:153
 msgid "Unique auth backends"
@@ -3902,15 +3902,15 @@ msgstr "로그인 리디렉션 알림 활성화"
 
 #: audits/reporting.py:240
 msgid "Failed User Top 10"
-msgstr ""
+msgstr "실패 사용자 상위 10"
 
 #: audits/reporting.py:245
 msgid "Failed IP Top 10"
-msgstr ""
+msgstr "실패 IP 상위 10"
 
 #: audits/reporting.py:250
 msgid "Failed Reason Top 10"
-msgstr ""
+msgstr "실패 원인 상위 10"
 
 #: audits/reporting.py:258
 msgid "Password Change Report"
@@ -3918,7 +3918,7 @@ msgstr "비밀번호 변경 로그"
 
 #: audits/reporting.py:266 audits/reporting.py:346
 msgid "Unique operators"
-msgstr ""
+msgstr "고유 작업자"
 
 #: audits/reporting.py:321 audits/reporting.py:413
 msgid "Operator Top 10"
@@ -3954,7 +3954,7 @@ msgstr "자원 유형"
 
 #: audits/reporting.py:428
 msgid "Operate Time Distribution"
-msgstr ""
+msgstr "작업 시간 분포"
 
 #: audits/reporting.py:436
 msgid "Job Audit Report"
@@ -3966,7 +3966,7 @@ msgstr "주기 실행"
 
 #: audits/reporting.py:444
 msgid "One-time jobs"
-msgstr ""
+msgstr "일회성 작업"
 
 #: audits/reporting.py:445
 msgid "Adhoc jobs"
@@ -3978,7 +3978,7 @@ msgstr "플레이북"
 
 #: audits/reporting.py:447 audits/reporting.py:534
 msgid "Unique creators"
-msgstr ""
+msgstr "고유 생성자"
 
 #: audits/reporting.py:467 ops/const.py:40 ops/models/job.py:154
 #: ops/models/playbook.py:89 ops/models/variable.py:23
@@ -3991,11 +3991,11 @@ msgstr "생성 유형"
 
 #: audits/reporting.py:491 audits/reporting.py:611
 msgid "Job Type Distribution"
-msgstr ""
+msgstr "작업 유형 분포"
 
 #: audits/reporting.py:496
 msgid "Module Distribution"
-msgstr ""
+msgstr "모듈 분포"
 
 #: audits/reporting.py:497 ops/models/adhoc.py:22 ops/models/job.py:151
 msgid "Module"
@@ -4039,7 +4039,7 @@ msgstr "완료 여부"
 
 #: audits/reporting.py:537
 msgid "Unique task ids"
-msgstr ""
+msgstr "고유 작업 ID"
 
 #: audits/reporting.py:538
 msgid "Average duration"
@@ -4047,7 +4047,7 @@ msgstr "비밀번호 회전"
 
 #: audits/reporting.py:606
 msgid "Status Distribution"
-msgstr ""
+msgstr "상태 분포"
 
 #: audits/reporting.py:612 ops/serializers/job.py:91
 msgid "Job type"
@@ -4055,7 +4055,7 @@ msgstr "작업 유형"
 
 #: audits/reporting.py:621 terminal/reporting.py:137
 msgid "Duration Distribution"
-msgstr ""
+msgstr "지속 시간 분포"
 
 #: audits/reporting.py:622 terminal/reporting.py:138
 msgid "Duration range"
@@ -4075,7 +4075,7 @@ msgstr "인증 방식"
 
 #: audits/serializers.py:139
 msgid "Diff"
-msgstr ""
+msgstr "차이"
 
 #: audits/serializers.py:172
 #, python-format
