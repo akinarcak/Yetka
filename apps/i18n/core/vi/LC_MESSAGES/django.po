@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-22 10:24+0800\n"
+"POT-Creation-Date: 2026-06-22 11:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2256,8 +2255,6 @@ msgid "The number of assets exceeds the limit of 5000"
 msgstr "Số lượng tài sản vượt quá giới hạn 5000"
 
 #: assets/api/asset/asset.py:181
-#, fuzzy
-#| msgid "The number of assets exceeds the limit of 5000"
 msgid "The number of assets exceeds the license limit"
 msgstr "Số lượng tài sản vượt quá giới hạn 5000"
 
@@ -3844,61 +3841,43 @@ msgid "Application ID"
 msgstr "ID ứng dụng"
 
 #: audits/reporting.py:11
-#, fuzzy
-#| msgid "File transfer log"
 msgid "File Transfer Report"
 msgstr "Truyền tệp"
 
 #: audits/reporting.py:21 audits/reporting.py:146 audits/reporting.py:264
 #: audits/reporting.py:345 audits/reporting.py:442 audits/reporting.py:529
 #: terminal/reporting.py:23 tickets/reporting.py:16
-#, fuzzy
-#| msgid "Command record"
 msgid "Total records"
 msgstr "Bản ghi lệnh"
 
 #: audits/reporting.py:22 audits/reporting.py:94
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful transfers"
 msgstr "Tài khoản thành công"
 
 #: audits/reporting.py:23 audits/reporting.py:94
-#, fuzzy
-#| msgid "File transfer log"
 msgid "Failed transfers"
 msgstr "Truyền tệp"
 
 #: audits/reporting.py:24 audits/reporting.py:94 audits/reporting.py:149
 #: audits/reporting.py:216 audits/reporting.py:533 audits/reporting.py:602
 #: terminal/reporting.py:28 terminal/reporting.py:103
-#, fuzzy
-#| msgid "Success prompt"
 msgid "Success rate"
 msgstr "Gợi ý thành công"
 
 #: audits/reporting.py:25
-#, fuzzy
-#| msgid "Download"
 msgid "Downloadable files"
 msgstr "Tải xuống"
 
 #: audits/reporting.py:26 audits/reporting.py:150 audits/reporting.py:265
 #: terminal/reporting.py:31
-#, fuzzy
-#| msgid "Check unused users"
 msgid "Unique users"
 msgstr "Kiểm tra người dùng chưa sử dụng."
 
 #: audits/reporting.py:27 terminal/reporting.py:32
-#, fuzzy
-#| msgid "Can view user assets"
 msgid "Unique assets"
 msgstr "Có thể xem tài sản phân quyền của người dùng"
 
 #: audits/reporting.py:28
-#, fuzzy
-#| msgid "Failed accounts"
 msgid "Unique accounts"
 msgstr "Tài khoản thất bại"
 
@@ -3910,8 +3889,6 @@ msgstr ""
 #: audits/reporting.py:91 audits/reporting.py:213 audits/reporting.py:309
 #: audits/reporting.py:396 audits/reporting.py:484 audits/reporting.py:599
 #: terminal/reporting.py:100 tickets/reporting.py:62
-#, fuzzy
-#| msgid "Review"
 msgid "Overview"
 msgstr "Phê duyệt"
 
@@ -3946,26 +3923,18 @@ msgstr ""
 #: terminal/reporting.py:133 terminal/reporting.py:138 tickets/reporting.py:65
 #: tickets/reporting.py:70 tickets/reporting.py:75 tickets/reporting.py:80
 #: tickets/reporting.py:85 tickets/reporting.py:90 tickets/reporting.py:95
-#, fuzzy
-#| msgid "CPU count"
 msgid "Count"
 msgstr "Số lượng CPU"
 
 #: audits/reporting.py:103 audits/reporting.py:316 terminal/reporting.py:117
-#, fuzzy
-#| msgid "User group"
 msgid "User Top 10"
 msgstr "Nhóm người dùng"
 
 #: audits/reporting.py:108 terminal/reporting.py:122
-#, fuzzy
-#| msgid "Asset type"
 msgid "Asset Top 10"
 msgstr "Loại tài sản"
 
 #: audits/reporting.py:113
-#, fuzzy
-#| msgid "Account ID"
 msgid "Account Top 10"
 msgstr "Tài khoản"
 
@@ -3975,8 +3944,6 @@ msgid "IP Top 10"
 msgstr ""
 
 #: audits/reporting.py:123
-#, fuzzy
-#| msgid "Filename"
 msgid "Filename Top 10"
 msgstr "Tên tệp"
 
@@ -3986,26 +3953,18 @@ msgstr ""
 
 #: audits/reporting.py:129 audits/reporting.py:236 audits/reporting.py:332
 #: audits/reporting.py:429
-#, fuzzy
-#| msgid "Time using"
 msgid "Time range"
 msgstr "Thời gian tiêu tốn"
 
 #: audits/reporting.py:136
-#, fuzzy
-#| msgid "User login report"
 msgid "User Login Report"
 msgstr "Báo cáo đăng nhập người dùng"
 
 #: audits/reporting.py:147 audits/reporting.py:216
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful logins"
 msgstr "Tài khoản thành công"
 
 #: audits/reporting.py:148 audits/reporting.py:216
-#, fuzzy
-#| msgid "Failed accounts"
 msgid "Failed logins"
 msgstr "Tài khoản thất bại"
 
@@ -4014,32 +3973,22 @@ msgid "Unique cities"
 msgstr ""
 
 #: audits/reporting.py:153
-#, fuzzy
-#| msgid "Auth backend"
 msgid "Unique auth backends"
 msgstr "Mã xác thực"
 
 #: audits/reporting.py:220
-#, fuzzy
-#| msgid "Login redirection"
 msgid "Login Type Distribution"
 msgstr "Kích hoạt thông báo chuyển hướng đăng nhập"
 
 #: audits/reporting.py:225
-#, fuzzy
-#| msgid "Auth backend display"
 msgid "Auth Backend Distribution"
 msgstr "Phương thức xác thực"
 
 #: audits/reporting.py:230
-#, fuzzy
-#| msgid "MFA setting"
 msgid "MFA Distribution"
 msgstr "Thiết lập xác thực đa yếu tố MFA"
 
 #: audits/reporting.py:235
-#, fuzzy
-#| msgid "Login redirection"
 msgid "Login Time Distribution"
 msgstr "Kích hoạt thông báo chuyển hướng đăng nhập"
 
@@ -4056,8 +4005,6 @@ msgid "Failed Reason Top 10"
 msgstr ""
 
 #: audits/reporting.py:258
-#, fuzzy
-#| msgid "Password change log"
 msgid "Password Change Report"
 msgstr "Nhật ký thay đổi mật khẩu"
 
@@ -4066,50 +4013,34 @@ msgid "Unique operators"
 msgstr ""
 
 #: audits/reporting.py:321 audits/reporting.py:413
-#, fuzzy
-#| msgid "Operate log"
 msgid "Operator Top 10"
 msgstr "Nhật ký hành động"
 
 #: audits/reporting.py:331
-#, fuzzy
-#| msgid "Can change sms setting"
 msgid "Change Time Distribution"
 msgstr "Cài đặt SMS"
 
 #: audits/reporting.py:339
-#, fuzzy
-#| msgid "Operate log"
 msgid "Operate Log Report"
 msgstr "Nhật ký hành động"
 
 #: audits/reporting.py:347
-#, fuzzy
-#| msgid "Resource type"
 msgid "Unique resource types"
 msgstr "Loại tài nguyên"
 
 #: audits/reporting.py:348
-#, fuzzy
-#| msgid "Tagged resource"
 msgid "Unique resources"
 msgstr "Tài nguyên liên quan"
 
 #: audits/reporting.py:403
-#, fuzzy
-#| msgid "Action permission"
 msgid "Action Distribution"
 msgstr "Quyền thao tác"
 
 #: audits/reporting.py:408
-#, fuzzy
-#| msgid "Resource Type"
 msgid "Resource Type Distribution"
 msgstr "Loại tài nguyên"
 
 #: audits/reporting.py:418
-#, fuzzy
-#| msgid "Resource Type"
 msgid "Resource Top 10"
 msgstr "Loại tài nguyên"
 
@@ -4118,14 +4049,10 @@ msgid "Operate Time Distribution"
 msgstr ""
 
 #: audits/reporting.py:436
-#, fuzzy
-#| msgid "Job audit log"
 msgid "Job Audit Report"
 msgstr "Nhật ký kiểm tra công việc"
 
 #: audits/reporting.py:443
-#, fuzzy
-#| msgid "Periodic run"
 msgid "Periodic jobs"
 msgstr "Periodic"
 
@@ -4134,14 +4061,10 @@ msgid "One-time jobs"
 msgstr ""
 
 #: audits/reporting.py:445
-#, fuzzy
-#| msgid "Adhoc"
 msgid "Adhoc jobs"
 msgstr "lệnh"
 
 #: audits/reporting.py:446
-#, fuzzy
-#| msgid "Playbook"
 msgid "Playbook jobs"
 msgstr "Playbook"
 
@@ -4155,8 +4078,6 @@ msgid "Playbook"
 msgstr "Playbook"
 
 #: audits/reporting.py:486 tickets/reporting.py:64
-#, fuzzy
-#| msgid "Create Type"
 msgid "Created Trend"
 msgstr "Loại tạo"
 
@@ -4173,8 +4094,6 @@ msgid "Module"
 msgstr "Mô-đun"
 
 #: audits/reporting.py:501 audits/reporting.py:616
-#, fuzzy
-#| msgid "Creator"
 msgid "Creator Top 10"
 msgstr "Người tạo"
 
@@ -4187,8 +4106,6 @@ msgid "Creator"
 msgstr "Người tạo"
 
 #: audits/reporting.py:506
-#, fuzzy
-#| msgid "Run as policy"
 msgid "Run as Policy Distribution"
 msgstr "Chiến lược người dùng"
 
@@ -4197,26 +4114,18 @@ msgid "Run as policy"
 msgstr "Chiến lược người dùng"
 
 #: audits/reporting.py:514
-#, fuzzy
-#| msgid "Report"
 msgid "Job Log Report"
 msgstr "Báo cáo"
 
 #: audits/reporting.py:530 audits/reporting.py:602
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful jobs"
 msgstr "Tài khoản thành công"
 
 #: audits/reporting.py:531 audits/reporting.py:602
-#, fuzzy
-#| msgid "Finished"
 msgid "Finished jobs"
 msgstr "Kết thúc"
 
 #: audits/reporting.py:532 audits/reporting.py:602
-#, fuzzy
-#| msgid "Is finished"
 msgid "Unfinished jobs"
 msgstr "Finished"
 
@@ -4225,8 +4134,6 @@ msgid "Unique task ids"
 msgstr ""
 
 #: audits/reporting.py:538
-#, fuzzy
-#| msgid "Secret rotation"
 msgid "Average duration"
 msgstr "Thay đổi mật khẩu"
 
@@ -4243,8 +4150,6 @@ msgid "Duration Distribution"
 msgstr ""
 
 #: audits/reporting.py:622 terminal/reporting.py:138
-#, fuzzy
-#| msgid "Duration"
 msgid "Duration range"
 msgstr "Thời gian tiêu tốn"
 
@@ -4306,8 +4211,6 @@ msgid "SSO"
 msgstr "SSO"
 
 #: audits/signal_handlers/login_log.py:36
-#, fuzzy
-#| msgid "Custom"
 msgid "Custom SSO"
 msgstr "Tùy chỉnh"
 
@@ -4543,32 +4446,22 @@ msgid "SAML2 Error"
 msgstr "Lỗi SAML2"
 
 #: authentication/backends/ukey/api.py:54
-#, fuzzy
-#| msgid "LDAP authentication is not enabled"
 msgid "Certificate enrollment is not enabled"
 msgstr "Xác thực LDAP chưa được kích hoạt"
 
 #: authentication/backends/ukey/api.py:59
-#, fuzzy
-#| msgid "type is required"
 msgid "CSR is required"
 msgstr "Loại: trường này là bắt buộc."
 
 #: authentication/backends/ukey/api.py:65
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "Certificate signing failed"
 msgstr "Xác thực thất bại"
 
 #: authentication/backends/ukey/exceptions.py:8
-#, fuzzy
-#| msgid "Can public key authentication"
 msgid "Certificate authentication failed"
 msgstr "Can public key authentication"
 
 #: authentication/backends/ukey/exceptions.py:16
-#, fuzzy
-#| msgid "User does not exist: {}"
 msgid "User does not exist"
 msgstr "Người dùng không tồn tại: {}"
 
@@ -4577,38 +4470,26 @@ msgid "UKey SN mismatch"
 msgstr ""
 
 #: authentication/backends/ukey/exceptions.py:24
-#, fuzzy
-#| msgid "Invalid verification code"
 msgid "Invalid certificate format"
 msgstr "Mã xác nhận không chính xác"
 
 #: authentication/backends/ukey/exceptions.py:28
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "Certificate chain verification failed"
 msgstr "Xác thực thất bại"
 
 #: authentication/backends/ukey/exceptions.py:32
-#, fuzzy
-#| msgid "LDAP authentication is not enabled"
 msgid "Certificate CN does not match the username"
 msgstr "Xác thực LDAP chưa được kích hoạt"
 
 #: authentication/backends/ukey/exceptions.py:36
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "Certificate signature verification failed"
 msgstr "Xác thực thất bại"
 
 #: authentication/backends/ukey/exceptions.py:40
-#, fuzzy
-#| msgid "LDAP authentication is not enabled"
 msgid "Certificate has expired or is not yet valid"
 msgstr "Xác thực LDAP chưa được kích hoạt"
 
 #: authentication/backends/ukey/exceptions.py:44
-#, fuzzy
-#| msgid "Unsupported file content"
 msgid "Unsupported certificate algorithm"
 msgstr "Nội dung tệp không được hỗ trợ."
 
@@ -4618,8 +4499,6 @@ msgid ""
 msgstr ""
 
 #: authentication/backends/ukey/views.py:108
-#, fuzzy
-#| msgid "Invalid data"
 msgid "Invalid credentials"
 msgstr "Dữ liệu không hợp lệ"
 
@@ -5478,74 +5357,56 @@ msgstr ""
 
 #: authentication/templates/authentication/login_ukey.html:232
 #: xpack/plugins/interface/templates/login_i18n.html:22
-#, fuzzy
-#| msgid "More login options"
 msgid "More login methods"
-msgstr "Or"
+msgstr "Các phương thức đăng nhập khác"
 
 #: authentication/templates/authentication/login_ukey.html:245
 msgid "Detecting UKey..."
 msgstr ""
 
 #: authentication/templates/authentication/login_ukey.html:246
-#, fuzzy
-#| msgid "connect failed"
 msgid "UKey connected"
-msgstr "Kết nối thất bại"
+msgstr "UKey đã được kết nối"
 
 #: authentication/templates/authentication/login_ukey.html:247
-#, fuzzy
-#| msgid "Please enter SMS code"
 msgid "Please insert UKey"
-msgstr "Vui lòng nhập mã xác minh qua tin nhắn"
+msgstr "Vui lòng cắm UKey"
 
 #: authentication/templates/authentication/login_ukey.html:248
-#, fuzzy
-#| msgid "Account unavailable"
 msgid "SDK unavailable"
-msgstr "Tài khoản không hợp lệ"
+msgstr "SDK không khả dụng"
 
 #: authentication/templates/authentication/login_ukey.html:249
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "UKey SDK initialization failed"
-msgstr "Xác thực thất bại"
+msgstr "Khởi tạo SDK UKey thất bại"
 
 #: authentication/templates/authentication/login_ukey.html:250
 msgid "Verifying PIN..."
-msgstr ""
+msgstr "Đang xác minh PIN..."
 
 #: authentication/templates/authentication/login_ukey.html:251
-#, fuzzy
-#| msgid "Date verified"
 msgid "PIN verified"
-msgstr "Ngày xác nhận"
+msgstr "PIN đã được xác minh"
 
 #: authentication/templates/authentication/login_ukey.html:252
-#, fuzzy
-#| msgid "OTP verification code"
 msgid "PIN verification failed"
-msgstr "Mã xác minh MFA ảo"
+msgstr "Xác minh PIN thất bại"
 
 #: authentication/templates/authentication/login_ukey.html:253
 msgid "Signing challenge code..."
-msgstr ""
+msgstr "Đang ký mã thử thách..."
 
 #: authentication/templates/authentication/login_ukey.html:254
-#, fuzzy
-#| msgid "Signing key"
 msgid "Signing failed"
-msgstr "Khóa ký"
+msgstr "Ký thất bại"
 
 #: authentication/templates/authentication/login_ukey.html:255
 msgid "Failed to retrieve UKey cert"
-msgstr ""
+msgstr "Không thể lấy chứng chỉ UKey"
 
 #: authentication/templates/authentication/login_ukey.html:256
-#, fuzzy
-#| msgid "Your account has expired, please contact the administrator."
 msgid "No UKey cert detected, please contact administrator"
-msgstr "Tài khoản của bạn đã hết hạn, vui lòng liên hệ với quản lý."
+msgstr "Không phát hiện chứng chỉ UKey, vui lòng liên hệ quản trị viên"
 
 #: authentication/templates/authentication/login_wait_confirm.html:72
 msgid "Refresh"
@@ -5987,10 +5848,6 @@ msgid "Objects, format [\"id\", ...]"
 msgstr "nhiều liên kết, định dạng là [\"id\", ...]"
 
 #: common/drf/renders/base.py:301
-#, fuzzy
-#| msgid ""
-#| "{} - The encryption password has not been set - please go to personal "
-#| "information -> file encryption password to set the encryption password"
 msgid ""
 "{} - Encryption password not set - Please go to Personal Settings → "
 "Preferences → File Encryption Password to set it."
@@ -6015,8 +5872,6 @@ msgid "Export filtered"
 msgstr "Xuất tìm kiếm"
 
 #: common/drf/reporting.py:23
-#, fuzzy
-#| msgid "Database"
 msgid "Data"
 msgstr "Cơ sở dữ liệu"
 
@@ -6026,44 +5881,30 @@ msgid "Report"
 msgstr "Báo cáo"
 
 #: common/drf/reporting.py:37
-#, fuzzy
-#| msgid "Date left"
 msgid "Date from"
 msgstr "Ngày kết thúc"
 
 #: common/drf/reporting.py:38
-#, fuzzy
-#| msgid "Date left"
 msgid "Date to"
 msgstr "Ngày kết thúc"
 
 #: common/drf/reporting.py:116
-#, fuzzy
-#| msgid "All assets"
 msgid "All data"
 msgstr "Tất cả tài sản"
 
 #: common/drf/reporting.py:181
-#, fuzzy
-#| msgid "General"
 msgid "Generated at"
 msgstr "Chung"
 
 #: common/drf/reporting.py:182
-#, fuzzy
-#| msgid "Export"
 msgid "Exported rows"
 msgstr "Xuất"
 
 #: common/drf/reporting.py:183 reports/models.py:20
-#, fuzzy
-#| msgid "Filter"
 msgid "Filters"
 msgstr "Bộ lọc"
 
 #: common/drf/reporting.py:210
-#, fuzzy
-#| msgid "Summary"
 msgid "Report Summary"
 msgstr "Tổng hợp"
 
@@ -6096,15 +5937,21 @@ msgstr "Hành động này cần xác nhận người dùng hiện tại"
 msgid "Unexpect error occur"
 msgstr "Đã xảy ra lỗi ngoài ý muốn."
 
-#: common/plugins/es.py:37
+#: common/plugins/es.py:44
 msgid "Invalid elasticsearch config"
 msgstr "Cấu hình Elasticsearch không hợp lệ"
 
-#: common/plugins/es.py:42
+#: common/plugins/es.py:49
+#, fuzzy
+#| msgid "Session is finished or the protocol not supported"
+msgid "The server is not Elasticsearch or this product is not supported"
+msgstr "phiên đã hoàn thành hoặc giao thức không được hỗ trợ"
+
+#: common/plugins/es.py:54
 msgid "Not Support Elasticsearch8"
 msgstr "Không hỗ trợ Elasticsearch8"
 
-#: common/plugins/es.py:48
+#: common/plugins/es.py:60
 msgid ""
 "Connection failed: Self-signed certificate used. Please check server "
 "certificate configuration"
@@ -7338,8 +7185,6 @@ msgid "Can view file manager"
 msgstr "có thể xem quản lý tệp"
 
 #: rbac/models/menu.py:21
-#, fuzzy
-#| msgid "Can view console view"
 msgid "Can view jdmc console"
 msgstr "có thể hiển thị bảng điều khiển"
 
@@ -7352,14 +7197,10 @@ msgid "Can view user login report"
 msgstr "có thể xem báo cáo đăng nhập người dùng"
 
 #: rbac/models/menu.py:24
-#, fuzzy
-#| msgid "Can view user login report"
 msgid "Can create user login report"
 msgstr "có thể xem báo cáo đăng nhập người dùng"
 
 #: rbac/models/menu.py:25
-#, fuzzy
-#| msgid "Can view user login report"
 msgid "Can delete user login report"
 msgstr "có thể xem báo cáo đăng nhập người dùng"
 
@@ -7368,14 +7209,10 @@ msgid "Can view user change password report"
 msgstr "có thể xem báo cáo thay đổi mật khẩu người dùng"
 
 #: rbac/models/menu.py:27
-#, fuzzy
-#| msgid "Can view user change password report"
 msgid "Can create user change password report"
 msgstr "có thể xem báo cáo thay đổi mật khẩu người dùng"
 
 #: rbac/models/menu.py:28
-#, fuzzy
-#| msgid "Can view user change password report"
 msgid "Can delete user change password report"
 msgstr "có thể xem báo cáo thay đổi mật khẩu người dùng"
 
@@ -7384,14 +7221,10 @@ msgid "Can view asset statistics report"
 msgstr "có thể xem báo cáo thống kê tài sản"
 
 #: rbac/models/menu.py:30
-#, fuzzy
-#| msgid "Can view asset statistics report"
 msgid "Can create asset statistics report"
 msgstr "có thể xem báo cáo thống kê tài sản"
 
 #: rbac/models/menu.py:31
-#, fuzzy
-#| msgid "Can view asset statistics report"
 msgid "Can delete asset statistics report"
 msgstr "có thể xem báo cáo thống kê tài sản"
 
@@ -7400,14 +7233,10 @@ msgid "Can view asset activity report"
 msgstr "có thể xem báo cáo hoạt động tài sản"
 
 #: rbac/models/menu.py:33
-#, fuzzy
-#| msgid "Can view asset activity report"
 msgid "Can create asset activity report"
 msgstr "có thể xem báo cáo hoạt động tài sản"
 
 #: rbac/models/menu.py:34
-#, fuzzy
-#| msgid "Can view asset activity report"
 msgid "Can delete asset activity report"
 msgstr "có thể xem báo cáo hoạt động tài sản"
 
@@ -7416,14 +7245,10 @@ msgid "Can view account statistics report"
 msgstr "có thể xem báo cáo thống kê tài khoản."
 
 #: rbac/models/menu.py:36
-#, fuzzy
-#| msgid "Can view account statistics report"
 msgid "Can create account statistics report"
 msgstr "có thể xem báo cáo thống kê tài khoản."
 
 #: rbac/models/menu.py:37
-#, fuzzy
-#| msgid "Can view account statistics report"
 msgid "Can delete account statistics report"
 msgstr "có thể xem báo cáo thống kê tài khoản."
 
@@ -7432,14 +7257,10 @@ msgid "Can view account automation report"
 msgstr "Có thể xem báo cáo tự động hóa tài khoản"
 
 #: rbac/models/menu.py:39
-#, fuzzy
-#| msgid "Can view account automation report"
 msgid "Can create account automation report"
 msgstr "Có thể xem báo cáo tự động hóa tài khoản"
 
 #: rbac/models/menu.py:40
-#, fuzzy
-#| msgid "Can view account automation report"
 msgid "Can delete account automation report"
 msgstr "Có thể xem báo cáo tự động hóa tài khoản"
 
@@ -7563,8 +7384,6 @@ msgid "Job audit"
 msgstr "Kiểm tra công việc"
 
 #: rbac/tree.py:137
-#, fuzzy
-#| msgid "Console"
 msgid "JDMC console"
 msgstr "Bảng điều khiển"
 
@@ -7602,8 +7421,6 @@ msgid "Revoke access token"
 msgstr "Thu hồi mã thông báo truy cập"
 
 #: reports/models.py:19
-#, fuzzy
-#| msgid "Change by"
 msgid "Range days"
 msgstr "Người chỉnh sửa"
 
@@ -7835,8 +7652,6 @@ msgid "Passkey Auth"
 msgstr "Xác thực Passkey"
 
 #: settings/serializers/auth/base.py:27
-#, fuzzy
-#| msgid "Passkey Auth"
 msgid "UKey Auth"
 msgstr "Xác thực Passkey"
 
@@ -8414,9 +8229,6 @@ msgid "Enable SSO auth"
 msgstr "Kích hoạt xác thực token SSO"
 
 #: settings/serializers/auth/sso.py:17
-#, fuzzy
-#| msgid ""
-#| "Other service can using SSO token login to JumpServer without password"
 msgid "Other service can using SSO token login to system without password"
 msgstr ""
 "Các hệ thống khác có thể sử dụng SSO Token để kết nối với JumpServer, miễn "
@@ -8432,8 +8244,6 @@ msgid "Unit: second"
 msgstr "Đơn vị: giây"
 
 #: settings/serializers/auth/ukey.py:20
-#, fuzzy
-#| msgid "Verify code TTL (second)"
 msgid "Challenge TTL (seconds)"
 msgstr "Thời gian hiệu lực của mã xác thực (phút)"
 
@@ -8466,8 +8276,6 @@ msgid "Validity period (days) for issued certificates"
 msgstr ""
 
 #: settings/serializers/auth/ukey.py:38
-#, fuzzy
-#| msgid "Content"
 msgid "CA Key"
 msgstr "Nội dung"
 
@@ -8476,8 +8284,6 @@ msgid "PEM content of CA private key used for certificate enrollment"
 msgstr ""
 
 #: settings/serializers/auth/ukey.py:42
-#, fuzzy
-#| msgid "Content"
 msgid "CA Cert"
 msgstr "Nội dung"
 
@@ -8488,8 +8294,6 @@ msgid ""
 msgstr ""
 
 #: settings/serializers/auth/ukey.py:46
-#, fuzzy
-#| msgid "Password"
 msgid "CA Key Password"
 msgstr "Mật khẩu"
 
@@ -8623,8 +8427,6 @@ msgid "Change secret and push record retention days"
 msgstr "Ngày lưu giữ nhật ký thông báo thay đổi mật khẩu tài khoản."
 
 #: settings/serializers/cleaning.py:56
-#, fuzzy
-#| msgid "Change secret and push record retention days"
 msgid "Audit report send record retention days"
 msgstr "Ngày lưu giữ nhật ký thông báo thay đổi mật khẩu tài khoản."
 
@@ -8903,18 +8705,10 @@ msgstr ""
 "nhìn thấy nút của tài sản nhưng chưa được ủy quyền"
 
 #: settings/serializers/security.py:19
-#, fuzzy
-#| msgid "User password expiration (day)"
 msgid "Admin password expiration (day)"
 msgstr "Thời gian hết hạn mật khẩu người dùng (ngày)"
 
 #: settings/serializers/security.py:21
-#, fuzzy
-#| msgid ""
-#| "If the user does not update the password during the time, the user "
-#| "password will expire failure;The password expiration reminder mail will "
-#| "be automatic sent to the user by system within 5 days (daily) before the "
-#| "password expires"
 msgid ""
 "If the admin does not update the password during the time, the admin "
 "password will expire failure;The password expiration reminder mail will be "
@@ -10253,68 +10047,46 @@ msgid "Invalid storage"
 msgstr "Lưu trữ không hợp lệ"
 
 #: terminal/reporting.py:10
-#, fuzzy
-#| msgid "Session record"
 msgid "Session Report"
 msgstr "Bản ghi phiên họp"
 
 #: terminal/reporting.py:24 terminal/reporting.py:103
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful sessions"
 msgstr "Tài khoản thành công"
 
 #: terminal/reporting.py:25 terminal/reporting.py:103
-#, fuzzy
-#| msgid "Kill session"
 msgid "Failed sessions"
 msgstr "chấm dứt phiên"
 
 #: terminal/reporting.py:26
-#, fuzzy
-#| msgid "Online sessions"
 msgid "Finished sessions"
 msgstr "Phiên trực tuyến"
 
 #: terminal/reporting.py:27 terminal/reporting.py:103
-#, fuzzy
-#| msgid "View session"
 msgid "Active sessions"
 msgstr "Xem cuộc hội thoại"
 
 #: terminal/reporting.py:29
-#, fuzzy
-#| msgid "Session replay"
 msgid "Sessions with replay"
 msgstr "ghi lại phiên"
 
 #: terminal/reporting.py:30
-#, fuzzy
-#| msgid "Session join record"
 msgid "Sessions with commands"
 msgstr "Ghi chép tham gia cuộc trò chuyện"
 
 #: terminal/reporting.py:33
-#, fuzzy
-#| msgid "Can view web terminal"
 msgid "Unique terminals"
 msgstr "Web terminal"
 
 #: terminal/reporting.py:107
-#, fuzzy
-#| msgid "Protocols is required"
 msgid "Protocol Distribution"
 msgstr "Giao thức là bắt buộc"
 
 #: terminal/reporting.py:112
-#, fuzzy
-#| msgid "Login redirection"
 msgid "Login From Distribution"
 msgstr "Kích hoạt thông báo chuyển hướng đăng nhập"
 
 #: terminal/reporting.py:127
-#, fuzzy
-#| msgid "Terminal"
 msgid "Terminal Top 10"
 msgstr "Thiết bị đầu cuối"
 
@@ -11160,32 +10932,22 @@ msgid "Ticket has processed - {} ({})"
 msgstr "Công việc của bạn đã được xử lý, người xử lý - {} ({})"
 
 #: tickets/reporting.py:10
-#, fuzzy
-#| msgid "Ticket step"
 msgid "Ticket Report"
 msgstr "Bước của phiếu công việc"
 
 #: tickets/reporting.py:17
-#, fuzzy
-#| msgid "Super ticket"
 msgid "Open tickets"
 msgstr "Phiếu công việc đặc biệt"
 
 #: tickets/reporting.py:18
-#, fuzzy
-#| msgid "From ticket"
 msgid "Closed tickets"
 msgstr "Từ phiếu công việc"
 
 #: tickets/reporting.py:19
-#, fuzzy
-#| msgid "Pending"
 msgid "Pending tickets"
 msgstr "Đang chờ xử lý"
 
 #: tickets/reporting.py:20
-#, fuzzy
-#| msgid "App Tickets"
 msgid "Approved tickets"
 msgstr "Tickets"
 
@@ -11194,26 +10956,18 @@ msgid "Rejected tickets"
 msgstr ""
 
 #: tickets/reporting.py:22
-#, fuzzy
-#| msgid "Applicant"
 msgid "Unique applicants"
 msgstr "Người nộp đơn."
 
 #: tickets/reporting.py:25
-#, fuzzy
-#| msgid "All organizations"
 msgid "Unique organizations"
 msgstr "Tất cả tổ chức"
 
 #: tickets/reporting.py:69
-#, fuzzy
-#| msgid "Ticket information"
 msgid "Ticket Type Distribution"
 msgstr "Thông tin công việc"
 
 #: tickets/reporting.py:74
-#, fuzzy
-#| msgid "Ticket information"
 msgid "Ticket State Distribution"
 msgstr "Thông tin công việc"
 
@@ -11222,20 +10976,14 @@ msgid "Ticket Status Distribution"
 msgstr ""
 
 #: tickets/reporting.py:84
-#, fuzzy
-#| msgid "Organization role"
 msgid "Organization Top 10"
 msgstr "Vai trò tổ chức"
 
 #: tickets/reporting.py:89
-#, fuzzy
-#| msgid "Applicant"
 msgid "Applicant Top 10"
 msgstr "Người nộp đơn."
 
 #: tickets/reporting.py:94
-#, fuzzy
-#| msgid "Approval without login"
 msgid "Approval Step Distribution"
 msgstr "Phê duyệt không cần đăng nhập"
 
@@ -11521,8 +11269,6 @@ msgid "Preference"
 msgstr "Cài đặt người dùng"
 
 #: users/models/user/__init__.py:70
-#, fuzzy
-#| msgid "Email account"
 msgid "Email lookup"
 msgstr "Tài khoản email"
 
@@ -11834,8 +11580,6 @@ msgid "Can public key authentication"
 msgstr "Can public key authentication"
 
 #: users/serializers/user.py:145
-#, fuzzy
-#| msgid "Can public key authentication"
 msgid "Can UKey authentication"
 msgstr "Can public key authentication"
 
@@ -13160,13 +12904,11 @@ msgstr "Nội dung chân trang"
 #: xpack/plugins/interface/models.py:46
 #: xpack/plugins/interface/serializers/interface.py:73
 msgid "Extend"
-msgstr ""
+msgstr "Mở rộng"
 
 #: xpack/plugins/interface/serializers/interface.py:48
-#, fuzzy
-#| msgid "Account name"
 msgid "Product name"
-msgstr "Tên tài khoản"
+msgstr "Tên sản phẩm"
 
 #: xpack/plugins/interface/serializers/interface.py:49
 msgid "Wide logo on top"
@@ -13177,50 +12919,40 @@ msgid "Small logo without text"
 msgstr "Logo vuông nhỏ"
 
 #: xpack/plugins/interface/templates/login_i18n.html:10
-#, fuzzy
-#| msgid "Support URL"
 msgid "Support"
-msgstr "Hỗ trợ liên kết"
+msgstr "Hỗ trợ"
 
 #: xpack/plugins/interface/templates/login_i18n.html:11
-#, fuzzy
-#| msgid "Please enter your account username"
 msgid "Please enter your username"
-msgstr "Vui lòng nhập tên người dùng tài khoản của bạn"
+msgstr "Vui lòng nhập tên người dùng của bạn"
 
 #: xpack/plugins/interface/templates/login_i18n.html:12
-#, fuzzy
-#| msgid "Please change your password"
 msgid "Please enter your password"
-msgstr "Vui lòng thay đổi mật khẩu"
+msgstr "Vui lòng nhập mật khẩu của bạn"
 
 #: xpack/plugins/interface/templates/login_i18n.html:15
 msgid "I have read and agree to the"
-msgstr ""
+msgstr "Tôi đã đọc và đồng ý với"
 
 #: xpack/plugins/interface/templates/login_i18n.html:16
-#, fuzzy
-#| msgid "User agent"
 msgid "User Agreement"
-msgstr "Trình duyệt người dùng"
+msgstr "Thỏa thuận người dùng"
 
 #: xpack/plugins/interface/templates/login_i18n.html:17
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Chính sách quyền riêng tư"
 
 #: xpack/plugins/jdmc/i18n.py:4
-#, fuzzy
-#| msgid "Audit view"
 msgid "AuditAdmin"
-msgstr "Audits"
+msgstr "Quản trị viên kiểm toán"
 
 #: xpack/plugins/jdmc/i18n.py:5
 msgid "SecAdmin"
-msgstr "Security Admin"
+msgstr "Quản trị viên bảo mật"
 
 #: xpack/plugins/jdmc/meta.py:9
 msgid "JDMC"
-msgstr ""
+msgstr "JDMC"
 
 #: xpack/plugins/license/api.py:55
 msgid "License import successfully"
@@ -13233,22 +12965,18 @@ msgstr "Giấy phép không hợp lệ"
 #~ msgid "Offline video player"
 #~ msgstr "Trình phát video ngoại tuyến"
 
-#, fuzzy
 #~| msgid "Domain name"
 #~ msgid "domain_name"
 #~ msgstr "Tên miền"
 
-#, fuzzy
 #~| msgid "Authenticate"
 #~ msgid "Certificate Auth"
 #~ msgstr "Xác thực danh tính"
 
-#, fuzzy
 #~| msgid "Authenticate"
 #~ msgid "Certificate"
 #~ msgstr "Xác thực danh tính"
 
-#, fuzzy
 #~| msgid "More login options"
 #~ msgid "Other login methods"
 #~ msgstr "Or"
@@ -13279,7 +13007,6 @@ msgstr "Giấy phép không hợp lệ"
 #~ "OpenSSH được sử dụng trong máy chủ ứng dụng từ xa Windows để kết nối các "
 #~ "ứng dụng từ xa"
 
-#, fuzzy
 #~| msgid "Periodic run"
 #~ msgid "Periodic report"
 #~ msgstr "Periodic"

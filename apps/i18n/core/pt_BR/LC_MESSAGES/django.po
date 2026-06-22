@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-22 10:24+0800\n"
+"POT-Creation-Date: 2026-06-22 11:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2256,8 +2255,6 @@ msgid "The number of assets exceeds the limit of 5000"
 msgstr "A quantidade de ativos excedeu o limite de 5000"
 
 #: assets/api/asset/asset.py:181
-#, fuzzy
-#| msgid "The number of assets exceeds the limit of 5000"
 msgid "The number of assets exceeds the license limit"
 msgstr "A quantidade de ativos excedeu o limite de 5000"
 
@@ -3814,61 +3811,43 @@ msgid "Application ID"
 msgstr "IDdoAplicativo"
 
 #: audits/reporting.py:11
-#, fuzzy
-#| msgid "File transfer log"
 msgid "File Transfer Report"
 msgstr "Transferência de arquivo"
 
 #: audits/reporting.py:21 audits/reporting.py:146 audits/reporting.py:264
 #: audits/reporting.py:345 audits/reporting.py:442 audits/reporting.py:529
 #: terminal/reporting.py:23 tickets/reporting.py:16
-#, fuzzy
-#| msgid "Command record"
 msgid "Total records"
 msgstr "Registro de comandos"
 
 #: audits/reporting.py:22 audits/reporting.py:94
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful transfers"
 msgstr "Contas bem-sucedidas"
 
 #: audits/reporting.py:23 audits/reporting.py:94
-#, fuzzy
-#| msgid "File transfer log"
 msgid "Failed transfers"
 msgstr "Transferência de arquivo"
 
 #: audits/reporting.py:24 audits/reporting.py:94 audits/reporting.py:149
 #: audits/reporting.py:216 audits/reporting.py:533 audits/reporting.py:602
 #: terminal/reporting.py:28 terminal/reporting.py:103
-#, fuzzy
-#| msgid "Success prompt"
 msgid "Success rate"
 msgstr "Prompt de sucesso"
 
 #: audits/reporting.py:25
-#, fuzzy
-#| msgid "Download"
 msgid "Downloadable files"
 msgstr "Baixar"
 
 #: audits/reporting.py:26 audits/reporting.py:150 audits/reporting.py:265
 #: terminal/reporting.py:31
-#, fuzzy
-#| msgid "Check unused users"
 msgid "Unique users"
 msgstr "Verifique os usuários inativos"
 
 #: audits/reporting.py:27 terminal/reporting.py:32
-#, fuzzy
-#| msgid "Can view user assets"
 msgid "Unique assets"
 msgstr "Pode visualizar os ativos autorizados do usuário"
 
 #: audits/reporting.py:28
-#, fuzzy
-#| msgid "Failed accounts"
 msgid "Unique accounts"
 msgstr "Contas com falha"
 
@@ -3880,8 +3859,6 @@ msgstr ""
 #: audits/reporting.py:91 audits/reporting.py:213 audits/reporting.py:309
 #: audits/reporting.py:396 audits/reporting.py:484 audits/reporting.py:599
 #: terminal/reporting.py:100 tickets/reporting.py:62
-#, fuzzy
-#| msgid "Review"
 msgid "Overview"
 msgstr "Aprovação"
 
@@ -3916,26 +3893,18 @@ msgstr ""
 #: terminal/reporting.py:133 terminal/reporting.py:138 tickets/reporting.py:65
 #: tickets/reporting.py:70 tickets/reporting.py:75 tickets/reporting.py:80
 #: tickets/reporting.py:85 tickets/reporting.py:90 tickets/reporting.py:95
-#, fuzzy
-#| msgid "CPU count"
 msgid "Count"
 msgstr "Quantidade de CPUs"
 
 #: audits/reporting.py:103 audits/reporting.py:316 terminal/reporting.py:117
-#, fuzzy
-#| msgid "User group"
 msgid "User Top 10"
 msgstr "Grupo de usuários"
 
 #: audits/reporting.py:108 terminal/reporting.py:122
-#, fuzzy
-#| msgid "Asset type"
 msgid "Asset Top 10"
 msgstr "Tipo de bem"
 
 #: audits/reporting.py:113
-#, fuzzy
-#| msgid "Account ID"
 msgid "Account Top 10"
 msgstr "Conta"
 
@@ -3945,8 +3914,6 @@ msgid "IP Top 10"
 msgstr ""
 
 #: audits/reporting.py:123
-#, fuzzy
-#| msgid "Filename"
 msgid "Filename Top 10"
 msgstr "Nome do arquivo"
 
@@ -3956,26 +3923,18 @@ msgstr ""
 
 #: audits/reporting.py:129 audits/reporting.py:236 audits/reporting.py:332
 #: audits/reporting.py:429
-#, fuzzy
-#| msgid "Time using"
 msgid "Time range"
 msgstr "Duração."
 
 #: audits/reporting.py:136
-#, fuzzy
-#| msgid "User login report"
 msgid "User Login Report"
 msgstr "Relatório de Login de Usuário"
 
 #: audits/reporting.py:147 audits/reporting.py:216
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful logins"
 msgstr "Contas bem-sucedidas"
 
 #: audits/reporting.py:148 audits/reporting.py:216
-#, fuzzy
-#| msgid "Failed accounts"
 msgid "Failed logins"
 msgstr "Contas com falha"
 
@@ -3984,32 +3943,22 @@ msgid "Unique cities"
 msgstr ""
 
 #: audits/reporting.py:153
-#, fuzzy
-#| msgid "Auth backend"
 msgid "Unique auth backends"
 msgstr "Token de Autenticação"
 
 #: audits/reporting.py:220
-#, fuzzy
-#| msgid "Login redirection"
 msgid "Login Type Distribution"
 msgstr "Ativar aviso de redirecionamento de login"
 
 #: audits/reporting.py:225
-#, fuzzy
-#| msgid "Auth backend display"
 msgid "Auth Backend Distribution"
 msgstr "Método de autenticação"
 
 #: audits/reporting.py:230
-#, fuzzy
-#| msgid "MFA setting"
 msgid "MFA Distribution"
 msgstr "Configure a Autenticação de Múltiplos Fatores MFA"
 
 #: audits/reporting.py:235
-#, fuzzy
-#| msgid "Login redirection"
 msgid "Login Time Distribution"
 msgstr "Ativar aviso de redirecionamento de login"
 
@@ -4026,8 +3975,6 @@ msgid "Failed Reason Top 10"
 msgstr ""
 
 #: audits/reporting.py:258
-#, fuzzy
-#| msgid "Password change log"
 msgid "Password Change Report"
 msgstr "Registro de Alteração de Senha"
 
@@ -4036,50 +3983,34 @@ msgid "Unique operators"
 msgstr ""
 
 #: audits/reporting.py:321 audits/reporting.py:413
-#, fuzzy
-#| msgid "Operate log"
 msgid "Operator Top 10"
 msgstr "Registro de Ações"
 
 #: audits/reporting.py:331
-#, fuzzy
-#| msgid "Can change sms setting"
 msgid "Change Time Distribution"
 msgstr "Configuração de SMS"
 
 #: audits/reporting.py:339
-#, fuzzy
-#| msgid "Operate log"
 msgid "Operate Log Report"
 msgstr "Registro de Ações"
 
 #: audits/reporting.py:347
-#, fuzzy
-#| msgid "Resource type"
 msgid "Unique resource types"
 msgstr "Tipo de recurso"
 
 #: audits/reporting.py:348
-#, fuzzy
-#| msgid "Tagged resource"
 msgid "Unique resources"
 msgstr "Recurso associado"
 
 #: audits/reporting.py:403
-#, fuzzy
-#| msgid "Action permission"
 msgid "Action Distribution"
 msgstr "Permissões de ação"
 
 #: audits/reporting.py:408
-#, fuzzy
-#| msgid "Resource Type"
 msgid "Resource Type Distribution"
 msgstr "Tipo de recurso"
 
 #: audits/reporting.py:418
-#, fuzzy
-#| msgid "Resource Type"
 msgid "Resource Top 10"
 msgstr "Tipo de recurso"
 
@@ -4088,14 +4019,10 @@ msgid "Operate Time Distribution"
 msgstr ""
 
 #: audits/reporting.py:436
-#, fuzzy
-#| msgid "Job audit log"
 msgid "Job Audit Report"
 msgstr "Logs de auditoria de tarefas"
 
 #: audits/reporting.py:443
-#, fuzzy
-#| msgid "Periodic run"
 msgid "Periodic jobs"
 msgstr "Execução periódica"
 
@@ -4104,14 +4031,10 @@ msgid "One-time jobs"
 msgstr ""
 
 #: audits/reporting.py:445
-#, fuzzy
-#| msgid "Adhoc"
 msgid "Adhoc jobs"
 msgstr "Comando"
 
 #: audits/reporting.py:446
-#, fuzzy
-#| msgid "Playbook"
 msgid "Playbook jobs"
 msgstr "Playbook"
 
@@ -4125,8 +4048,6 @@ msgid "Playbook"
 msgstr "Playbook"
 
 #: audits/reporting.py:486 tickets/reporting.py:64
-#, fuzzy
-#| msgid "Create Type"
 msgid "Created Trend"
 msgstr "Tipo de Criação"
 
@@ -4143,8 +4064,6 @@ msgid "Module"
 msgstr "Módulo"
 
 #: audits/reporting.py:501 audits/reporting.py:616
-#, fuzzy
-#| msgid "Creator"
 msgid "Creator Top 10"
 msgstr "Criador"
 
@@ -4157,8 +4076,6 @@ msgid "Creator"
 msgstr "Criador"
 
 #: audits/reporting.py:506
-#, fuzzy
-#| msgid "Run as policy"
 msgid "Run as Policy Distribution"
 msgstr "Política de usuário"
 
@@ -4167,26 +4084,18 @@ msgid "Run as policy"
 msgstr "Política de usuário"
 
 #: audits/reporting.py:514
-#, fuzzy
-#| msgid "Report"
 msgid "Job Log Report"
 msgstr "Relatório"
 
 #: audits/reporting.py:530 audits/reporting.py:602
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful jobs"
 msgstr "Contas bem-sucedidas"
 
 #: audits/reporting.py:531 audits/reporting.py:602
-#, fuzzy
-#| msgid "Finished"
 msgid "Finished jobs"
 msgstr "Terminar"
 
 #: audits/reporting.py:532 audits/reporting.py:602
-#, fuzzy
-#| msgid "Is finished"
 msgid "Unfinished jobs"
 msgstr "Concluída"
 
@@ -4195,8 +4104,6 @@ msgid "Unique task ids"
 msgstr ""
 
 #: audits/reporting.py:538
-#, fuzzy
-#| msgid "Secret rotation"
 msgid "Average duration"
 msgstr "Rotação de senha"
 
@@ -4213,8 +4120,6 @@ msgid "Duration Distribution"
 msgstr ""
 
 #: audits/reporting.py:622 terminal/reporting.py:138
-#, fuzzy
-#| msgid "Duration"
 msgid "Duration range"
 msgstr "Duração"
 
@@ -4276,8 +4181,6 @@ msgid "SSO"
 msgstr "SSO"
 
 #: audits/signal_handlers/login_log.py:36
-#, fuzzy
-#| msgid "Custom"
 msgid "Custom SSO"
 msgstr "Personalizado."
 
@@ -4516,32 +4419,22 @@ msgid "SAML2 Error"
 msgstr "Erro SAML2"
 
 #: authentication/backends/ukey/api.py:54
-#, fuzzy
-#| msgid "LDAP authentication is not enabled"
 msgid "Certificate enrollment is not enabled"
 msgstr "A autenticação LDAP não está ativada"
 
 #: authentication/backends/ukey/api.py:59
-#, fuzzy
-#| msgid "type is required"
 msgid "CSR is required"
 msgstr "Tipo Esse campo é obrigatório."
 
 #: authentication/backends/ukey/api.py:65
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "Certificate signing failed"
 msgstr "Falha na autenticação"
 
 #: authentication/backends/ukey/exceptions.py:8
-#, fuzzy
-#| msgid "Can public key authentication"
 msgid "Certificate authentication failed"
 msgstr " Autenticação por Chave Pública Permitida "
 
 #: authentication/backends/ukey/exceptions.py:16
-#, fuzzy
-#| msgid "User does not exist: {}"
 msgid "User does not exist"
 msgstr "Usuário não encontrado: {}"
 
@@ -4550,38 +4443,26 @@ msgid "UKey SN mismatch"
 msgstr ""
 
 #: authentication/backends/ukey/exceptions.py:24
-#, fuzzy
-#| msgid "Invalid verification code"
 msgid "Invalid certificate format"
 msgstr "O código de verificação está incorreto"
 
 #: authentication/backends/ukey/exceptions.py:28
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "Certificate chain verification failed"
 msgstr "Falha na autenticação"
 
 #: authentication/backends/ukey/exceptions.py:32
-#, fuzzy
-#| msgid "LDAP authentication is not enabled"
 msgid "Certificate CN does not match the username"
 msgstr "A autenticação LDAP não está ativada"
 
 #: authentication/backends/ukey/exceptions.py:36
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "Certificate signature verification failed"
 msgstr "Falha na autenticação"
 
 #: authentication/backends/ukey/exceptions.py:40
-#, fuzzy
-#| msgid "LDAP authentication is not enabled"
 msgid "Certificate has expired or is not yet valid"
 msgstr "A autenticação LDAP não está ativada"
 
 #: authentication/backends/ukey/exceptions.py:44
-#, fuzzy
-#| msgid "Unsupported file content"
 msgid "Unsupported certificate algorithm"
 msgstr "Conteúdo de arquivo não suportado"
 
@@ -4591,8 +4472,6 @@ msgid ""
 msgstr ""
 
 #: authentication/backends/ukey/views.py:108
-#, fuzzy
-#| msgid "Invalid data"
 msgid "Invalid credentials"
 msgstr "Dados inválidos"
 
@@ -5454,74 +5333,57 @@ msgstr ""
 
 #: authentication/templates/authentication/login_ukey.html:232
 #: xpack/plugins/interface/templates/login_i18n.html:22
-#, fuzzy
-#| msgid "More login options"
 msgid "More login methods"
-msgstr "Login por outros métodos"
+msgstr "Mais métodos de login"
 
 #: authentication/templates/authentication/login_ukey.html:245
 msgid "Detecting UKey..."
 msgstr ""
 
 #: authentication/templates/authentication/login_ukey.html:246
-#, fuzzy
-#| msgid "connect failed"
 msgid "UKey connected"
-msgstr "Falha na conexão"
+msgstr "UKey conectado"
 
 #: authentication/templates/authentication/login_ukey.html:247
-#, fuzzy
-#| msgid "Please enter SMS code"
 msgid "Please insert UKey"
-msgstr "Por favor insira o código de verificação por SMS"
+msgstr "Por favor, insira o UKey"
 
 #: authentication/templates/authentication/login_ukey.html:248
-#, fuzzy
-#| msgid "Account unavailable"
 msgid "SDK unavailable"
-msgstr "Conta inválida"
+msgstr "SDK indisponível"
 
 #: authentication/templates/authentication/login_ukey.html:249
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "UKey SDK initialization failed"
-msgstr "Falha na autenticação"
+msgstr "Falha ao inicializar o SDK do UKey"
 
 #: authentication/templates/authentication/login_ukey.html:250
 msgid "Verifying PIN..."
-msgstr ""
+msgstr "Verificando PIN..."
 
 #: authentication/templates/authentication/login_ukey.html:251
-#, fuzzy
-#| msgid "Date verified"
 msgid "PIN verified"
-msgstr "Data de validação"
+msgstr "PIN verificado"
 
 #: authentication/templates/authentication/login_ukey.html:252
-#, fuzzy
-#| msgid "OTP verification code"
 msgid "PIN verification failed"
-msgstr "Código de verificação MFA virtual"
+msgstr "Falha na verificação do PIN"
 
 #: authentication/templates/authentication/login_ukey.html:253
 msgid "Signing challenge code..."
-msgstr ""
+msgstr "Assinando código de desafio..."
 
 #: authentication/templates/authentication/login_ukey.html:254
-#, fuzzy
-#| msgid "Signing key"
 msgid "Signing failed"
-msgstr "Chave de assinatura"
+msgstr "Falha na assinatura"
 
 #: authentication/templates/authentication/login_ukey.html:255
 msgid "Failed to retrieve UKey cert"
-msgstr ""
+msgstr "Falha ao obter o certificado do UKey"
 
 #: authentication/templates/authentication/login_ukey.html:256
-#, fuzzy
-#| msgid "Your account has expired, please contact the administrator."
 msgid "No UKey cert detected, please contact administrator"
-msgstr "Sua conta já expirou, por favor, entre em contato com o administrador."
+msgstr ""
+"Nenhum certificado UKey detectado, entre em contato com o administrador"
 
 #: authentication/templates/authentication/login_wait_confirm.html:72
 msgid "Refresh"
@@ -5955,10 +5817,6 @@ msgid "Objects, format [\"id\", ...]"
 msgstr "Itens associados múltiplos, o formato é [\"id\", ...]"
 
 #: common/drf/renders/base.py:301
-#, fuzzy
-#| msgid ""
-#| "{} - The encryption password has not been set - please go to personal "
-#| "information -> file encryption password to set the encryption password"
 msgid ""
 "{} - Encryption password not set - Please go to Personal Settings → "
 "Preferences → File Encryption Password to set it."
@@ -5983,8 +5841,6 @@ msgid "Export filtered"
 msgstr "Exportar pesquisa"
 
 #: common/drf/reporting.py:23
-#, fuzzy
-#| msgid "Database"
 msgid "Data"
 msgstr "Banco de dados"
 
@@ -5994,44 +5850,30 @@ msgid "Report"
 msgstr "Relatório"
 
 #: common/drf/reporting.py:37
-#, fuzzy
-#| msgid "Date left"
 msgid "Date from"
 msgstr "Data de término"
 
 #: common/drf/reporting.py:38
-#, fuzzy
-#| msgid "Date left"
 msgid "Date to"
 msgstr "Data de término"
 
 #: common/drf/reporting.py:116
-#, fuzzy
-#| msgid "All assets"
 msgid "All data"
 msgstr "Todos Ativos"
 
 #: common/drf/reporting.py:181
-#, fuzzy
-#| msgid "General"
 msgid "Generated at"
 msgstr "Geral"
 
 #: common/drf/reporting.py:182
-#, fuzzy
-#| msgid "Export"
 msgid "Exported rows"
 msgstr "Exportar"
 
 #: common/drf/reporting.py:183 reports/models.py:20
-#, fuzzy
-#| msgid "Filter"
 msgid "Filters"
 msgstr "Filtros"
 
 #: common/drf/reporting.py:210
-#, fuzzy
-#| msgid "Summary"
 msgid "Report Summary"
 msgstr "Resumo"
 
@@ -6064,15 +5906,21 @@ msgstr "Esta operação requer a confirmação do usuário atual"
 msgid "Unexpect error occur"
 msgstr "Ocorreu um erro inesperado"
 
-#: common/plugins/es.py:37
+#: common/plugins/es.py:44
 msgid "Invalid elasticsearch config"
 msgstr "Configuração inválida do Elasticsearch"
 
-#: common/plugins/es.py:42
+#: common/plugins/es.py:49
+#, fuzzy
+#| msgid "Session is finished or the protocol not supported"
+msgid "The server is not Elasticsearch or this product is not supported"
+msgstr "Sessão já concluída ou protocolo não suportado"
+
+#: common/plugins/es.py:54
 msgid "Not Support Elasticsearch8"
 msgstr "Elasticsearch8 não é suportado"
 
-#: common/plugins/es.py:48
+#: common/plugins/es.py:60
 msgid ""
 "Connection failed: Self-signed certificate used. Please check server "
 "certificate configuration"
@@ -7317,8 +7165,6 @@ msgid "Can view file manager"
 msgstr "Pode visualizar a gestão de arquivos"
 
 #: rbac/models/menu.py:21
-#, fuzzy
-#| msgid "Can view console view"
 msgid "Can view jdmc console"
 msgstr "Pode exibir o console"
 
@@ -7331,14 +7177,10 @@ msgid "Can view user login report"
 msgstr "Pode visualizar o relatório de login do usuário"
 
 #: rbac/models/menu.py:24
-#, fuzzy
-#| msgid "Can view user login report"
 msgid "Can create user login report"
 msgstr "Pode visualizar o relatório de login do usuário"
 
 #: rbac/models/menu.py:25
-#, fuzzy
-#| msgid "Can view user login report"
 msgid "Can delete user login report"
 msgstr "Pode visualizar o relatório de login do usuário"
 
@@ -7347,14 +7189,10 @@ msgid "Can view user change password report"
 msgstr "Pode visualizar o relatório de alteração de senha do usuário"
 
 #: rbac/models/menu.py:27
-#, fuzzy
-#| msgid "Can view user change password report"
 msgid "Can create user change password report"
 msgstr "Pode visualizar o relatório de alteração de senha do usuário"
 
 #: rbac/models/menu.py:28
-#, fuzzy
-#| msgid "Can view user change password report"
 msgid "Can delete user change password report"
 msgstr "Pode visualizar o relatório de alteração de senha do usuário"
 
@@ -7363,14 +7201,10 @@ msgid "Can view asset statistics report"
 msgstr "Pode visualizar o relatório de estatísticas de ativos"
 
 #: rbac/models/menu.py:30
-#, fuzzy
-#| msgid "Can view asset statistics report"
 msgid "Can create asset statistics report"
 msgstr "Pode visualizar o relatório de estatísticas de ativos"
 
 #: rbac/models/menu.py:31
-#, fuzzy
-#| msgid "Can view asset statistics report"
 msgid "Can delete asset statistics report"
 msgstr "Pode visualizar o relatório de estatísticas de ativos"
 
@@ -7379,14 +7213,10 @@ msgid "Can view asset activity report"
 msgstr "Pode visualizar o relatório de atividades de ativos"
 
 #: rbac/models/menu.py:33
-#, fuzzy
-#| msgid "Can view asset activity report"
 msgid "Can create asset activity report"
 msgstr "Pode visualizar o relatório de atividades de ativos"
 
 #: rbac/models/menu.py:34
-#, fuzzy
-#| msgid "Can view asset activity report"
 msgid "Can delete asset activity report"
 msgstr "Pode visualizar o relatório de atividades de ativos"
 
@@ -7395,14 +7225,10 @@ msgid "Can view account statistics report"
 msgstr "Pode visualizar o relatório de estatísticas de contas"
 
 #: rbac/models/menu.py:36
-#, fuzzy
-#| msgid "Can view account statistics report"
 msgid "Can create account statistics report"
 msgstr "Pode visualizar o relatório de estatísticas de contas"
 
 #: rbac/models/menu.py:37
-#, fuzzy
-#| msgid "Can view account statistics report"
 msgid "Can delete account statistics report"
 msgstr "Pode visualizar o relatório de estatísticas de contas"
 
@@ -7411,14 +7237,10 @@ msgid "Can view account automation report"
 msgstr "Pode visualizar o relatório de automação de contas."
 
 #: rbac/models/menu.py:39
-#, fuzzy
-#| msgid "Can view account automation report"
 msgid "Can create account automation report"
 msgstr "Pode visualizar o relatório de automação de contas."
 
 #: rbac/models/menu.py:40
-#, fuzzy
-#| msgid "Can view account automation report"
 msgid "Can delete account automation report"
 msgstr "Pode visualizar o relatório de automação de contas."
 
@@ -7542,8 +7364,6 @@ msgid "Job audit"
 msgstr "Auditoria de Tarefas"
 
 #: rbac/tree.py:137
-#, fuzzy
-#| msgid "Console"
 msgid "JDMC console"
 msgstr "Console"
 
@@ -7581,8 +7401,6 @@ msgid "Revoke access token"
 msgstr "Revogar token de acesso"
 
 #: reports/models.py:19
-#, fuzzy
-#| msgid "Change by"
 msgid "Range days"
 msgstr "Modificador"
 
@@ -7814,8 +7632,6 @@ msgid "Passkey Auth"
 msgstr "Autenticação Passkey"
 
 #: settings/serializers/auth/base.py:27
-#, fuzzy
-#| msgid "Passkey Auth"
 msgid "UKey Auth"
 msgstr "Autenticação Passkey"
 
@@ -8384,9 +8200,6 @@ msgid "Enable SSO auth"
 msgstr "Ativar autenticação com token SSO"
 
 #: settings/serializers/auth/sso.py:17
-#, fuzzy
-#| msgid ""
-#| "Other service can using SSO token login to JumpServer without password"
 msgid "Other service can using SSO token login to system without password"
 msgstr ""
 "Outros sistemas podem se integrar ao JumpServer usando Token SSO, eliminando "
@@ -8402,8 +8215,6 @@ msgid "Unit: second"
 msgstr "Unidade: segundos"
 
 #: settings/serializers/auth/ukey.py:20
-#, fuzzy
-#| msgid "Verify code TTL (second)"
 msgid "Challenge TTL (seconds)"
 msgstr "Tempo de validade do código de verificação (minutos)"
 
@@ -8436,8 +8247,6 @@ msgid "Validity period (days) for issued certificates"
 msgstr ""
 
 #: settings/serializers/auth/ukey.py:38
-#, fuzzy
-#| msgid "Content"
 msgid "CA Key"
 msgstr "Conteúdo"
 
@@ -8446,8 +8255,6 @@ msgid "PEM content of CA private key used for certificate enrollment"
 msgstr ""
 
 #: settings/serializers/auth/ukey.py:42
-#, fuzzy
-#| msgid "Content"
 msgid "CA Cert"
 msgstr "Conteúdo"
 
@@ -8458,8 +8265,6 @@ msgid ""
 msgstr ""
 
 #: settings/serializers/auth/ukey.py:46
-#, fuzzy
-#| msgid "Password"
 msgid "CA Key Password"
 msgstr "Senha"
 
@@ -8598,8 +8403,6 @@ msgstr ""
 "senha da conta"
 
 #: settings/serializers/cleaning.py:56
-#, fuzzy
-#| msgid "Change secret and push record retention days"
 msgid "Audit report send record retention days"
 msgstr ""
 "Número de dias para retenção de registros de notificações sobre alteração de "
@@ -8885,18 +8688,10 @@ msgstr ""
 "mas o nó não está autorizado."
 
 #: settings/serializers/security.py:19
-#, fuzzy
-#| msgid "User password expiration (day)"
 msgid "Admin password expiration (day)"
 msgstr "Tempo de expiração da senha do usuário (dias)"
 
 #: settings/serializers/security.py:21
-#, fuzzy
-#| msgid ""
-#| "If the user does not update the password during the time, the user "
-#| "password will expire failure;The password expiration reminder mail will "
-#| "be automatic sent to the user by system within 5 days (daily) before the "
-#| "password expires"
 msgid ""
 "If the admin does not update the password during the time, the admin "
 "password will expire failure;The password expiration reminder mail will be "
@@ -10248,68 +10043,46 @@ msgid "Invalid storage"
 msgstr "Armazenamento inválido"
 
 #: terminal/reporting.py:10
-#, fuzzy
-#| msgid "Session record"
 msgid "Session Report"
 msgstr "Registros de sessão"
 
 #: terminal/reporting.py:24 terminal/reporting.py:103
-#, fuzzy
-#| msgid "Success accounts"
 msgid "Successful sessions"
 msgstr "Contas bem-sucedidas"
 
 #: terminal/reporting.py:25 terminal/reporting.py:103
-#, fuzzy
-#| msgid "Kill session"
 msgid "Failed sessions"
 msgstr "Terminar sessão"
 
 #: terminal/reporting.py:26
-#, fuzzy
-#| msgid "Online sessions"
 msgid "Finished sessions"
 msgstr "Sessão online"
 
 #: terminal/reporting.py:27 terminal/reporting.py:103
-#, fuzzy
-#| msgid "View session"
 msgid "Active sessions"
 msgstr "Verifique a conversa"
 
 #: terminal/reporting.py:29
-#, fuzzy
-#| msgid "Session replay"
 msgid "Sessions with replay"
 msgstr "Gravação de sessão"
 
 #: terminal/reporting.py:30
-#, fuzzy
-#| msgid "Session join record"
 msgid "Sessions with commands"
 msgstr "Registro de entrada na Sessão"
 
 #: terminal/reporting.py:33
-#, fuzzy
-#| msgid "Can view web terminal"
 msgid "Unique terminals"
 msgstr "Terminal Web"
 
 #: terminal/reporting.py:107
-#, fuzzy
-#| msgid "Protocols is required"
 msgid "Protocol Distribution"
 msgstr "O acordo é obrigatório"
 
 #: terminal/reporting.py:112
-#, fuzzy
-#| msgid "Login redirection"
 msgid "Login From Distribution"
 msgstr "Ativar aviso de redirecionamento de login"
 
 #: terminal/reporting.py:127
-#, fuzzy
-#| msgid "Terminal"
 msgid "Terminal Top 10"
 msgstr "Terminal"
 
@@ -11162,32 +10935,22 @@ msgid "Ticket has processed - {} ({})"
 msgstr "Sua ordem de serviço foi processada, operador - {} ( {} )"
 
 #: tickets/reporting.py:10
-#, fuzzy
-#| msgid "Ticket step"
 msgid "Ticket Report"
 msgstr "Etapa da ordem de serviço"
 
 #: tickets/reporting.py:17
-#, fuzzy
-#| msgid "Super ticket"
 msgid "Open tickets"
 msgstr "Super Ordem de Serviço"
 
 #: tickets/reporting.py:18
-#, fuzzy
-#| msgid "From ticket"
 msgid "Closed tickets"
 msgstr "De ordem de serviço"
 
 #: tickets/reporting.py:19
-#, fuzzy
-#| msgid "Pending"
 msgid "Pending tickets"
 msgstr "Pendente"
 
 #: tickets/reporting.py:20
-#, fuzzy
-#| msgid "App Tickets"
 msgid "Approved tickets"
 msgstr "Gerenciar ordens de serviço"
 
@@ -11196,26 +10959,18 @@ msgid "Rejected tickets"
 msgstr ""
 
 #: tickets/reporting.py:22
-#, fuzzy
-#| msgid "Applicant"
 msgid "Unique applicants"
 msgstr "Solicitante"
 
 #: tickets/reporting.py:25
-#, fuzzy
-#| msgid "All organizations"
 msgid "Unique organizations"
 msgstr "Todas as organizações"
 
 #: tickets/reporting.py:69
-#, fuzzy
-#| msgid "Ticket information"
 msgid "Ticket Type Distribution"
 msgstr " Informações de ordem de serviço"
 
 #: tickets/reporting.py:74
-#, fuzzy
-#| msgid "Ticket information"
 msgid "Ticket State Distribution"
 msgstr " Informações de ordem de serviço"
 
@@ -11224,20 +10979,14 @@ msgid "Ticket Status Distribution"
 msgstr ""
 
 #: tickets/reporting.py:84
-#, fuzzy
-#| msgid "Organization role"
 msgid "Organization Top 10"
 msgstr "Papel da organização"
 
 #: tickets/reporting.py:89
-#, fuzzy
-#| msgid "Applicant"
 msgid "Applicant Top 10"
 msgstr "Solicitante"
 
 #: tickets/reporting.py:94
-#, fuzzy
-#| msgid "Approval without login"
 msgid "Approval Step Distribution"
 msgstr "Aprovação sem Login"
 
@@ -11527,8 +11276,6 @@ msgid "Preference"
 msgstr "Configurações do usuário"
 
 #: users/models/user/__init__.py:70
-#, fuzzy
-#| msgid "Email account"
 msgid "Email lookup"
 msgstr "Conta de e-mail"
 
@@ -11842,8 +11589,6 @@ msgid "Can public key authentication"
 msgstr " Autenticação por Chave Pública Permitida "
 
 #: users/serializers/user.py:145
-#, fuzzy
-#| msgid "UKey Authentication"
 msgid "Can UKey authentication"
 msgstr "UKey Autenticação"
 
@@ -13113,13 +12858,11 @@ msgstr "Conteúdo do rodapé"
 #: xpack/plugins/interface/models.py:46
 #: xpack/plugins/interface/serializers/interface.py:73
 msgid "Extend"
-msgstr ""
+msgstr "Extensão"
 
 #: xpack/plugins/interface/serializers/interface.py:48
-#, fuzzy
-#| msgid "Account name"
 msgid "Product name"
-msgstr "Nome da conta"
+msgstr "Nome do produto"
 
 #: xpack/plugins/interface/serializers/interface.py:49
 msgid "Wide logo on top"
@@ -13130,52 +12873,40 @@ msgid "Small logo without text"
 msgstr "Logo pequeno quadrado"
 
 #: xpack/plugins/interface/templates/login_i18n.html:10
-#, fuzzy
-#| msgid "Support URL"
 msgid "Support"
-msgstr "Link de suporte"
+msgstr "Suporte"
 
 #: xpack/plugins/interface/templates/login_i18n.html:11
-#, fuzzy
-#| msgid "Please enter your account username"
 msgid "Please enter your username"
-msgstr "Por favor, digite seu nome de usuário"
+msgstr "Por favor, insira seu nome de usuário"
 
 #: xpack/plugins/interface/templates/login_i18n.html:12
-#, fuzzy
-#| msgid "Please change your password"
 msgid "Please enter your password"
-msgstr "Por favor, altere sua senha."
+msgstr "Por favor, insira sua senha"
 
 #: xpack/plugins/interface/templates/login_i18n.html:15
 msgid "I have read and agree to the"
-msgstr ""
+msgstr "Li e concordo com a"
 
 #: xpack/plugins/interface/templates/login_i18n.html:16
-#, fuzzy
-#| msgid "User agent"
 msgid "User Agreement"
-msgstr "Agente do usuário"
+msgstr "Contrato do Usuário"
 
 #: xpack/plugins/interface/templates/login_i18n.html:17
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Política de Privacidade"
 
 #: xpack/plugins/jdmc/i18n.py:4
-#, fuzzy
-#| msgid "Audit view"
 msgid "AuditAdmin"
-msgstr "Painel de auditoria"
+msgstr "Administrador de Auditoria"
 
 #: xpack/plugins/jdmc/i18n.py:5
-#, fuzzy
-#| msgid "SystemAdmin"
 msgid "SecAdmin"
-msgstr "Administrador do sistema"
+msgstr "Administrador de Segurança"
 
 #: xpack/plugins/jdmc/meta.py:9
 msgid "JDMC"
-msgstr ""
+msgstr "JDMC"
 
 #: xpack/plugins/license/api.py:55
 msgid "License import successfully"
@@ -13188,22 +12919,18 @@ msgstr "Licença inválida"
 #~ msgid "Offline video player"
 #~ msgstr "Reprodutor de Gravação Offline"
 
-#, fuzzy
 #~| msgid "Domain name"
 #~ msgid "domain_name"
 #~ msgstr "Nome do domínio"
 
-#, fuzzy
 #~| msgid "Authenticate"
 #~ msgid "Certificate Auth"
 #~ msgstr "Verificar identidade"
 
-#, fuzzy
 #~| msgid "Authenticate"
 #~ msgid "Certificate"
 #~ msgstr "Verificar identidade"
 
-#, fuzzy
 #~| msgid "More login options"
 #~ msgid "Other login methods"
 #~ msgstr "Login por outros métodos"
@@ -13234,7 +12961,6 @@ msgstr "Licença inválida"
 #~ "OpenSSH é um programa usado para conectar aplicativos remotos no servidor "
 #~ "de publicação de aplicativos remotos do Windows"
 
-#, fuzzy
 #~| msgid "Periodic run"
 #~ msgid "Periodic report"
 #~ msgstr "Execução periódica"

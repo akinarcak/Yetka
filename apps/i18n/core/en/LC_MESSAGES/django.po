@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-22 10:24+0800\n"
+"POT-Creation-Date: 2026-06-22 11:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3660,8 +3659,6 @@ msgstr ""
 #: audits/reporting.py:24 audits/reporting.py:94 audits/reporting.py:149
 #: audits/reporting.py:216 audits/reporting.py:533 audits/reporting.py:602
 #: terminal/reporting.py:28 terminal/reporting.py:103
-#, fuzzy
-#| msgid "Success"
 msgid "Success rate"
 msgstr "Success"
 
@@ -3679,8 +3676,6 @@ msgid "Unique assets"
 msgstr ""
 
 #: audits/reporting.py:28
-#, fuzzy
-#| msgid "Is service account"
 msgid "Unique accounts"
 msgstr "Is service account"
 
@@ -3760,8 +3755,6 @@ msgid "Time range"
 msgstr ""
 
 #: audits/reporting.py:136
-#, fuzzy
-#| msgid "Periodic run"
 msgid "User Login Report"
 msgstr "Periodic"
 
@@ -3846,8 +3839,6 @@ msgid "Resource Type Distribution"
 msgstr ""
 
 #: audits/reporting.py:418
-#, fuzzy
-#| msgid "Resource count"
 msgid "Resource Top 10"
 msgstr "Resource count"
 
@@ -3860,8 +3851,6 @@ msgid "Job Audit Report"
 msgstr ""
 
 #: audits/reporting.py:443
-#, fuzzy
-#| msgid "Periodic run"
 msgid "Periodic jobs"
 msgstr "Periodic"
 
@@ -3927,8 +3916,6 @@ msgid "Job Log Report"
 msgstr ""
 
 #: audits/reporting.py:530 audits/reporting.py:602
-#, fuzzy
-#| msgid "Success"
 msgid "Successful jobs"
 msgstr "Success"
 
@@ -3937,8 +3924,6 @@ msgid "Finished jobs"
 msgstr ""
 
 #: audits/reporting.py:532 audits/reporting.py:602
-#, fuzzy
-#| msgid "Is finished"
 msgid "Unfinished jobs"
 msgstr "Finished"
 
@@ -4256,8 +4241,6 @@ msgid "Certificate signing failed"
 msgstr ""
 
 #: authentication/backends/ukey/exceptions.py:8
-#, fuzzy
-#| msgid "Can public key authentication"
 msgid "Certificate authentication failed"
 msgstr "Can public key authentication"
 
@@ -4274,8 +4257,6 @@ msgid "Invalid certificate format"
 msgstr ""
 
 #: authentication/backends/ukey/exceptions.py:28
-#, fuzzy
-#| msgid "Can public key authentication"
 msgid "Certificate chain verification failed"
 msgstr "Can public key authentication"
 
@@ -4284,8 +4265,6 @@ msgid "Certificate CN does not match the username"
 msgstr ""
 
 #: authentication/backends/ukey/exceptions.py:36
-#, fuzzy
-#| msgid "Can public key authentication"
 msgid "Certificate signature verification failed"
 msgstr "Can public key authentication"
 
@@ -5607,8 +5586,6 @@ msgid "Report"
 msgstr ""
 
 #: common/drf/reporting.py:37
-#, fuzzy
-#| msgid "Su from"
 msgid "Date from"
 msgstr "Switch from"
 
@@ -5665,19 +5642,19 @@ msgstr ""
 msgid "Unexpect error occur"
 msgstr ""
 
-#: common/plugins/es.py:37
+#: common/plugins/es.py:44
 msgid "Invalid elasticsearch config"
 msgstr ""
 
-#: common/plugins/es.py:42
+#: common/plugins/es.py:49
 msgid "The server is not Elasticsearch or this product is not supported"
 msgstr ""
 
-#: common/plugins/es.py:47
+#: common/plugins/es.py:54
 msgid "Not Support Elasticsearch8"
 msgstr ""
 
-#: common/plugins/es.py:53
+#: common/plugins/es.py:60
 msgid ""
 "Connection failed: Self-signed certificate used. Please check server "
 "certificate configuration"
@@ -9530,8 +9507,6 @@ msgid "Invalid storage"
 msgstr ""
 
 #: terminal/reporting.py:10
-#, fuzzy
-#| msgid "Session content"
 msgid "Session Report"
 msgstr "Custom content for session"
 
@@ -9548,8 +9523,6 @@ msgid "Finished sessions"
 msgstr ""
 
 #: terminal/reporting.py:27 terminal/reporting.py:103
-#, fuzzy
-#| msgid "App Permissions"
 msgid "Active sessions"
 msgstr "Policies"
 
@@ -9558,14 +9531,10 @@ msgid "Sessions with replay"
 msgstr ""
 
 #: terminal/reporting.py:30
-#, fuzzy
-#| msgid "Session audits"
 msgid "Sessions with commands"
 msgstr "Session"
 
 #: terminal/reporting.py:33
-#, fuzzy
-#| msgid "App Terminals"
 msgid "Unique terminals"
 msgstr "Terminals"
 
@@ -10368,14 +10337,10 @@ msgid "Ticket has processed - {} ({})"
 msgstr ""
 
 #: tickets/reporting.py:10
-#, fuzzy
-#| msgid "Ticket open"
 msgid "Ticket Report"
 msgstr "Pending approval"
 
 #: tickets/reporting.py:17
-#, fuzzy
-#| msgid "App Tickets"
 msgid "Open tickets"
 msgstr "Tickets"
 
@@ -10388,8 +10353,6 @@ msgid "Pending tickets"
 msgstr ""
 
 #: tickets/reporting.py:20
-#, fuzzy
-#| msgid "App Tickets"
 msgid "Approved tickets"
 msgstr "Tickets"
 
@@ -10402,8 +10365,6 @@ msgid "Unique applicants"
 msgstr ""
 
 #: tickets/reporting.py:25
-#, fuzzy
-#| msgid "App organizations"
 msgid "Unique organizations"
 msgstr "Organizations"
 
@@ -10420,8 +10381,6 @@ msgid "Ticket Status Distribution"
 msgstr ""
 
 #: tickets/reporting.py:84
-#, fuzzy
-#| msgid "App organizations"
 msgid "Organization Top 10"
 msgstr "Organizations"
 
@@ -11006,8 +10965,6 @@ msgid "Can public key authentication"
 msgstr "Can public key authentication"
 
 #: users/serializers/user.py:145
-#, fuzzy
-#| msgid "Can public key authentication"
 msgid "Can UKey authentication"
 msgstr "Can public key authentication"
 
@@ -12234,8 +12191,6 @@ msgid "Please enter your username"
 msgstr ""
 
 #: xpack/plugins/interface/templates/login_i18n.html:12
-#, fuzzy
-#| msgid "Zip encrypt password"
 msgid "Please enter your password"
 msgstr "Passphrase"
 
@@ -12271,7 +12226,6 @@ msgstr ""
 msgid "Invalid license"
 msgstr ""
 
-#, fuzzy
 #~| msgid "App Authentication"
 #~ msgid "Certificate Auth"
 #~ msgstr "Authentication"
