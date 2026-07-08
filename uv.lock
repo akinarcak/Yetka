@@ -639,7 +639,7 @@ name = "blessed"
 version = "1.38.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "jinxed", marker = "sys_platform == 'win32'" },
+    { name = "jinxed" },
     { name = "wcwidth" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9f/1f/f2535d0eb1fb8af7915f96b4d42810345c255bbbca39939a23e59c0695d8/blessed-1.38.0.tar.gz", hash = "sha256:89ce6ec6567f7aced0716b73577b7a1702eb23c667838bb46d7d9bd48c36d1b3", size = 14008103, upload-time = "2026-03-30T22:47:36.787Z" }
@@ -2033,7 +2033,7 @@ name = "jinxed"
 version = "1.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ansicon", marker = "sys_platform == 'win32'" },
+    { name = "ansicon" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3c/e9/96633f12b6829eb1e91e70e5846704c0b1293ec47bd65a7b681e19c8eeff/jinxed-1.4.0.tar.gz", hash = "sha256:8f7801a10799de39e509eb5abc6d131ee169c1ce4fd5d568aa85b5f56ed58068", size = 37169, upload-time = "2026-03-26T01:49:38.337Z" }
 wheels = [
@@ -2140,6 +2140,8 @@ dependencies = [
     { name = "asn1crypto" },
     { name = "azure-identity" },
     { name = "azure-keyvault-secrets" },
+    { name = "azure-mgmt-compute" },
+    { name = "azure-mgmt-network" },
     { name = "azure-storage-blob" },
     { name = "bcrypt" },
     { name = "billiard" },
@@ -2325,6 +2327,8 @@ requires-dist = [
     { name = "asn1crypto", specifier = "==1.5.1" },
     { name = "azure-identity", specifier = "==1.16.1" },
     { name = "azure-keyvault-secrets", specifier = "==4.9.0" },
+    { name = "azure-mgmt-compute", specifier = "==30.0.0" },
+    { name = "azure-mgmt-network", specifier = "==23.1.0" },
     { name = "azure-storage-blob", specifier = "==12.17.0" },
     { name = "bcrypt", specifier = "==4.0.1" },
     { name = "billiard", specifier = "==4.2.1" },
@@ -2409,7 +2413,7 @@ requires-dist = [
     { name = "premailer", specifier = "==3.10.0" },
     { name = "psutil", specifier = "==5.9.5" },
     { name = "psycopg2-binary", specifier = "==2.9.12" },
-    { name = "pyasn1", specifier = "==0.6.3" },
+    { name = "pyasn1", specifier = "==0.6.4" },
     { name = "pycountry", specifier = ">=24.6.1" },
     { name = "pycparser", specifier = "==2.21" },
     { name = "pycryptodome", specifier = "==3.23.0" },
@@ -3325,11 +3329,11 @@ sdist = { url = "https://files.pythonhosted.org/packages/1d/c7/28220d37e041fe1df
 
 [[package]]
 name = "pyasn1"
-version = "0.6.3"
+version = "0.6.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5c/5f/6583902b6f79b399c9c40674ac384fd9cd77805f9e6205075f828ef11fb2/pyasn1-0.6.3.tar.gz", hash = "sha256:697a8ecd6d98891189184ca1fa05d1bb00e2f84b5977c481452050549c8a72cf", size = 148685, upload-time = "2026-03-17T01:06:53.382Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a4/9a/23310166d960def5897e91fe20e5b724601b02a22e84ba1f94232c0b7f67/pyasn1-0.6.4.tar.gz", hash = "sha256:9c447d8431c947fe4c8febc4ed9e760bc29011a5b01e5c74b67025bd9fb8ce81", size = 151262, upload-time = "2026-07-09T01:12:33.988Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5d/a0/7d793dce3fa811fe047d6ae2431c672364b462850c6235ae306c0efd025f/pyasn1-0.6.3-py3-none-any.whl", hash = "sha256:a80184d120f0864a52a073acc6fc642847d0be408e7c7252f31390c0f4eadcde", size = 83997, upload-time = "2026-03-17T01:06:52.036Z" },
+    { url = "https://files.pythonhosted.org/packages/9a/3b/6163796d69c3977d1e4287bea4a6979161cbbdd170ebb430511e8e1999ce/pyasn1-0.6.4-py3-none-any.whl", hash = "sha256:deda9277cfd454080ec40b207fb6df82206a3a2688735233cdcd8d3d565f088b", size = 84410, upload-time = "2026-07-09T01:12:32.92Z" },
 ]
 
 [[package]]
