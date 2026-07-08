@@ -797,8 +797,8 @@ class Config(dict):
 
         # rdp sign cert
         'RDP_SIGN_ENABLED': False,
-        'RDP_SIGN_CERT': 'signer.crt',
-        'RDP_SIGN_CERT_KEY': 'signer.key',
+        'RDP_SIGN_CERT': 'rdp_signer.crt',
+        'RDP_SIGN_CERT_KEY': 'rdp_signer.key',
     }
 
     old_config_map = {
