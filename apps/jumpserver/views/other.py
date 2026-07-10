@@ -100,7 +100,7 @@ class ResourceDownload(TemplateView):
 
     @lazyproperty
     def versions_content(self):
-        more_downloads = os.environ.get('MORE_DOWNLOADS_URL')
+        more_downloads = os.environ.get('MORE_DOWNLOADS_URL', '')
         return f"""
         MRD_VERSION=10.6.7
         OPENSSH_VERSION=v9.4.0.0
