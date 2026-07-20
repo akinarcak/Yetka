@@ -13,6 +13,8 @@ WECHAT_PAYLOAD = 'wechat:this.object.wechat'
 UPSTREAM_LICENSE_URL = 'https://github.com/jumpserver/jumpserver'
 LICENSE_STORE_GATE = 't.XPACK_ENABLED&&(e.hasValidLicense=t.XPACK_LICENSE_IS_VALID)'
 PAGE_DISABLED_OVERLAY = 'm.disabled?(i(),e(`div`,oe,'
+NGINX_UI_LOCATION = '    location /ui/ {'
+NGINX_UI_LOCATION_PATCH = '    location /ui/ {\n        add_header Cache-Control "no-store" always;'
 
 
 def main() -> None:
@@ -82,6 +84,16 @@ def main() -> None:
             continue
         bundle.write_text(updated, encoding="utf-8")
         print(f"Disabled Yetka enterprise overlay: {bundle.name}")
+
+    nginx_config = Path("/etc/nginx/conf.d/default.conf")
+    if nginx_config.exists():
+        content = nginx_config.read_text(encoding="utf-8")
+        if NGINX_UI_LOCATION in content and NGINX_UI_LOCATION_PATCH not in content:
+            nginx_config.write_text(
+                content.replace(NGINX_UI_LOCATION, NGINX_UI_LOCATION_PATCH, 1),
+                encoding="utf-8",
+            )
+            print("Disabled browser caching for Yetka UI assets")
 
 
 if __name__ == "__main__":
