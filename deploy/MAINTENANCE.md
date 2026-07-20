@@ -1,10 +1,11 @@
 # Yetka güvenlik ve sürüm bakım politikası
 
-Yetka üretim kurulumu otomatik olarak yeni kodu devreye almaz. Otomatik yükseltme; veritabanı migrasyonu, connector uyumu ve HA düğümlerinde aynı anda kesinti riski doğurur. Sistem bunun yerine altı saatte bir kontrol yapar, sonucu yöneticilere popup olarak gösterir ve aşağıdaki kontrollü süreci başlatır.
+Yetka üretim kurulumu web sürecinden veya tarayıcıdan yeni kod devreye almaz. Veritabanı migrasyonu, connector uyumu ve HA düğümlerinde aynı anda kesinti riski nedeniyle güncellemeyi root yetkili host aracı yapar. Sistem altı saatte bir kontrol yapar, sonucu yöneticilere popup olarak gösterir ve doğrulanmış `yetka-update` komutunu sunar.
 
 ## Neler kontrol edilir?
 
-- Kurulu çekirdek sürümü ile en son upstream çekirdek release’i karşılaştırılır.
+- Kurulu Yetka sürümü yalnız `akinarcak/Yetka` release kanalıyla karşılaştırılır. Popup’taki bu sürüm doğrudan kurulabilir.
+- JumpServer upstream sürümü Yetka’nın taban aldığı upstream sürümle ayrıca karşılaştırılır. Bu yalnız ürün ekibine inceleme kaydı açar; upstream etiketi Yetka sunucusuna otomatik kurulmaz.
 - Çalışan Python ortamındaki gerçek paket adları ve sürümleri OSV kayıtlarıyla karşılaştırılır.
 - GitHub üzerinde haftalık bağımlılık güncelleme PR’ları, `pip-audit` ve Trivy kaynak taraması çalışır.
 - Koko, Lina, Luna, Lion ve Chen sürümleri çekirdek release’iyle birlikte değerlendirilir. Bu binary bileşenler Python paket taramasının parçası değildir; sürüm matrisi release kabul testinde ayrıca doğrulanır.
@@ -23,7 +24,25 @@ Tarama sırasında OSV’ye yalnız kurulu PyPI paket adı ve sürümü gönderi
 
 Bir kayıt Yetka’nın kullandığı kod yolunu etkilemiyorsa gerekçesi ve kanıtı release notuna yazılır; popup yalnız yeni fingerprint oluştuğunda yeniden açılır ve aynı bulgu en fazla 24 saat ertelenebilir.
 
-## Güvenli güncelleme akışı
+## Bare-metal güncelleme komutları
+
+Kurucu `/usr/local/sbin/yetka-update` aracını ve kullanılan env dosyasının yolunu kurar. Araç aynı anda yalnız bir güncellemeye izin verir; GitHub release arşivi ile SHA-256 dosyasını indirir, checksum’u doğrular ve hedef kurucuyu önce dry-run olarak çalıştırır.
+
+```bash
+yetka-update check
+sudo yetka-update plan --version v2.1.0
+sudo yetka-update apply --version v2.1.0
+```
+
+Etkileşimsiz onay yalnız kontrollü bakım otomasyonunda verilmelidir:
+
+```bash
+sudo yetka-update apply --version v2.1.0 --yes
+```
+
+`apply` başlamadan `/var/backups/yetka` altında env/yapılandırma, veritabanı ve varsayılan olarak `/var/lib/yetka` arşivi oluşturur. Dış/shared depolamanın bağımsız, geri dönüşü test edilmiş snapshot politikası varsa `YETKA_UPDATE_BACKUP_DATA=false` kullanılabilir. Script yeni kodu kurar, migrasyonları tek düğümde çalıştırır, yapılandırılmış servisleri yeniden başlatır ve HTTP/servis sağlığını denetler. Kurulum veya sağlık kontrolü başarısızsa önceki uygulama commit’ine dönmeyi dener; veritabanı migrasyonlarını otomatik geri almaz ve alınan DB yedeğinin yolunu bildirir.
+
+## Güvenli release hazırlama akışı
 
 1. Upstream release notlarını, güvenlik danışma kimliklerini ve değişen migrasyonları inceleyin.
 2. Yetka değişikliklerinin üzerine tüm upstream dalını körlemesine birleştirmeyin. İlgili güvenlik düzeltmesini ayrı dalda merge/cherry-pick edin ve marka/lisans değişikliklerini koruyun.
@@ -34,17 +53,13 @@ Bir kayıt Yetka’nın kullandığı kod yolunu etkilemiyorsa gerekçesi ve kan
 7. İkinci uygulama düğümlerini ve aynı sürüm matrisindeki connector’ları yükseltin. Son olarak scheduler liderini güncelleyin.
 8. Release etiketi oluşturun; GitHub workflow’u kurulum paketini ve SHA-256 dosyasını release’e ekler.
 
-Bare-metal düğümde kontrollü yükseltme:
+`YETKA_GIT_REF` yalnız kabul testinden geçen Yetka etiketine veya commit’e sabitlenmelidir. Popup’ın gösterdiği upstream JumpServer etiketi bu alana yazılmamalıdır.
 
-```bash
-sudo cp /etc/yetka-install.env /etc/yetka-install.env.backup
-sudo editor /etc/yetka-install.env
-sudo ./deploy/install-baremetal.sh --env /etc/yetka-install.env --dry-run
-sudo ./deploy/install-baremetal.sh --env /etc/yetka-install.env --yes
-sudo ./deploy/check-install.sh http://127.0.0.1
-```
+## HA ve container güncellemesi
 
-`YETKA_GIT_REF` değeri yalnız kabul testinden geçen etikete veya commit’e sabitlenmelidir.
+Active-active/active-standby kurulumunda yük dengeleyiciden çıkarılmış standby düğümde `plan` ve `apply` çalıştırın. Login, CRUD ve connector kabul testlerinden sonra trafiği bu düğüme alın; kalan uygulama düğümlerini tek tek güncelleyin. Scheduler yalnız bir düğümde etkin kalmalı ve scheduler lideri en son güncellenmelidir. Ortak şemada migrasyon yalnız ilk güncellenen düğümde oluşur; DB yedeği olmadan eski sürüme trafik döndürülmemelidir.
+
+Container kurulumu kendi çalışan container’ı içinden güncellenmez. Host/CI, aynı Yetka release etiketine ait yeni image’ı digest ile sabitleyip veritabanı ve volume snapshot’ını aldıktan sonra standby container’da migrasyon ve sağlık kontrolü yapar; başarılı olunca load balancer/Compose/Kubernetes rollout’u ilerletir. `yetka-update` yalnız bu repodaki systemd bare-metal kurulumu içindir.
 
 ## İşletim ve hata ayıklama
 

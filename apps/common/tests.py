@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 from django.test import SimpleTestCase, override_settings
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from .security_updates import _version, refresh_maintenance_status
+from .security_updates import _fetch_release, _version, refresh_maintenance_status
 from jumpserver.api.maintenance import MaintenanceStatusApi
 
 # Create your tests here.
@@ -27,6 +27,15 @@ class MaintenanceStatusTestCase(SimpleTestCase):
         self.assertEqual(_version('v4.10.17-lts'), (4, 10, 17))
         self.assertIsNone(_version('dev'))
 
+    def test_release_tag_rejects_shell_input(self):
+        response = Mock()
+        response.json.return_value = {'tag_name': 'v2.1.0;touch /tmp/unsafe'}
+        session = Mock()
+        session.get.return_value = response
+
+        with self.assertRaisesRegex(ValueError, 'valid version tag'):
+            _fetch_release(session, 'https://example.test/releases/latest')
+
     def test_slack_renderer_supports_current_mistune(self):
         from common.sdk.im.slack import Slack
 
@@ -40,25 +49,31 @@ class MaintenanceStatusTestCase(SimpleTestCase):
             blocks[0]['text']['text'],
         )
 
-    @override_settings(VERSION='v4.10.1')
+    @override_settings(VERSION='2.0.1')
     @patch('common.security_updates.cache.set')
     @patch('common.security_updates._installed_python_packages')
     def test_refresh_reports_release_and_osv_findings(self, packages, cache_set):
         packages.return_value = [
             {'name': 'example-package', 'version': '1.0.0'},
         ]
-        release_response = Mock()
-        release_response.json.return_value = {
-            'tag_name': 'v4.10.2',
+        yetka_response = Mock()
+        yetka_response.json.return_value = {
+            'tag_name': 'v2.1.0',
             'published_at': '2026-07-20T00:00:00Z',
-            'html_url': 'https://example.test/releases/v4.10.2',
+            'html_url': 'https://example.test/releases/v2.1.0',
+        }
+        upstream_response = Mock()
+        upstream_response.json.return_value = {
+            'tag_name': 'v4.10.17',
+            'published_at': '2026-07-19T00:00:00Z',
+            'html_url': 'https://example.test/releases/v4.10.17',
         }
         osv_response = Mock()
         osv_response.json.return_value = {
             'results': [{'vulns': [{'id': 'GHSA-test-0000'}]}],
         }
         session = Mock()
-        session.get.return_value = release_response
+        session.get.side_effect = [yetka_response, upstream_response]
         session.post.return_value = osv_response
 
         with patch('common.security_updates.cache.get', return_value=None):
@@ -66,6 +81,11 @@ class MaintenanceStatusTestCase(SimpleTestCase):
 
         self.assertTrue(status['attention_required'])
         self.assertTrue(status['update']['available'])
+        self.assertEqual(
+            status['update']['command'],
+            'sudo yetka-update apply --version v2.1.0',
+        )
+        self.assertFalse(status['upstream']['review_required'])
         self.assertEqual(status['vulnerabilities']['total'], 1)
         self.assertEqual(status['vulnerabilities']['items'][0]['package'], 'example-package')
         self.assertEqual(len(status['fingerprint']), 20)
@@ -75,18 +95,45 @@ class MaintenanceStatusTestCase(SimpleTestCase):
     @patch('common.security_updates.cache.set')
     @patch('common.security_updates._installed_python_packages', return_value=[])
     def test_unknown_build_version_requires_review(self, packages, cache_set):
-        release_response = Mock()
-        release_response.json.return_value = {
-            'tag_name': 'v4.10.2', 'published_at': None, 'html_url': None,
+        yetka_response = Mock()
+        yetka_response.json.return_value = {
+            'tag_name': 'v2.1.0', 'published_at': None, 'html_url': None,
+        }
+        upstream_response = Mock()
+        upstream_response.json.return_value = {
+            'tag_name': 'v4.10.17', 'published_at': None, 'html_url': None,
         }
         session = Mock()
-        session.get.return_value = release_response
+        session.get.side_effect = [yetka_response, upstream_response]
 
         with patch('common.security_updates.cache.get', return_value=None):
             status = refresh_maintenance_status(session=session)
 
         self.assertTrue(status['update']['available'])
         self.assertFalse(status['update']['comparison_available'])
+        self.assertTrue(status['attention_required'])
+
+    @override_settings(VERSION='2.1.0')
+    @patch('common.security_updates.cache.set')
+    @patch('common.security_updates._installed_python_packages', return_value=[])
+    @patch('common.security_updates.UPSTREAM_BASE_VERSION', 'v4.10.16')
+    def test_upstream_release_is_review_only(self, packages, cache_set):
+        yetka_response = Mock()
+        yetka_response.json.return_value = {
+            'tag_name': 'v2.1.0', 'published_at': None, 'html_url': None,
+        }
+        upstream_response = Mock()
+        upstream_response.json.return_value = {
+            'tag_name': 'v4.10.17', 'published_at': None, 'html_url': None,
+        }
+        session = Mock()
+        session.get.side_effect = [yetka_response, upstream_response]
+
+        with patch('common.security_updates.cache.get', return_value=None):
+            status = refresh_maintenance_status(session=session)
+
+        self.assertFalse(status['update']['available'])
+        self.assertTrue(status['upstream']['review_required'])
         self.assertTrue(status['attention_required'])
 
     @patch('jumpserver.api.maintenance.get_maintenance_status')

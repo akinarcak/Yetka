@@ -29,7 +29,7 @@ sudo ./deploy/check-install.sh http://127.0.0.1
 
 Kurucu yerel PostgreSQL ve Redis için rastgele parola üretir. Uygulama yapılandırması `/opt/yetka/app/config.yml`, küme sırları `/etc/yetka/cluster-secrets.env`, kalıcı veri `/var/lib/yetka` altındadır.
 
-Scheduler düğümü ayrıca upstream sürüm ve OSV bağımlılık kontrolünü altı saatte bir çalıştırır. Yeni sürüm, güvenlik kaydı veya tarama hatası yalnız sistem yöneticilerine popup olarak gösterilir.
+Scheduler düğümü Yetka release, JumpServer upstream inceleme ve OSV bağımlılık kontrolünü altı saatte bir çalıştırır. Kurulabilir Yetka sürümü, upstream inceleme kaydı, güvenlik kaydı veya tarama hatası yalnız sistem yöneticilerine popup olarak gösterilir. Yetka ile upstream sürüm numaraları birbirine kıyaslanmaz.
 
 ## 2. Harici PostgreSQL, MySQL ve Redis
 
@@ -128,7 +128,15 @@ URL verilip checksum verilmezse kurulum durur. Lina URL’si yoksa API kurulur f
 
 ## 7. Yükseltme ve işletim
 
-Önce DB ve `/var/lib/yetka` yedeği alın. Standby/ikinci uygulama düğümünde `YETKA_GIT_REF` değerini yeni etikete getirip kurucuyu tekrar çalıştırın. Sağlık ve kullanıcı akışları geçtikten sonra trafiği yeni düğüme taşıyın. Şema migrasyonu uygulandıktan sonra eski uygulama sürümüne dönmek her zaman güvenli değildir; DB geri dönüş planı olmadan downgrade yapılmamalıdır.
+İlk kurulumdan sonra kurulan host updater’ını kullanın. Araç release checksum’unu doğrular, dry-run yapar, DB/yapılandırma/veri yedeği alır, servisleri kontrollü yeniden başlatır ve sağlık kontrolü çalıştırır:
+
+```bash
+yetka-update check
+sudo yetka-update plan --version v2.1.0
+sudo yetka-update apply --version v2.1.0
+```
+
+HA ortamında önce trafiksiz standby/ikinci uygulama düğümünü güncelleyin. Sağlık ve kullanıcı akışları geçtikten sonra trafiği yeni düğüme taşıyın ve düğümleri tek tek ilerletin. Scheduler liderini en son güncelleyin. Şema migrasyonu uygulandıktan sonra eski uygulama sürümüne dönmek her zaman güvenli değildir; DB geri dönüş planı olmadan downgrade yapılmamalıdır. Ayrıntılar [bakım politikasındadır](MAINTENANCE.md).
 
 ```bash
 systemctl status yetka-web yetka-worker yetka-scheduler nginx

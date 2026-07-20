@@ -30,6 +30,7 @@ while (($#)); do
 done
 [[ $EUID -eq 0 ]] || die "Run as root"
 [[ -n "$ENV_FILE" && -f "$ENV_FILE" ]] || die "Pass an existing --env file"
+ENV_FILE=$(readlink -f "$ENV_FILE")
 
 set -a
 # shellcheck disable=SC1090
@@ -55,6 +56,7 @@ set +a
 : "${YETKA_ENABLE_WORKER:=true}"
 : "${YETKA_ENABLE_SCHEDULER:=false}"
 : "${YETKA_MAINTENANCE_CHECK_ENABLED:=true}"
+: "${YETKA_UPSTREAM_BASE_VERSION:=v4.10.17}"
 
 [[ "$DB_ENGINE" =~ ^(postgresql|mysql)$ ]] || die "DB_ENGINE must be postgresql or mysql"
 [[ "$YETKA_DATA_MODE" != standalone || "$DB_ENGINE" == postgresql ]] || die "Standalone mode uses PostgreSQL; MySQL is supported in external mode"
@@ -90,14 +92,14 @@ esac
 install_packages() {
   if command -v apt-get >/dev/null; then
     run apt-get update
-    run env DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl git nginx gcc g++ make gettext libldap2-dev libsasl2-dev libssl-dev libxml2-dev libxmlsec1-dev libffi-dev libmariadb-dev pkg-config openssh-client sshpass postgresql-client
+    run env DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl git nginx gcc g++ make gettext libldap2-dev libsasl2-dev libssl-dev libxml2-dev libxmlsec1-dev libffi-dev libmariadb-dev pkg-config openssh-client sshpass postgresql-client default-mysql-client util-linux
     [[ "$YETKA_DATA_MODE" == standalone ]] && run env DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql redis-server
   elif command -v dnf >/dev/null || command -v yum >/dev/null; then
     local pm=dnf; command -v dnf >/dev/null || pm=yum
-    run "$pm" install -y ca-certificates curl git nginx gcc gcc-c++ make gettext openldap-devel cyrus-sasl-devel openssl-devel libxml2-devel xmlsec1-devel libffi-devel mariadb-connector-c-devel pkgconf-pkg-config openssh-clients sshpass postgresql
+    run "$pm" install -y ca-certificates curl git nginx gcc gcc-c++ make gettext openldap-devel cyrus-sasl-devel openssl-devel libxml2-devel xmlsec1-devel libffi-devel mariadb-connector-c-devel pkgconf-pkg-config openssh-clients sshpass postgresql mariadb util-linux
     [[ "$YETKA_DATA_MODE" == standalone ]] && run "$pm" install -y postgresql-server postgresql-contrib redis
   elif command -v zypper >/dev/null; then
-    run zypper --non-interactive install ca-certificates curl git nginx gcc gcc-c++ make gettext-tools openldap2-devel cyrus-sasl-devel libopenssl-devel libxml2-devel xmlsec1-devel libffi-devel libmariadb-devel pkg-config openssh-clients postgresql
+    run zypper --non-interactive install ca-certificates curl git nginx gcc gcc-c++ make gettext-tools openldap2-devel cyrus-sasl-devel libopenssl-devel libxml2-devel xmlsec1-devel libffi-devel libmariadb-devel pkg-config openssh-clients postgresql mariadb-client util-linux
     [[ "$YETKA_DATA_MODE" == standalone ]] && run zypper --non-interactive install postgresql-server redis
   else
     die "Unsupported package manager; use apt, dnf/yum or zypper"
@@ -132,8 +134,13 @@ install_uv_python() {
 install_source() {
   if [[ -d "$YETKA_INSTALL_DIR/app/.git" ]]; then
     run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" fetch --tags origin
-    run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout "$YETKA_GIT_REF"
-    run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" pull --ff-only origin "$YETKA_GIT_REF"
+    if git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" show-ref --verify --quiet "refs/remotes/origin/$YETKA_GIT_REF"; then
+      run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout -B "$YETKA_GIT_REF" "origin/$YETKA_GIT_REF"
+    elif git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" show-ref --verify --quiet "refs/tags/$YETKA_GIT_REF"; then
+      run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "refs/tags/$YETKA_GIT_REF"
+    else
+      run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "$YETKA_GIT_REF"
+    fi
   else
     [[ ! -e "$YETKA_INSTALL_DIR/app" ]] || die "$YETKA_INSTALL_DIR/app exists but is not a git checkout"
     run git clone --branch "$YETKA_GIT_REF" --depth 1 "$YETKA_GIT_URL" "$YETKA_INSTALL_DIR/app"
@@ -141,6 +148,15 @@ install_source() {
   run uv venv --python 3.14 "$YETKA_INSTALL_DIR/venv"
   run uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -r "$YETKA_INSTALL_DIR/app/pyproject.toml"
   run chown -R "$YETKA_USER:$YETKA_USER" "$YETKA_INSTALL_DIR/app" "$YETKA_INSTALL_DIR/venv"
+}
+
+install_management_tools() {
+  run install -o root -g root -m 0750 "$YETKA_INSTALL_DIR/app/deploy/yetka-update.sh" /usr/local/sbin/yetka-update
+  if [[ "$DRY_RUN" == false ]]; then
+    printf '%s\n' "$ENV_FILE" > "$YETKA_CONFIG_DIR/update.env.path"
+    chown root:root "$YETKA_CONFIG_DIR/update.env.path"
+    chmod 0600 "$YETKA_CONFIG_DIR/update.env.path"
+  fi
 }
 
 prepare_data_mount() {
@@ -249,6 +265,7 @@ WorkingDirectory=$YETKA_INSTALL_DIR/app
 Environment=PATH=$YETKA_INSTALL_DIR/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 Environment=CELERY_COMBINE_QUEUES=1
 Environment=YETKA_MAINTENANCE_CHECK_ENABLED=$YETKA_MAINTENANCE_CHECK_ENABLED
+Environment=YETKA_UPSTREAM_BASE_VERSION=$YETKA_UPSTREAM_BASE_VERSION
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=45
@@ -298,14 +315,32 @@ EOF
 
 enable_services() {
   [[ "$DRY_RUN" == true ]] && return
+  local enabled unit
   runuser -u "$YETKA_USER" -- "$YETKA_INSTALL_DIR/venv/bin/python" "$YETKA_INSTALL_DIR/app/jms" upgrade_db
   runuser -u "$YETKA_USER" -- "$YETKA_INSTALL_DIR/venv/bin/python" "$YETKA_INSTALL_DIR/app/jms" collect_static
-  [[ "$YETKA_ENABLE_WEB" == true ]] && systemctl enable --now yetka-web
-  [[ "$YETKA_ENABLE_WORKER" == true ]] && systemctl enable --now yetka-worker
-  [[ "$YETKA_ENABLE_SCHEDULER" == true ]] && systemctl enable --now yetka-scheduler
-  [[ -f /etc/systemd/system/yetka-koko.service ]] && systemctl enable --now yetka-koko
+  for enabled in "$YETKA_ENABLE_WEB" "$YETKA_ENABLE_WORKER" "$YETKA_ENABLE_SCHEDULER"; do
+    case "$enabled" in true|false) ;; *) die "Service enable flags must be true or false" ;; esac
+  done
+  for unit in web worker scheduler; do
+    case "$unit" in
+      web) enabled=$YETKA_ENABLE_WEB ;;
+      worker) enabled=$YETKA_ENABLE_WORKER ;;
+      scheduler) enabled=$YETKA_ENABLE_SCHEDULER ;;
+    esac
+    if [[ "$enabled" == true ]]; then
+      systemctl enable "yetka-$unit"
+      systemctl restart "yetka-$unit"
+    else
+      systemctl disable --now "yetka-$unit" 2>/dev/null || true
+    fi
+  done
+  if [[ -f /etc/systemd/system/yetka-koko.service ]]; then
+    systemctl enable yetka-koko
+    systemctl restart yetka-koko
+  fi
   nginx -t
-  systemctl enable --now nginx
+  systemctl enable nginx
+  systemctl restart nginx
 }
 
 if [[ "$ASSUME_YES" != true && "$DRY_RUN" != true ]]; then
@@ -317,10 +352,16 @@ create_identity
 install_uv_python
 configure_standalone
 install_source
+install_management_tools
 prepare_data_mount
 write_config
 install_optional_assets
 write_units
 enable_services
+if [[ "$DRY_RUN" == false ]]; then
+  printf '%s\n' "$YETKA_GIT_REF" > "$YETKA_DATA_DIR/release-version"
+  chown "$YETKA_USER:$YETKA_USER" "$YETKA_DATA_DIR/release-version"
+  chmod 0640 "$YETKA_DATA_DIR/release-version"
+fi
 log "Installation complete. Clean databases initially use admin / ChangeMe. Change it immediately."
 [[ -z ${YETKA_LINA_URL:-} ]] && log "No Lina archive was configured; API is installed but the browser UI intentionally returns 503."

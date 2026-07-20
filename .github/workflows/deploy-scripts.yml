@@ -2,9 +2,9 @@ name: Validate deployment scripts
 
 on:
   pull_request:
-    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', 'apps/static/js/yetka-ui-policy.js', '.github/workflows/deploy-scripts.yml']
+    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', 'apps/static/js/yetka-ui-policy.js', 'apps/static/js/yetka-maintenance-alert.js', '.github/workflows/deploy-scripts.yml']
   push:
-    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', 'apps/static/js/yetka-ui-policy.js', '.github/workflows/deploy-scripts.yml']
+    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', 'apps/static/js/yetka-ui-policy.js', 'apps/static/js/yetka-maintenance-alert.js', '.github/workflows/deploy-scripts.yml']
 
 permissions:
   contents: read

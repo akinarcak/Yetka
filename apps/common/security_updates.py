@@ -12,13 +12,16 @@ from django.utils import timezone
 
 
 logger = logging.getLogger(__name__)
-STATUS_CACHE_KEY = 'yetka:maintenance:status:v1'
+STATUS_CACHE_KEY = 'yetka:maintenance:status:v2'
 STATUS_CACHE_TTL = 60 * 60 * 24 * 8
 REQUEST_TIMEOUT = (3.05, 12)
+YETKA_RELEASE_API = 'https://api.github.com/repos/akinarcak/Yetka/releases/latest'
 UPSTREAM_RELEASE_API = 'https://api.github.com/repos/jumpserver/jumpserver/releases/latest'
 OSV_BATCH_API = 'https://api.osv.dev/v1/querybatch'
-MAINTENANCE_GUIDE_URL = 'https://github.com/akinarcak/Yetka/blob/dev/deploy/MAINTENANCE.md'
+MAINTENANCE_GUIDE_URL = 'https://github.com/akinarcak/Yetka/blob/main/deploy/MAINTENANCE.md'
+UPSTREAM_BASE_VERSION = os.environ.get('YETKA_UPSTREAM_BASE_VERSION', 'v4.10.17')
 SKIPPED_PACKAGES = {'jumpserver', 'yetka'}
+RELEASE_TAG_PATTERN = re.compile(r'^v?\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$')
 
 
 def maintenance_checks_enabled():
@@ -47,9 +50,9 @@ def _installed_python_packages():
     return [packages[name] for name in sorted(packages)]
 
 
-def _check_upstream_release(session):
+def _fetch_release(session, api_url):
     response = session.get(
-        UPSTREAM_RELEASE_API,
+        api_url,
         headers={
             'Accept': 'application/vnd.github+json',
             'User-Agent': 'Yetka-maintenance-check',
@@ -59,8 +62,14 @@ def _check_upstream_release(session):
     response.raise_for_status()
     release = response.json()
     latest = release.get('tag_name', '')
-    if not latest or _version(latest) is None:
-        raise ValueError('Upstream release response has no valid version tag')
+    if not latest or not RELEASE_TAG_PATTERN.fullmatch(latest):
+        raise ValueError('Release response has no valid version tag')
+    return release
+
+
+def _check_yetka_release(session):
+    release = _fetch_release(session, YETKA_RELEASE_API)
+    latest = release['tag_name']
     current = settings.VERSION
     current_version = _version(current)
     latest_version = _version(latest)
@@ -69,13 +78,32 @@ def _check_upstream_release(session):
             current_version is None or latest_version > current_version
         )
     )
-    return {
+    result = {
         'available': available,
         'current_version': current,
         'latest_version': latest,
         'published_at': release.get('published_at'),
         'release_url': release.get('html_url'),
         'comparison_available': current_version is not None,
+    }
+    if available:
+        result['command'] = f'sudo yetka-update apply --version {latest}'
+    return result
+
+
+def _check_upstream_release(session):
+    release = _fetch_release(session, UPSTREAM_RELEASE_API)
+    latest = release['tag_name']
+    base_version = _version(UPSTREAM_BASE_VERSION)
+    latest_version = _version(latest)
+    return {
+        'review_required': bool(
+            latest_version and base_version and latest_version > base_version
+        ),
+        'base_version': UPSTREAM_BASE_VERSION,
+        'latest_version': latest,
+        'published_at': release.get('published_at'),
+        'release_url': release.get('html_url'),
     }
 
 
@@ -127,6 +155,7 @@ def _check_python_vulnerabilities(session):
 def _fingerprint(status):
     relevant = {
         'update': status.get('update'),
+        'upstream': status.get('upstream'),
         'vulnerabilities': status.get('vulnerabilities'),
         'error_sources': sorted(item.get('source', '') for item in status.get('errors', [])),
     }
@@ -154,12 +183,19 @@ def refresh_maintenance_status(session=None):
     }
     previous = cache.get(STATUS_CACHE_KEY) or {}
     try:
-        status['update'] = _check_upstream_release(session)
+        status['update'] = _check_yetka_release(session)
     except Exception as exc:
-        logger.warning('Upstream maintenance release check failed: %s', exc)
+        logger.warning('Yetka release check failed: %s', exc)
         if previous.get('update'):
             status['update'] = previous['update']
-        status['errors'].append({'source': 'release', 'message': str(exc)[:240]})
+        status['errors'].append({'source': 'yetka_release', 'message': str(exc)[:240]})
+    try:
+        status['upstream'] = _check_upstream_release(session)
+    except Exception as exc:
+        logger.warning('Upstream review check failed: %s', exc)
+        if previous.get('upstream'):
+            status['upstream'] = previous['upstream']
+        status['errors'].append({'source': 'upstream_release', 'message': str(exc)[:240]})
     try:
         status['vulnerabilities'] = _check_python_vulnerabilities(session)
     except Exception as exc:
@@ -169,9 +205,10 @@ def refresh_maintenance_status(session=None):
         status['errors'].append({'source': 'osv', 'message': str(exc)[:240]})
 
     update_available = status.get('update', {}).get('available', False)
+    upstream_review = status.get('upstream', {}).get('review_required', False)
     vulnerabilities_found = status.get('vulnerabilities', {}).get('total', 0) > 0
     status['attention_required'] = bool(
-        update_available or vulnerabilities_found or status['errors']
+        update_available or upstream_review or vulnerabilities_found or status['errors']
     )
     status['fingerprint'] = _fingerprint(status)
     cache.set(STATUS_CACHE_KEY, status, STATUS_CACHE_TTL)
