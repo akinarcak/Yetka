@@ -40,11 +40,11 @@ class SlackRenderer(mistune.HTMLRenderer):
     def block_code(self, code, lang=None):
         return f'`{code}`'
 
-    def link(self, link, text=None, title=None):
+    def link(self, text, url, title=None):
         if title or text:
             label = str(title or text).strip()
-            return f'<{link}|{label}>'
-        return f'<{link}>'
+            return f'<{url}|{label}>'
+        return f'<{url}>'
 
     def paragraph(self, text):
         return f'{text.strip()}\n'
@@ -140,7 +140,7 @@ class Slack:
             try:
                 self._client.request('post', URL().SEND_MESSAGE, json=body)
             except APIException as e:
-                # 只处理可预知的错误
+                # Log only the expected API failures handled by this client.
                 logger.exception(e)
 
     @staticmethod
@@ -156,7 +156,7 @@ class Slack:
 
     def get_user_detail(self, user_id, **kwargs):
         # https://api.slack.com/methods/users.info
-        # get_user_id_by_code 已经返回个人信息，这里直接解析
+        # get_user_id_by_code already returned the profile; parse it directly.
         data = kwargs['other_info']
         data['user_id'] = user_id
         info = flatten_dict(data)

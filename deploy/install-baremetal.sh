@@ -54,6 +54,7 @@ set +a
 : "${YETKA_ENABLE_WEB:=true}"
 : "${YETKA_ENABLE_WORKER:=true}"
 : "${YETKA_ENABLE_SCHEDULER:=false}"
+: "${YETKA_MAINTENANCE_CHECK_ENABLED:=true}"
 
 [[ "$DB_ENGINE" =~ ^(postgresql|mysql)$ ]] || die "DB_ENGINE must be postgresql or mysql"
 [[ "$YETKA_DATA_MODE" != standalone || "$DB_ENGINE" == postgresql ]] || die "Standalone mode uses PostgreSQL; MySQL is supported in external mode"
@@ -165,7 +166,7 @@ configure_standalone() {
   : "${DB_PASSWORD:=$(random_secret 32)}"
   : "${REDIS_PASSWORD:=$(random_secret 32)}"
   if command -v pg_createcluster >/dev/null && ! pg_lsclusters --no-header 2>/dev/null | grep -q .; then
-    run pg_createcluster "$(ls /usr/lib/postgresql | sort -V | tail -1)" main --start
+    run pg_createcluster "$(find /usr/lib/postgresql -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort -V | tail -1)" main --start
   fi
   run systemctl enable --now postgresql
   run systemctl enable --now redis-server 2>/dev/null || run systemctl enable --now redis
@@ -234,6 +235,9 @@ install_optional_assets() {
   if download_archive Koko "${YETKA_KOKO_URL:-}" "${YETKA_KOKO_SHA256:-}" "$YETKA_INSTALL_DIR/koko"; then
     log "Koko archive installed; systemd passes its token without writing it to command arguments"
   fi
+  if [[ -f "$YETKA_INSTALL_DIR/lina/index.html" && "$DRY_RUN" == false ]]; then
+    "$YETKA_INSTALL_DIR/venv/bin/python" "$YETKA_INSTALL_DIR/app/tools/inject_yetka_maintenance_alert.py" --index "$YETKA_INSTALL_DIR/lina/index.html"
+  fi
 }
 
 write_units() {
@@ -244,6 +248,7 @@ Group=$YETKA_USER
 WorkingDirectory=$YETKA_INSTALL_DIR/app
 Environment=PATH=$YETKA_INSTALL_DIR/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 Environment=CELERY_COMBINE_QUEUES=1
+Environment=YETKA_MAINTENANCE_CHECK_ENABLED=$YETKA_MAINTENANCE_CHECK_ENABLED
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=45

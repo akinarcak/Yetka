@@ -3,9 +3,10 @@
 # Keep cleanup: child processes would otherwise become zombies.
 function cleanup()
 {
-    local pids=`jobs -p`
-    if [[ "${pids}" != ""  ]]; then
-        kill ${pids} >/dev/null 2>/dev/null
+    local pids=()
+    mapfile -t pids < <(jobs -p)
+    if (( ${#pids[@]} )); then
+        kill "${pids[@]}" >/dev/null 2>/dev/null
     fi
 }
 
@@ -19,6 +20,7 @@ rm -f /opt/jumpserver/tmp/*.pid
 # Risk detection is implemented in the open-source backend, but the bundled
 # Lina page still carries an upstream enterprise-only UI gate.
 python tools/enable_yetka_risk_detection.py
+python tools/inject_yetka_maintenance_alert.py
 
 if [[ "$action" == "bash" || "$action" == "sh" ]];then
     bash

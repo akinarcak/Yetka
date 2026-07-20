@@ -24,6 +24,7 @@ from .celery.utils import (
 )
 from .models import Job, JobExecution
 from .notifications import ServerPerformanceCheckUtil
+from common.security_updates import refresh_maintenance_status
 
 logger = get_logger(__file__)
 
@@ -111,7 +112,7 @@ def run_ops_job_execution(execution_id, **kwargs):
 )
 @after_app_ready_start
 def clean_celery_periodic_tasks():
-    """清除celery定时任务"""
+    """Remove obsolete Celery periodic tasks."""
     logger.info('Start clean celery periodic tasks.')
     register_tasks = PeriodicTask.objects.all()
     for task in register_tasks:
@@ -159,6 +160,18 @@ def check_server_performance_period():
 
 
 @shared_task(
+    verbose_name=_("Check Yetka updates and dependency vulnerabilities"),
+    description=_(
+        "Checks the upstream release and OSV records every six hours for the administrator warning"
+    )
+)
+@register_as_period_task(interval=21600)
+@after_app_ready_start
+def check_yetka_maintenance_status():
+    return refresh_maintenance_status()
+
+
+@shared_task(
     verbose_name=_("Clean up unexpected jobs"),
     description=_(
         """Due to exceptions caused by executing adhoc and playbooks in the Job Center, 
@@ -193,7 +206,7 @@ def clean_job_execution_period():
         logger.info(
             f"clean job_execution db record success! delete {days} days {del_res[0]} records")
 
-# 测试使用，注释隐藏
+# Test helper kept disabled in production.
 # @shared_task
 # def longtime_add(x, y):
 #     print('long time task begins')

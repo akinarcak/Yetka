@@ -1,0 +1,36 @@
+name: Security maintenance
+
+on:
+  schedule:
+    - cron: '30 2 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths: ['pyproject.toml', 'uv.lock', '.github/workflows/security-maintenance.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  python-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Export locked production dependencies
+        run: uv export --frozen --no-dev --format requirements-txt --output-file requirements-audit.txt
+      - name: Audit Python dependencies
+        run: uv tool run pip-audit --requirement requirements-audit.txt --no-deps --disable-pip
+
+  filesystem-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan source and lock files
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'

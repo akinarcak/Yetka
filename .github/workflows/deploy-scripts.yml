@@ -2,9 +2,9 @@ name: Validate deployment scripts
 
 on:
   pull_request:
-    paths: ['deploy/**', '.github/workflows/deploy-scripts.yml']
+    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', '.github/workflows/deploy-scripts.yml']
   push:
-    paths: ['deploy/**', '.github/workflows/deploy-scripts.yml']
+    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', '.github/workflows/deploy-scripts.yml']
 
 permissions:
   contents: read
@@ -25,3 +25,9 @@ jobs:
         run: |
           grep -F 'password=make_password("ChangeMe")' apps/users/migrations/0001_initial.py
           grep -F -- "- Parola: \`ChangeMe\`" README.md
+      - name: Maintenance alert injection test
+        run: |
+          printf '<html><body>Yetka</body></html>' > /tmp/lina-index.html
+          python tools/inject_yetka_maintenance_alert.py --index /tmp/lina-index.html
+          python tools/inject_yetka_maintenance_alert.py --index /tmp/lina-index.html
+          test "$(grep -c 'yetka-maintenance-alert.js' /tmp/lina-index.html)" -eq 1

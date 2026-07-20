@@ -1,5 +1,7 @@
 # Yetka kurulum ve yüksek erişilebilirlik rehberi
 
+> Sürekli güvenlik taraması, popup davranışı ve kontrollü yükseltme süreci için [bakım politikasına](MAINTENANCE.md) bakın.
+
 Bu dizin Docker kullanmadan çalışan bare-metal kurucuyu ve üretim HA örneklerini içerir. Kurucu Yetka çekirdeğini kaynak koddan kurar, Python 3.14 ortamını `uv` ile izole eder, systemd servislerini ve nginx ters vekilini oluşturur. Debian/Ubuntu, RHEL/Rocky/Alma/Fedora ve openSUSE/SLES paket aileleri desteklenir. Hedef sistem systemd, `amd64` veya `arm64` olmalıdır; “her Linux” ifadesi bu açık koşullar içinde desteklenir.
 
 ## Güvenlik ve ilk parola
@@ -26,6 +28,8 @@ sudo ./deploy/check-install.sh http://127.0.0.1
 ```
 
 Kurucu yerel PostgreSQL ve Redis için rastgele parola üretir. Uygulama yapılandırması `/opt/yetka/app/config.yml`, küme sırları `/etc/yetka/cluster-secrets.env`, kalıcı veri `/var/lib/yetka` altındadır.
+
+Scheduler düğümü ayrıca upstream sürüm ve OSV bağımlılık kontrolünü altı saatte bir çalıştırır. Yeni sürüm, güvenlik kaydı veya tarama hatası yalnız sistem yöneticilerine popup olarak gösterilir.
 
 ## 2. Harici PostgreSQL, MySQL ve Redis
 

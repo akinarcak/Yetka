@@ -67,12 +67,13 @@ urlpatterns = [
     path('api/health/', api.HealthCheckView.as_view(), name="health"),
     path('api/v1/health/', api.HealthCheckView.as_view(), name="health_v1"),
     path('api/v1/hostname/', api.HostnameView.as_view(), name="hostname"),
+    path('api/v1/maintenance/status/', api.MaintenanceStatusApi.as_view(), name="maintenance-status"),
     # External apps url
     path('core/auth/captcha/', include('captcha.urls')),
     path('core/', include(app_view_patterns)),
 ]
 
-# 静态文件处理路由
+# Static file routes
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += [
     # Protect media
@@ -84,7 +85,7 @@ if settings.DEBUG:
 else:
     urlpatterns += path('ui/', views.UIView.as_view()),
 
-# js i18n 路由文件
+# JavaScript translation catalog route
 urlpatterns += [
     path('core/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ]
@@ -97,7 +98,7 @@ cache_kwargs = {
         'key_prefix': 'swagger-cache-' + DOC_VERSION,
     },
 }
-# docs 路由
+# API documentation routes
 urlpatterns += [
     path('api/swagger.json', views.get_swagger_view(ui='json', **cache_kwargs), name='schema-json'),
     path('api/swagger.yaml', views.get_swagger_view(ui='yaml', **cache_kwargs), name='schema'),
