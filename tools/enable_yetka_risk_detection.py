@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import re
+import shutil
 
 
 ASSET_DIR = Path("/opt/lina/assets/js")
@@ -39,6 +40,8 @@ def main() -> None:
         print(f"Enabled Yetka risk detection: {bundle.name}")
 
     for bundle in sorted(ASSET_DIR.glob("profile.*.js")):
+        if bundle.name == "profile.Yetka.js":
+            continue
         content = bundle.read_text(encoding="utf-8")
         updated = content.replace(WECHAT_FIELD, "").replace(WECHAT_PAYLOAD, "")
         if updated == content:
@@ -46,6 +49,12 @@ def main() -> None:
             continue
         bundle.write_text(updated, encoding="utf-8")
         print(f"Removed WeChat from Yetka profile: {bundle.name}")
+
+    profile_sources = [p for p in sorted(ASSET_DIR.glob("profile.*.js")) if p.name != "profile.Yetka.js"]
+    if profile_sources:
+        target = ASSET_DIR / "profile.Yetka.js"
+        shutil.copyfile(profile_sources[0], target)
+        print("Published cache-busted Yetka profile bundle: profile.Yetka.js")
 
     for bundle in sorted(ASSET_DIR.glob("License.*.js")):
         content = bundle.read_text(encoding="utf-8")
@@ -70,6 +79,7 @@ def main() -> None:
     for bundle in sorted(ASSET_DIR.glob("index.*.js")):
         content = bundle.read_text(encoding="utf-8")
         updated = content.replace(LICENSE_STORE_GATE, "e.hasValidLicense=!0")
+        updated = re.sub(r"profile\.[A-Za-z0-9_-]+\.js", "profile.Yetka.js", updated)
         if updated == content:
             print(f"Yetka license state already patched or changed: {bundle.name}")
             continue
