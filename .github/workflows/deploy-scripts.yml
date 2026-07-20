@@ -2,9 +2,9 @@ name: Validate deployment scripts
 
 on:
   pull_request:
-    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', '.github/workflows/deploy-scripts.yml']
+    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', 'apps/static/js/yetka-ui-policy.js', '.github/workflows/deploy-scripts.yml']
   push:
-    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', '.github/workflows/deploy-scripts.yml']
+    paths: ['deploy/**', 'tools/inject_yetka_maintenance_alert.py', 'apps/static/js/yetka-ui-policy.js', '.github/workflows/deploy-scripts.yml']
 
 permissions:
   contents: read
@@ -31,3 +31,4 @@ jobs:
           python tools/inject_yetka_maintenance_alert.py --index /tmp/lina-index.html
           python tools/inject_yetka_maintenance_alert.py --index /tmp/lina-index.html
           test "$(grep -c 'yetka-maintenance-alert.js' /tmp/lina-index.html)" -eq 1
+          test "$(grep -c 'yetka-ui-policy.js' /tmp/lina-index.html)" -eq 1
