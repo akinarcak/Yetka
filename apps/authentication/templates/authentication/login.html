@@ -316,8 +316,12 @@
 {% endif %}
 <div class="login-content extra-fields-{{ extra_fields_count }}">
     <div class="right-image-box">
-        <a href="{% if not XPACK_ENABLED %}https://github.com/jumpserver/jumpserver.git{% endif %}">
-            <img src="{{ INTERFACE.login_image }}" class="right-image" alt="screen-image"/>
+        <a href="https://github.com/akinarcak/Yetka" target="_blank" rel="noopener noreferrer">
+            {% if LANGUAGE_CODE == 'tr' %}
+                <img src="{{ INTERFACE.login_image }}" class="right-image" alt="Yetka"/>
+            {% else %}
+                <img src="{{ INTERFACE.login_image_en }}" class="right-image" alt="Yetka"/>
+            {% endif %}
         </a>
     </div>
     <div class="left-form-box {% if not form.challenge and not form.captcha %} no-captcha-challenge {% endif %}">
