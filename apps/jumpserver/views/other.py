@@ -52,7 +52,6 @@ class I18NView(View):
 
         if request.user.is_authenticated:
             request.user.lang = lang
-            request.user.save(update_fields=['lang'])
         return response
 
 
