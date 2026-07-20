@@ -79,6 +79,7 @@ class Language(models.TextChoices):
     ru = 'ru', 'Русский'
     ko = 'ko', '한국어'
     vi = 'vi', 'Tiếng Việt'
+    tr = 'tr', 'Türkçe'
 
     @classmethod
     def choices_supported(cls):
