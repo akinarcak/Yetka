@@ -6108,7 +6108,7 @@ msgstr "Yetka - Açık kaynak PAM"
 
 #: jumpserver/context_processor.py:31
 msgid "FIT2CLOUD"
-msgstr "FIT2CLOUD"
+msgstr "Yetka"
 
 #: jumpserver/views/celery_flower.py:22
 msgid "<h1>Flower service unavailable, check it</h1>"

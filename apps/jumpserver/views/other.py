@@ -9,8 +9,9 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import activate, gettext_lazy as _
 from django.views.generic import View, TemplateView
 from rest_framework.views import APIView
 
@@ -32,13 +33,26 @@ class LunaView(View):
 
 class I18NView(View):
     def get(self, request, lang):
-        referer_url = request.META.get('HTTP_REFERER', '/')
+        supported_languages = set(settings.LANGUAGES_SUPPORTED)
+        if lang not in supported_languages:
+            lang = settings.LANGUAGE_CODE
+
+        activate(lang)
+
+        referer_url = request.META.get('HTTP_REFERER')
+        if referer_url:
+            parsed_referer = urlparse(referer_url)
+            if parsed_referer.netloc and parsed_referer.netloc != request.get_host():
+                referer_url = None
+        referer_url = referer_url or reverse('authentication:login')
+
         response = HttpResponseRedirect(referer_url)
         expires = timezone.now() + timezone.timedelta(days=365)
         response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang, expires=expires)
 
         if request.user.is_authenticated:
             request.user.lang = lang
+            request.user.save(update_fields=['lang'])
         return response
 
 
