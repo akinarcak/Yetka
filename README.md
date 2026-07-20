@@ -33,20 +33,48 @@ Temel yetenekler:
 >
 > Orijinal telif bildirimleri ve GPLv3 lisansı korunmaktadır. Kaynağa ve tüm katkıcılara teşekkürler.
 
-## Hızlı başlangıç
+## Kolay kurulum
 
-Temiz bir Linux sunucusu hazırlayın (64-bit, >= 4c8g) ve Docker'ı kurun.
+Temiz bir Linux sunucusu hazırlayın (64-bit, en az 4 CPU / 8 GB RAM önerilir) ve Docker'ın kurulu olduğundan emin olun.
 
 ```sh
-# Geliştirme/deneme için all-in-one imajı üzerine Yetka katmanı
-docker build -t yetka:dev .
+git clone https://github.com/akinarcak/Yetka.git
+cd Yetka
+
+docker build -t yetka:latest .
+docker volume create yetka_data
 docker run -d --name yetka \
+  --restart unless-stopped \
+  -e SECRET_KEY="$(openssl rand -hex 32)" \
+  -e BOOTSTRAP_TOKEN="$(openssl rand -hex 24)" \
   -v yetka_data:/opt/data \
-  -v yetka_pg:/var/lib/postgresql \
-  -p 80:80 yetka:dev
+  -p 8080:8080 \
+  yetka:latest
 ```
 
-Tarayıcıdan `http://sunucu-ip/` adresine gidin. Varsayılan giriş: `admin` / `ChangeMe` (ilk girişte değiştirmeniz istenir).
+Tarayıcıdan `http://sunucu-ip:8080/` adresine gidin.
+
+Varsayılan giriş bilgileri:
+
+- Kullanıcı adı: `admin`
+- Parola: `ChangeMe`
+
+İlk girişten sonra varsayılan parolayı değiştirin.
+
+## Geliştirme için çalıştırma
+
+Deneme/geliştirme için ayrı bir container adı ve volume kullanmak isterseniz:
+
+```sh
+docker build -t yetka:dev .
+docker run -d --name yetka-dev \
+  --restart unless-stopped \
+  -v yetka_dev_data:/opt/data \
+  -p 8080:8080 \
+  yetka:dev
+```
+
+Bu modda arayüze `http://sunucu-ip:8080/` adresinden erişebilirsiniz.
 
 ## Lisans
 
