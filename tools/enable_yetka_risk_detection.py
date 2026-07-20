@@ -16,6 +16,38 @@ LICENSE_STORE_GATE = 't.XPACK_ENABLED&&(e.hasValidLicense=t.XPACK_LICENSE_IS_VAL
 PAGE_DISABLED_OVERLAY = 'm.disabled?(i(),e(`div`,oe,'
 NGINX_UI_LOCATION = '    location /ui/ {'
 NGINX_UI_LOCATION_PATCH = '    location /ui/ {\n        add_header Cache-Control "no-store" always;'
+ELEMENT_LOCALE_MAP = 'CT={zh:xT,zh_hant:ST,en:Uu,ja:gT,pt_br:vT,es:hT,ru:yT,ko:_T,vi:bT}'
+ELEMENT_LOCALE_MAP_PATCH = (
+    'YTl={...Uu,name:`tr`,el:{...Uu.el,'
+    'datepicker:{...Uu.el.datepicker,now:`Şimdi`,today:`Bugün`,cancel:`İptal`,clear:`Temizle`,'
+    'confirm:`Onayla`,selectDate:`Tarih seç`,selectTime:`Saat seç`,startDate:`Başlangıç tarihi`,'
+    'startTime:`Başlangıç saati`,endDate:`Bitiş tarihi`,endTime:`Bitiş saati`},'
+    'select:{...Uu.el.select,loading:`Yükleniyor`,noMatch:`Eşleşen veri bulunamadı`,'
+    'noData:`Veri yok`,placeholder:`Seç`},'
+    'cascader:{...Uu.el.cascader,noMatch:`Eşleşen veri bulunamadı`,loading:`Yükleniyor`,'
+    'placeholder:`Seç`,noData:`Veri yok`},'
+    'pagination:{...Uu.el.pagination,goto:`Git`,pagesize:`/sayfa`,total:`Toplam {total}`,'
+    'pageClassifier:``,page:`Sayfa`,prev:`Önceki sayfaya git`,next:`Sonraki sayfaya git`,'
+    'currentPage:`sayfa {pager}`,prevPages:`Önceki {pager} sayfa`,nextPages:`Sonraki {pager} sayfa`},'
+    'messagebox:{...Uu.el.messagebox,title:`Mesaj`,confirm:`Onayla`,cancel:`İptal`,'
+    'error:`Geçersiz giriş`,close:`Bu iletişim kutusunu kapat`},'
+    'upload:{...Uu.el.upload,deleteTip:`Kaldırmak için Delete tuşuna basın`,delete:`Sil`,'
+    'preview:`Önizle`,continue:`Devam`},'
+    'table:{...Uu.el.table,emptyText:`Veri yok`,confirmFilter:`Onayla`,resetFilter:`Sıfırla`,'
+    'clearFilter:`Tümü`,sumText:`Toplam`,selectAllLabel:`Tüm satırları seç`,'
+    'selectRowLabel:`Bu satırı seç`,expandRowLabel:`Bu satırı genişlet`,'
+    'collapseRowLabel:`Bu satırı daralt`,sortLabel:`{column} sütununa göre sırala`,'
+    'filterLabel:`{column} sütununa göre filtrele`},'
+    'tree:{...Uu.el.tree,emptyText:`Veri yok`},'
+    'transfer:{...Uu.el.transfer,noMatch:`Eşleşen veri bulunamadı`,noData:`Veri yok`,'
+    'titles:[`Liste 1`,`Liste 2`],filterPlaceholder:`Anahtar kelime girin`,'
+    'noCheckedFormat:`{total} öğe`,hasCheckedFormat:`{checked}/{total} seçildi`},'
+    'pageHeader:{...Uu.el.pageHeader,title:`Geri`},'
+    'popconfirm:{...Uu.el.popconfirm,confirmButtonText:`Evet`,cancelButtonText:`Hayır`}}},'
+    'CT={zh:xT,zh_hant:ST,en:Uu,ja:gT,pt_br:vT,es:hT,ru:yT,ko:_T,vi:bT,tr:YTl}'
+)
+ELEMENT_LOCALE_LOOKUP = '"pt-br":vT,es:hT,ru:yT,ko:_T,vi:bT}'
+ELEMENT_LOCALE_LOOKUP_PATCH = '"pt-br":vT,es:hT,ru:yT,ko:_T,vi:bT,tr:YTl}'
 
 
 def main() -> None:
@@ -80,6 +112,8 @@ def main() -> None:
         content = bundle.read_text(encoding="utf-8")
         updated = content.replace(LICENSE_STORE_GATE, "e.hasValidLicense=!0")
         updated = re.sub(r"profile\.[A-Za-z0-9_-]+\.js", "profile.Yetka.js", updated)
+        updated = updated.replace(ELEMENT_LOCALE_MAP, ELEMENT_LOCALE_MAP_PATCH, 1)
+        updated = updated.replace(ELEMENT_LOCALE_LOOKUP, ELEMENT_LOCALE_LOOKUP_PATCH, 1)
         if updated == content:
             print(f"Yetka license state already patched or changed: {bundle.name}")
             continue
