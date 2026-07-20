@@ -54,12 +54,15 @@ docker run -d --name yetka \
 
 Tarayıcıdan `http://sunucu-ip:8080/` adresine gidin.
 
-Varsayılan giriş bilgileri:
+Yeni ve boş bir `yetka_data` volume'u ile ilk kurulumda varsayılan giriş bilgileri:
 
 - Kullanıcı adı: `admin`
 - Parola: `ChangeMe`
 
-İlk girişten sonra varsayılan parolayı değiştirin.
+Bu bilgiler yalnızca yeni veri volume'u için geçerlidir. Daha önce çalıştırılmış
+bir volume kullanıyorsanız admin parolası volume içinde saklanan mevcut değerdir;
+bu README'deki parola onu sıfırlamaz. İlk girişten sonra varsayılan parolayı
+mutlaka değiştirin.
 
 ## Geliştirme için çalıştırma
 
