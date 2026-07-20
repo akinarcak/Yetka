@@ -12,6 +12,7 @@ WECHAT_FIELD = 't(y,{label:l.$t(`WeChat`)},{default:c(()=>[t(b,{modelValue:f.obj
 WECHAT_PAYLOAD = 'wechat:this.object.wechat'
 UPSTREAM_LICENSE_URL = 'https://github.com/jumpserver/jumpserver'
 LICENSE_STORE_GATE = 't.XPACK_ENABLED&&(e.hasValidLicense=t.XPACK_LICENSE_IS_VALID)'
+PAGE_DISABLED_OVERLAY = 'm.disabled?(i(),e(`div`,oe,'
 
 
 def main() -> None:
@@ -72,6 +73,15 @@ def main() -> None:
             continue
         bundle.write_text(updated, encoding="utf-8")
         print(f"Enabled GPL features without a license gate: {bundle.name}")
+
+    for bundle in sorted(ASSET_DIR.glob("Page.*.js")):
+        content = bundle.read_text(encoding="utf-8")
+        updated = content.replace(PAGE_DISABLED_OVERLAY, "!1?(i(),e(`div`,oe,")
+        if updated == content:
+            print(f"Yetka enterprise overlay already disabled or changed: {bundle.name}")
+            continue
+        bundle.write_text(updated, encoding="utf-8")
+        print(f"Disabled Yetka enterprise overlay: {bundle.name}")
 
 
 if __name__ == "__main__":
