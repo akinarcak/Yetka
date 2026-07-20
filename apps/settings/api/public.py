@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
@@ -11,7 +12,10 @@ from ..utils import get_interface_setting_or_default
 
 logger = get_logger(__name__)
 
-__all__ = ['PublicSettingApi', 'OpenPublicSettingApi', 'ServerInfoApi']
+__all__ = [
+    'PublicSettingApi', 'OpenPublicSettingApi', 'ServerInfoApi',
+    'CommunityLicenseDetailApi',
+]
 
 
 class OpenPublicSettingApi(generics.RetrieveAPIView):
@@ -83,3 +87,21 @@ class ServerInfoApi(generics.RetrieveAPIView):
         return {
             "CURRENT_TIME": local_now(),
         }
+
+
+class CommunityLicenseDetailApi(generics.GenericAPIView):
+    """Return the license-shaped payload expected by the community Lina UI."""
+
+    permission_classes = (IsValidUserOrConnectionToken,)
+
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({
+            'message': '',
+            'corporation': 'Yetka',
+            'edition': 'community',
+            'serial_no': '',
+            'date_expired': None,
+            'asset_count': 0,
+            'current_asset_count': 0,
+            'remark': '',
+        })

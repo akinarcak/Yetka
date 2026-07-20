@@ -11,6 +11,7 @@ from django.urls import path, include, re_path
 from django.views.i18n import JavaScriptCatalog
 
 from . import views, api
+from settings.api.public import CommunityLicenseDetailApi
 
 resource_api = [
     path('index/', api.IndexApi.as_view()),
@@ -34,6 +35,7 @@ resource_api = [
 ]
 
 api_v1 = resource_api + [
+    path('xpack/license/detail', CommunityLicenseDetailApi.as_view()),
     path('prometheus/metrics/', api.PrometheusMetricsApi.as_view()),
     path('search/', api.GlobalSearchView.as_view()),
 ]
