@@ -1,31 +1,46 @@
-# Contributing
+# Contributing to Yetka
 
-As a contributor, you should agree that:
+Thank you for helping improve Yetka. Contributions are welcome as small fixes,
+documentation updates, tests, and focused features that fit the project's
+open-source direction.
 
-- The producer can adjust the open-source agreement to be more strict or relaxed as deemed necessary.
-- Your contributed code may be used for commercial purposes, including but not limited to its cloud business operations.
+## Before You Start
 
-## Create pull request
-PR are always welcome, even if they only contain small fixes like typos or a few lines of code. If there will be a significant effort, please document it as an issue and get a discussion going before starting to work on it.
+- Search existing issues and pull requests before opening a new one.
+- For a significant change, open an issue first so the design can be discussed.
+- Keep pull requests focused and easy to review.
+- Never include credentials, private keys, production data, or other secrets.
 
-Please submit a PR broken down into small changes bit by bit. A PR consisting of a lot features and code changes may be hard to review. It is recommended to submit PRs in an incremental fashion.
+## Pull Requests
 
-This [development guideline](https://docs.jumpserver.org/zh/master/dev/rest_api/) contains information about repository structure, how to setup development environment, how to run it, and more.
+Please describe the problem, the relevant design choice, and how you tested the
+change. Keep commits incremental where practical. A pull request must not
+intentionally break existing functionality, security controls, or the GPLv3
+licensing obligations of the project.
 
-Note: If you split your pull request to small changes, please make sure any of the changes goes to master will not break anything. Otherwise, it can not be merged until this feature complete.
+Use the repository's development documentation and existing scripts as the
+source of truth for local setup and validation.
 
-## Report issues
-It is a great way to contribute by reporting an issue. Well-written and complete bug reports are always welcome! Please open an issue and follow the template to fill in required information.
+## Issues
 
-Before opening any issue, please look up the existing issues to avoid submitting a duplication.
-If you find a match, you can "subscribe" to it to get notified on updates. If you have additional helpful information about the issue, please leave a comment.
+Well-written bug reports are welcome. Include the version or commit, steps to
+reproduce, expected behavior, observed behavior, and relevant logs or
+screenshots. Remove usernames, passwords, IP addresses, tokens, and other
+sensitive information before submitting.
 
-When reporting issues, always include:
+## Türkçe Katkı Rehberi
 
-* Which version you are using.
-* Steps to reproduce the issue.
-* Snapshots or log files if needed
+Yetka'yı geliştirmeye katkınız için teşekkürler. Hata düzeltmeleri,
+dokümantasyon, testler ve projenin açık kaynak yönüyle uyumlu odaklı özellik
+katkıları memnuniyetle karşılanır.
 
-Because the issues are open to the public, when submitting files, be sure to remove any sensitive information, e.g. user name, password, IP address, and company name. You can
-replace those parts with "REDACTED" or other strings like "****".
+- Yeni issue açmadan önce mevcut issue ve pull request'leri kontrol edin.
+- Büyük değişiklikler için önce issue açarak tasarımı tartışın.
+- Pull request'leri küçük ve incelenebilir tutun.
+- Parola, özel anahtar, üretim verisi veya başka gizli bilgiler göndermeyin.
+- Değişikliğin nasıl test edildiğini açıklayın.
 
+## License
+
+By contributing, you agree that your contribution is provided under the
+project's [GNU GPLv3 license](LICENSE).
