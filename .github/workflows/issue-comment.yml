@@ -44,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Process public members data
-        # 将 members 中的数据转化为 login 字段的拼接字符串
+        # Convert organization members to a login list.
         id: member_names
         run: echo "data=$(echo '${{ steps.members.outputs.data }}' | jq '[.[].login] | join(",")')" >> $GITHUB_OUTPUT
 

@@ -1,0 +1,21 @@
+vrrp_script check_haproxy {
+  script "/usr/bin/killall -0 haproxy"
+  interval 2
+  fall 2
+  rise 2
+}
+vrrp_instance YETKA_VIP {
+  state BACKUP
+  interface eth0
+  virtual_router_id 61
+  priority 100
+  advert_int 1
+  authentication {
+    auth_type PASS
+    auth_pass CHANGE_ME_8
+  }
+  unicast_src_ip 10.30.0.21
+  unicast_peer { 10.30.0.22 }
+  virtual_ipaddress { 10.30.0.10/24 dev eth0 }
+  track_script { check_haproxy }
+}

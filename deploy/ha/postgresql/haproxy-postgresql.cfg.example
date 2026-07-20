@@ -1,0 +1,27 @@
+global
+  log /dev/log local0
+  maxconn 4096
+
+defaults
+  log global
+  mode tcp
+  timeout connect 5s
+  timeout client 30m
+  timeout server 30m
+
+# Yetka DB_HOST points to this listener. Patroni /primary returns 200 only on
+# the current writable primary, so applications never write to a replica.
+listen yetka_postgresql_primary
+  bind 0.0.0.0:5432
+  option httpchk GET /primary
+  http-check expect status 200
+  default-server inter 2s fall 3 rise 2 on-marked-down shutdown-sessions
+  server pg1 10.20.0.11:5432 check port 8008
+  server pg2 10.20.0.12:5432 check port 8008
+  server pg3 10.20.0.13:5432 check port 8008
+
+listen patroni_stats
+  bind 127.0.0.1:7000
+  mode http
+  stats enable
+  stats uri /

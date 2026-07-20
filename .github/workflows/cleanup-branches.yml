@@ -2,10 +2,10 @@ name: Cleanup PR Branches
 
 on:
   schedule:
-    # 每天凌晨2点运行
+    # Run daily at 02:00.
     - cron: '0 2 * * *'
   workflow_dispatch:
-    # 允许手动触发
+    # Allow manual runs.
     inputs:
       dry_run:
         description: 'Dry run mode (default: true)'
@@ -21,7 +21,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # 获取所有分支和提交历史
+        fetch-depth: 0  # Fetch every branch and the full history.
         
     - name: Setup Git
       run: |
@@ -45,10 +45,10 @@ jobs:
         echo "Starting branch cleanup..."
         echo "Dry run mode: $DRY_RUN"
         
-        # 获取所有本地分支
+        # Get all local branches.
         git fetch --all --prune
         
-        # 获取以 pr 或 repr 开头的分支
+        # Find branches beginning with pr or repr.
         branches=$(git branch -r | grep -E 'origin/(pr|repr)' | sed 's/origin\///' | grep -v 'HEAD')
         
         echo "Found branches matching pattern:"
@@ -61,7 +61,7 @@ jobs:
           echo ""
           echo "Processing branch: $branch"
           
-          # 检查分支是否有未合并的PR
+          # Do not remove branches with open pull requests.
           pr_info=$(gh pr list --head "$branch" --state open --json number,title,state 2>/dev/null)
           
           if [ $? -eq 0 ] && [ "$pr_info" != "[]" ]; then
@@ -71,7 +71,7 @@ jobs:
             continue
           fi
           
-          # 检查分支是否有已合并的PR（可选：如果PR已合并也可以删除）
+          # A merged pull request makes the branch safe to remove.
           merged_pr_info=$(gh pr list --head "$branch" --state merged --json number,title,state 2>/dev/null)
           
           if [ $? -eq 0 ] && [ "$merged_pr_info" != "[]" ]; then
@@ -81,14 +81,14 @@ jobs:
             echo "  ℹ️  No PRs found for this branch"
           fi
           
-          # 执行删除操作
+          # Delete unless this is a dry run.
           if [ "$DRY_RUN" = "true" ]; then
             echo "  🔍 [DRY RUN] Would delete branch: $branch"
             deleted_count=$((deleted_count + 1))
           else
             echo "  🗑️  Deleting branch: $branch"
             
-            # 删除远程分支
+            # Delete the remote branch.
             if git push origin --delete "$branch" 2>/dev/null; then
               echo "  ✅ Successfully deleted remote branch: $branch"
               deleted_count=$((deleted_count + 1))

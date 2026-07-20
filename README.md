@@ -3,6 +3,8 @@
 
 # Yetka
 
+> Docker'sız Linux, harici veritabanı, PostgreSQL HA ve uygulama active-active/active-standby kurulumları için [kurulum rehberine](deploy/README.md) bakın.
+
 **Yetkili Erişim ve Terminal Kayıt Altyapısı**
 
 _An open-source Privileged Access Management (PAM) platform_

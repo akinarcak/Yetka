@@ -1,0 +1,23 @@
+global
+  log /dev/log local0
+  maxconn 10000
+
+defaults
+  log global
+  mode http
+  option httplog
+  timeout connect 5s
+  timeout client 1h
+  timeout server 1h
+
+frontend yetka_http
+  bind 0.0.0.0:80
+  default_backend yetka_nodes
+
+backend yetka_nodes
+  balance leastconn
+  option httpchk GET /api/health/
+  http-check expect status 200
+  cookie YETKA_NODE insert indirect nocache
+  server app1 10.30.0.11:80 check cookie app1
+  server app2 10.30.0.12:80 check cookie app2

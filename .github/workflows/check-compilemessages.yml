@@ -28,4 +28,4 @@ jobs:
           push: false
           file: Dockerfile
           target: stage-build
-          tags: jumpserver/core:stage-build
+          tags: akinarcak/yetka-core:stage-build

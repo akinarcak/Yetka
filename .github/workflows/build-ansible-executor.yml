@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: '构建 Ansible Executor 镜像所用的分支'
+        description: 'Branch used to build the Ansible Executor image'
         required: true
         type: string
         default: 'main'
@@ -71,5 +71,5 @@ jobs:
           context: utils/ansible_executor/context
           file: utils/ansible_executor/context/Containerfile
           tags: |
-            jumpserver/ansible-executor:${{ env.IMAGE_TAG }}
-            jumpserver/ansible-executor:latest
+            akinarcak/yetka-ansible-executor:${{ env.IMAGE_TAG }}
+            akinarcak/yetka-ansible-executor:latest
