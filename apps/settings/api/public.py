@@ -24,7 +24,9 @@ class OpenPublicSettingApi(generics.RetrieveAPIView):
 
     def get_object(self):
         return {
-            "XPACK_ENABLED": settings.XPACK_ENABLED,
+            # Yetka exposes the open-source PAM features without the upstream
+            # enterprise UI gate, while the optional xpack package stays off.
+            "XPACK_ENABLED": settings.XPACK_ENABLED or settings.XPACK_LICENSE_IS_VALID,
             "INTERFACE": self.interface_setting,
             "LANGUAGES":  [
                 {
