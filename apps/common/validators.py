@@ -51,7 +51,7 @@ class PhoneValidator:
             return
 
         try:
-            phone = phonenumbers.parse(value, 'CN')
+            phone = phonenumbers.parse(value, 'TR')
             valid = phonenumbers.is_valid_number(phone)
         except NumberParseException:
             valid = False

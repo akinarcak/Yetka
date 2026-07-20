@@ -406,19 +406,19 @@ class PhoneField(serializers.CharField):
                 data = phone
         if data:
             try:
-                phone = phonenumbers.parse(data, 'CN')
+                phone = phonenumbers.parse(data, 'TR')
                 data = '+{}{}'.format(phone.country_code, phone.national_number)
             except phonenumbers.NumberParseException:
-                data = '+86{}'.format(data)
+                data = '+90{}'.format(data)
 
         return super().to_internal_value(data)
 
     def to_representation(self, value):
         try:
-            phone = phonenumbers.parse(value, 'CN')
+            phone = phonenumbers.parse(value, 'TR')
             value = {'code': '+%s' % phone.country_code, 'phone': str(phone.national_number)}
         except phonenumbers.NumberParseException:
-            value = {'code': '+86', 'phone': value}
+            value = {'code': '+90', 'phone': value}
         return value
 
 
