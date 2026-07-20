@@ -6,10 +6,15 @@ from pathlib import Path
 ASSET_DIR = Path("/opt/lina/assets/js")
 LICENSE_GATED_RENDER = "disabled:!n.hasValidLicense"
 ENABLED_RENDER = "disabled:!1"
+COMMUNITY_BUNDLES = ("RiskDetect.*.js", "AccountChangeSecret.*.js")
 
 
 def main() -> None:
-    bundles = sorted(ASSET_DIR.glob("RiskDetect.*.js"))
+    bundles = [
+        bundle
+        for pattern in COMMUNITY_BUNDLES
+        for bundle in sorted(ASSET_DIR.glob(pattern))
+    ]
     if not bundles:
         print("Yetka risk UI bundle not found; leaving the UI unchanged")
         return
