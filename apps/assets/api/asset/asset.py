@@ -171,8 +171,9 @@ class BaseAssetViewSet(OrgBulkModelViewSet):
         with tmp_to_root_org():
             asset_count = Asset.objects.order_by().count()
 
-        if not settings.XPACK_LICENSE_IS_VALID and asset_count >= 5000:
-            error = _('The number of assets exceeds the limit of 5000')
+        community_limit = getattr(settings, 'ASSET_COMMUNITY_LIMIT', 0)
+        if not settings.XPACK_LICENSE_IS_VALID and community_limit and asset_count >= community_limit:
+            error = _('The number of assets exceeds the limit of %s') % community_limit
             return Response({'error': error}, status=400)
 
         if settings.XPACK_LICENSE_IS_VALID:
