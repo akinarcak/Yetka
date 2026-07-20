@@ -37,7 +37,7 @@ class UserProfileForm(forms.ModelForm):
         model = User
         fields = [
             'username', 'name', 'email',
-            'wechat', 'phone',
+            'phone',
         ]
 
 

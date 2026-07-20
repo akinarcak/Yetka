@@ -107,9 +107,12 @@ class UserProfileSerializer(UserSerializer):
         if org_roles_field:
             org_roles_field.read_only = True
 
+        # WeChat is not part of the Yetka profile surface.
+        self.fields.pop('wechat', None)
+
         if settings.PRIVACY_MODE:
             for field in (
-                    'phone', 'wechat',
+                    'phone',
                     'wecom_id', 'dingtalk_id',
                     'feishu_id', 'slack_id', 'lark_id'
             ):

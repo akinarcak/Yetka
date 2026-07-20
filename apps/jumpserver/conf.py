@@ -717,8 +717,8 @@ class Config(dict):
         'TERMINAL_TELNET_REGEX': '',
 
         # 导航栏 帮助
-        'HELP_DOCUMENT_URL': 'https://jumpserver.com/docs',
-        'HELP_SUPPORT_URL': 'https://www.lxware.hk/pages/about',
+        'HELP_DOCUMENT_URL': 'https://github.com/akinarcak/Yetka',
+        'HELP_SUPPORT_URL': 'https://github.com/akinarcak/Yetka/issues',
 
         'FORGOT_PASSWORD_URL': '',
         'HEALTH_CHECK_TOKEN': '',
