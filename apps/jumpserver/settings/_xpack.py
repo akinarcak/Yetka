@@ -17,7 +17,8 @@ if not XPACK_DISABLED:
     XPACK_ENABLED = os.path.isdir(XPACK_DIR)
 XPACK_TEMPLATES_DIR = []
 XPACK_CONTEXT_PROCESSOR = []
-XPACK_LICENSE_IS_VALID = False
+# Yetka exposes the source-backed PAM features without an enterprise upgrade.
+XPACK_LICENSE_IS_VALID = True
 XPACK_LICENSE_EDITION = ""
 XPACK_LICENSE_EDITION_ULTIMATE = False
 XPACK_LICENSE_INFO = {
