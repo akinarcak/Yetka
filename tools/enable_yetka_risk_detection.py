@@ -1,6 +1,7 @@
 """Enable the source-backed risk detection page in the community UI bundle."""
 
 from pathlib import Path
+import re
 
 
 ASSET_DIR = Path("/opt/lina/assets/js")
@@ -9,6 +10,8 @@ ENABLED_RENDER = "disabled:!1"
 COMMUNITY_BUNDLES = ("RiskDetect.*.js", "AccountChangeSecret.*.js")
 WECHAT_FIELD = 't(y,{label:l.$t(`WeChat`)},{default:c(()=>[t(b,{modelValue:f.object.wechat,"onUpdate:modelValue":d[1]||=e=>f.object.wechat=e},null,8,[`modelValue`])]),_:1},8,[`label`]),'
 WECHAT_PAYLOAD = 'wechat:this.object.wechat'
+UPSTREAM_LICENSE_URL = 'https://github.com/jumpserver/jumpserver'
+LICENSE_STORE_GATE = 't.XPACK_ENABLED&&(e.hasValidLicense=t.XPACK_LICENSE_IS_VALID)'
 
 
 def main() -> None:
@@ -40,6 +43,35 @@ def main() -> None:
             continue
         bundle.write_text(updated, encoding="utf-8")
         print(f"Removed WeChat from Yetka profile: {bundle.name}")
+
+    for bundle in sorted(ASSET_DIR.glob("License.*.js")):
+        content = bundle.read_text(encoding="utf-8")
+        updated = re.sub(
+            r"quickActions:\[\{.*?\}\]\}\},computed",
+            "quickActions:[]}},computed",
+            content,
+            count=1,
+        )
+        updated = updated.replace(
+            "mounted(){this.quickActions[0].attrs.disabled=!this.publicSettings.XPACK_ENABLED,",
+            "mounted(){",
+        )
+        updated = updated.replace(UPSTREAM_LICENSE_URL, "https://github.com/akinarcak/Yetka")
+        updated = updated.replace("[` JumpServer `]", "[` Yetka `]")
+        if updated == content:
+            print(f"Yetka license page already cleaned or changed: {bundle.name}")
+            continue
+        bundle.write_text(updated, encoding="utf-8")
+        print(f"Cleaned Yetka license page: {bundle.name}")
+
+    for bundle in sorted(ASSET_DIR.glob("index.*.js")):
+        content = bundle.read_text(encoding="utf-8")
+        updated = content.replace(LICENSE_STORE_GATE, "e.hasValidLicense=!0")
+        if updated == content:
+            print(f"Yetka license state already patched or changed: {bundle.name}")
+            continue
+        bundle.write_text(updated, encoding="utf-8")
+        print(f"Enabled GPL features without a license gate: {bundle.name}")
 
 
 if __name__ == "__main__":

@@ -12,13 +12,12 @@ corporation = f'FIT2CLOUD 飞致云 © 2014-{current_year}'
 
 XPACK_DIR = os.path.join(const.BASE_DIR, 'xpack')
 XPACK_DISABLED = os.environ.get('XPACK_ENABLED') in ['0', 'false', 'False', 'no', 'No']
+# The base image may contain upstream xpack files; Yetka never enables them.
 XPACK_ENABLED = False
-if not XPACK_DISABLED:
-    XPACK_ENABLED = os.path.isdir(XPACK_DIR)
 XPACK_TEMPLATES_DIR = []
 XPACK_CONTEXT_PROCESSOR = []
-# Yetka exposes the source-backed PAM features without an enterprise upgrade.
-XPACK_LICENSE_IS_VALID = True
+# Yetka does not require or ship an enterprise license.
+XPACK_LICENSE_IS_VALID = False
 XPACK_LICENSE_EDITION = ""
 XPACK_LICENSE_EDITION_ULTIMATE = False
 XPACK_LICENSE_INFO = {
