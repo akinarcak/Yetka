@@ -16,6 +16,10 @@ trap cleanup EXIT
 
 rm -f /opt/jumpserver/tmp/*.pid
 
+# Risk detection is implemented in the open-source backend, but the bundled
+# Lina page still carries an upstream enterprise-only UI gate.
+python tools/enable_yetka_risk_detection.py
+
 if [[ "$action" == "bash" || "$action" == "sh" ]];then
     bash
 elif [[ "$action" == "sleep" ]];then
