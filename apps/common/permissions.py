@@ -100,16 +100,18 @@ class ServiceAccountSignaturePermission(permissions.BasePermission):
 class IsValidLicense(permissions.BasePermission):
 
     def has_permission(self, request, view):
-        return settings.XPACK_LICENSE_IS_VALID
+        # Yetka: lisans-kapılı API'ler (parola rotasyonu/change_secret, hesap kontrolü,
+        # raporlar, custom RBAC rolleri, multi-org) açık kaynakta serbest.
+        # Bunların hiçbiri kapalı EE connector binary'si gerektirmez.
+        return True
 
 
 class IsValidLicenseForWriteAction(permissions.BasePermission):
     """Allow read for all, require valid license for write operations"""
 
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return settings.XPACK_LICENSE_IS_VALID
+        # Yetka: yazma işlemleri de açık kaynakta serbest (multi-org, RBAC role binding)
+        return True
 
 
 class IsOwnerOrAdminWritable(IsValidUser):

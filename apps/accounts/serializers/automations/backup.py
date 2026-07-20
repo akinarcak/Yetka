@@ -50,8 +50,7 @@ class BackupAccountSerializer(BaseAutomationSerializer):
         field_backup_type = self.fields.get("backup_type")
         if not field_backup_type:
             return
-        if not settings.XPACK_LICENSE_IS_VALID:
-            field_backup_type._choices.pop(AccountBackupType.object_storage, None)
+        # Yetka: object storage (S3 vb.) yedekleme açık kaynakta serbest
 
     @property
     def model_type(self):

@@ -30,8 +30,7 @@ class PushAccountAutomation(ChangeSecretMixin, AccountBaseAutomation):
 
     def save(self, *args, **kwargs):
         self.type = AutomationTypes.push_account
-        if not settings.XPACK_LICENSE_IS_VALID:
-            self.is_periodic = False
+        # Yetka: periyodik hesap push açık kaynakta serbest (Ansible tabanlı, EE binary gerektirmez)
         super().save(*args, **kwargs)
 
     class Meta:

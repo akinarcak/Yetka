@@ -68,17 +68,17 @@ class ActionAclSerializer(serializers.Serializer):
         field_action = self.fields.get("action")
         if not field_action:
             return
-        if not settings.XPACK_LICENSE_IS_VALID:
-            field_action._choices.pop(ActionChoices.review, None)
+        # Yetka: review (onay/JIT) aksiyonu açık kaynakta serbest (tickets uygulaması core'da)
         if not (
-            settings.XPACK_LICENSE_IS_VALID and
             settings.FACE_RECOGNITION_ENABLED
         ):
+            # Yüz tanıma (Facelive) EE binary gerektirdiğinden kapalı kalır
             field_action._choices.pop(ActionChoices.face_verify, None)
             field_action._choices.pop(ActionChoices.face_online, None)
         for choice in self.Meta.action_choices_exclude:
             field_action._choices.pop(choice, None)
-        if not settings.XPACK_LICENSE_IS_VALID or not settings.CHANGE_SECRET_AFTER_SESSION_END:
+        # Yetka: oturum-sonrası parola değiştirme yalnızca ayar bağımlı (Ansible rotasyonu core'da)
+        if not settings.CHANGE_SECRET_AFTER_SESSION_END:
             field_action._choices.pop(ActionChoices.change_secret, None)
 
 
