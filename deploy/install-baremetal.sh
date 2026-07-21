@@ -56,7 +56,7 @@ set +a
 : "${YETKA_ENABLE_WORKER:=true}"
 : "${YETKA_ENABLE_SCHEDULER:=false}"
 : "${YETKA_MAINTENANCE_CHECK_ENABLED:=true}"
-: "${YETKA_UPSTREAM_BASE_VERSION:=v4.10.17}"
+: "${YETKA_UPSTREAM_BASE_VERSION:=v4.10.16}"
 
 [[ "$DB_ENGINE" =~ ^(postgresql|mysql)$ ]] || die "DB_ENGINE must be postgresql or mysql"
 [[ "$YETKA_DATA_MODE" != standalone || "$DB_ENGINE" == postgresql ]] || die "Standalone mode uses PostgreSQL; MySQL is supported in external mode"
