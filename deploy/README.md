@@ -113,14 +113,19 @@ Her iki düğümde web servisi hazır kalabilir; kullanıcı trafiğini yalnız 
 
 ## 6. Lina, Luna ve connector paketleri
 
-Çekirdek repo web UI ve protokol connector binary’lerini içermez. Yetka markalı release’te Lina/Luna arşivleri ayrıca yayınlanmalı ve SHA-256 ile sabitlenmelidir:
+Çekirdek repo web UI ve protokol connector binary’lerini içermez. Yetka release
+workflow'u [Yetka-Lina](https://github.com/akinarcak/Yetka-Lina),
+[Yetka-Luna](https://github.com/akinarcak/Yetka-Luna) ve
+[Yetka-Koko](https://github.com/akinarcak/Yetka-Koko) forklarını aynı sürüm
+matrisiyle derler. Oluşan arşivler Yetka release'ine yüklenir ve SHA-256 ile
+sabitlenmelidir:
 
 ```dotenv
-YETKA_LINA_URL=https://github.com/akinarcak/Yetka/releases/download/VERSION/lina-VERSION.tar.gz
+YETKA_LINA_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.0/lina-yetka-1.0.0.tar.gz
 YETKA_LINA_SHA256=...
-YETKA_LUNA_URL=https://github.com/akinarcak/Yetka/releases/download/VERSION/luna-VERSION.tar.gz
+YETKA_LUNA_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.0/luna-yetka-1.0.0.tar.gz
 YETKA_LUNA_SHA256=...
-YETKA_KOKO_URL=https://github.com/akinarcak/Yetka/releases/download/VERSION/koko-VERSION-linux-amd64.tar.gz
+YETKA_KOKO_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.0/koko-yetka-1.0.0-linux-amd64.tar.gz
 YETKA_KOKO_SHA256=...
 ```
 

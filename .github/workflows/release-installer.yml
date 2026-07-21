@@ -1,29 +1,102 @@
-name: Publish Yetka installer
+name: Publish Yetka release assets
 
 on:
   push:
-    tags: ['v*']
+    tags: ['yetka-*']
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing or new Yetka release tag
+        required: true
+        default: yetka-1.0.0
 
 permissions:
   contents: write
 
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+  LINA_REF: yetka-v4.10.16
+  LUNA_REF: yetka-v4.10.16
+  KOKO_REF: yetka-v4.10.16
+
 jobs:
-  installer:
+  release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Validate scripts
+      - name: Checkout Yetka core
+        uses: actions/checkout@v4
+        with:
+          path: core
+      - name: Checkout Yetka Lina
+        uses: actions/checkout@v4
+        with:
+          repository: akinarcak/Yetka-Lina
+          ref: ${{ env.LINA_REF }}
+          path: lina
+      - name: Checkout Yetka Luna
+        uses: actions/checkout@v4
+        with:
+          repository: akinarcak/Yetka-Luna
+          ref: ${{ env.LUNA_REF }}
+          path: luna
+      - name: Checkout Yetka Koko
+        uses: actions/checkout@v4
+        with:
+          repository: akinarcak/Yetka-Koko
+          ref: ${{ env.KOKO_REF }}
+          path: koko
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: koko/go.mod
+          cache-dependency-path: koko/go.sum
+      - name: Enable Yarn
+        run: corepack enable
+      - name: Validate installer scripts
+        working-directory: core
         run: find deploy -type f -name '*.sh' -print0 | xargs -0 -n1 bash -n
-      - name: Build installer archive
+      - name: Build Lina
+        working-directory: lina
         run: |
-          archive="yetka-installer-${GITHUB_REF_NAME}.tar.gz"
-          tar --create --gzip --file "$archive" deploy
-          sha256sum "$archive" > "$archive.sha256"
-          echo "ARCHIVE=$archive" >> "$GITHUB_ENV"
-      - name: Attach installer to release
+          yarn install --frozen-lockfile
+          yarn build:prod
+          python ../core/tools/inject_yetka_maintenance_alert.py --index lina/index.html
+      - name: Build Luna
+        working-directory: luna
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+      - name: Build Koko
+        working-directory: koko
+        run: |
+          yarn --cwd ui install --frozen-lockfile
+          yarn --cwd ui build
+          mkdir -p build
+          VERSION="$RELEASE_TAG" make build
+      - name: Package release assets
+        run: |
+          mkdir -p artifacts/koko-package/locale
+          tar -C lina/lina -czf "artifacts/lina-${RELEASE_TAG}.tar.gz" .
+          tar -C luna/dist/luna -czf "artifacts/luna-${RELEASE_TAG}.tar.gz" .
+          cp koko/build/koko artifacts/koko-package/koko
+          cp koko/README.md koko/LICENSE koko/config_example.yml koko/entrypoint.sh artifacts/koko-package/
+          cp -r koko/locale/. artifacts/koko-package/locale/
+          tar -C artifacts/koko-package -czf "artifacts/koko-${RELEASE_TAG}-linux-amd64.tar.gz" .
+          tar -C core --create --gzip --file "artifacts/yetka-installer-${RELEASE_TAG}.tar.gz" deploy
+          cd artifacts
+          sha256sum *.tar.gz > SHA256SUMS
+          while read -r hash file; do printf '%s  %s\n' "$hash" "$file" > "$file.sha256"; done < SHA256SUMS
+      - name: Attach assets to Yetka release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
-            gh release create "$GITHUB_REF_NAME" --title "Yetka $GITHUB_REF_NAME" --generate-notes
-          gh release upload "$GITHUB_REF_NAME" "$ARCHIVE" "$ARCHIVE.sha256" --clobber
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --title "Yetka ${RELEASE_TAG#yetka-}" --generate-notes
+          gh release upload "$RELEASE_TAG" artifacts/* --repo "$GITHUB_REPOSITORY" --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yetka-${{ env.RELEASE_TAG }}
+          path: artifacts/
+          if-no-files-found: error
