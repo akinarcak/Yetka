@@ -17,6 +17,7 @@ resource_api = [
     path('users/', include('users.urls.api_urls', namespace='api-users')),
     path('assets/', include('assets.urls.api_urls', namespace='api-assets')),
     path('accounts/', include('accounts.urls', namespace='api-accounts')),
+    path('cloud-sync/', include('cloud_sync.urls', namespace='api-cloud-sync')),
     path('perms/', include('perms.urls.api_urls', namespace='api-perms')),
     path('terminal/', include('terminal.urls.api_urls', namespace='api-terminal')),
     path('ops/', include('ops.urls.api_urls', namespace='api-ops')),

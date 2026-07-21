@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'assets.apps.AssetsConfig',
     'accounts.apps.AccountsConfig',
+    'cloud_sync.apps.CloudSyncConfig',
     'perms.apps.PermsConfig',
     'ops.apps.OpsConfig',
     'settings.apps.SettingsConfig',
