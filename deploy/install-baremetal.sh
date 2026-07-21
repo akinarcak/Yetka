@@ -177,10 +177,20 @@ prepare_data_mount() {
 
 configure_standalone() {
   [[ "$YETKA_DATA_MODE" == standalone ]] || return 0
+  local standalone_secrets="$YETKA_CONFIG_DIR/standalone-secrets.env"
   : "${DB_HOST:=127.0.0.1}"
   : "${REDIS_HOST:=127.0.0.1}"
-  : "${DB_PASSWORD:=$(random_secret 32)}"
-  : "${REDIS_PASSWORD:=$(random_secret 32)}"
+  if [[ -f "$standalone_secrets" ]]; then
+    # shellcheck disable=SC1090
+    source "$standalone_secrets"
+  else
+    : "${DB_PASSWORD:=$(random_secret 32)}"
+    : "${REDIS_PASSWORD:=$(random_secret 32)}"
+    if [[ "$DRY_RUN" == false ]]; then
+      umask 077
+      printf 'DB_PASSWORD=%q\nREDIS_PASSWORD=%q\n' "$DB_PASSWORD" "$REDIS_PASSWORD" > "$standalone_secrets"
+    fi
+  fi
   if command -v pg_createcluster >/dev/null && ! pg_lsclusters --no-header 2>/dev/null | grep -q .; then
     run pg_createcluster "$(find /usr/lib/postgresql -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort -V | tail -1)" main --start
   fi
@@ -188,7 +198,11 @@ configure_standalone() {
   run systemctl enable --now redis-server 2>/dev/null || run systemctl enable --now redis
   if [[ "$DRY_RUN" == false ]]; then
     local sql_password=${DB_PASSWORD//\'/\'\'}
-    runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" | grep -q 1 || runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c "CREATE USER \"$DB_USER\" WITH PASSWORD '$sql_password'"
+    if runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" | grep -q 1; then
+      runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c "ALTER USER \"$DB_USER\" WITH PASSWORD '$sql_password'"
+    else
+      runuser -u postgres -- psql -v ON_ERROR_STOP=1 -c "CREATE USER \"$DB_USER\" WITH PASSWORD '$sql_password'"
+    fi
     runuser -u postgres -- psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" | grep -q 1 || runuser -u postgres -- createdb -O "$DB_USER" "$DB_NAME"
     local redis_conf=/etc/redis/redis.conf
     [[ -f $redis_conf ]] || redis_conf=/etc/redis.conf
