@@ -92,14 +92,14 @@ esac
 install_packages() {
   if command -v apt-get >/dev/null; then
     run apt-get update
-    run env DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl git nginx gcc g++ make gettext libldap2-dev libsasl2-dev libssl-dev libxml2-dev libxmlsec1-dev libffi-dev libmariadb-dev pkg-config openssh-client sshpass postgresql-client default-mysql-client util-linux
+    run env DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates curl wget git nginx gcc g++ make gettext libldap2-dev libsasl2-dev libssl-dev libxml2-dev libxmlsec1-dev libffi-dev libmariadb-dev pkg-config openssh-client sshpass postgresql-client default-mysql-client util-linux
     [[ "$YETKA_DATA_MODE" == standalone ]] && run env DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql redis-server
   elif command -v dnf >/dev/null || command -v yum >/dev/null; then
     local pm=dnf; command -v dnf >/dev/null || pm=yum
-    run "$pm" install -y ca-certificates curl git nginx gcc gcc-c++ make gettext openldap-devel cyrus-sasl-devel openssl-devel libxml2-devel xmlsec1-devel libffi-devel mariadb-connector-c-devel pkgconf-pkg-config openssh-clients sshpass postgresql mariadb util-linux
+    run "$pm" install -y ca-certificates curl wget git nginx gcc gcc-c++ make gettext openldap-devel cyrus-sasl-devel openssl-devel libxml2-devel xmlsec1-devel libffi-devel mariadb-connector-c-devel pkgconf-pkg-config openssh-clients sshpass postgresql mariadb util-linux
     [[ "$YETKA_DATA_MODE" == standalone ]] && run "$pm" install -y postgresql-server postgresql-contrib redis
   elif command -v zypper >/dev/null; then
-    run zypper --non-interactive install ca-certificates curl git nginx gcc gcc-c++ make gettext-tools openldap2-devel cyrus-sasl-devel libopenssl-devel libxml2-devel xmlsec1-devel libffi-devel libmariadb-devel pkg-config openssh-clients postgresql mariadb-client util-linux
+    run zypper --non-interactive install ca-certificates curl wget git nginx gcc gcc-c++ make gettext-tools openldap2-devel cyrus-sasl-devel libopenssl-devel libxml2-devel xmlsec1-devel libffi-devel libmariadb-devel pkg-config openssh-clients postgresql mariadb-client util-linux
     [[ "$YETKA_DATA_MODE" == standalone ]] && run zypper --non-interactive install postgresql-server redis
   else
     die "Unsupported package manager; use apt, dnf/yum or zypper"
@@ -145,6 +145,7 @@ install_source() {
     [[ ! -e "$YETKA_INSTALL_DIR/app" ]] || die "$YETKA_INSTALL_DIR/app exists but is not a git checkout"
     run git clone --branch "$YETKA_GIT_REF" --depth 1 "$YETKA_GIT_URL" "$YETKA_INSTALL_DIR/app"
   fi
+  run bash "$YETKA_INSTALL_DIR/app/requirements/static_files.sh"
   run env UV_PYTHON_INSTALL_DIR="$YETKA_INSTALL_DIR/python" uv venv --clear --python 3.14 "$YETKA_INSTALL_DIR/venv"
   run uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -r "$YETKA_INSTALL_DIR/app/pyproject.toml"
   run chown -R "$YETKA_USER:$YETKA_USER" "$YETKA_INSTALL_DIR/app" "$YETKA_INSTALL_DIR/venv" "$YETKA_INSTALL_DIR/python"
