@@ -59,6 +59,8 @@ jobs:
         run: find deploy -type f -name '*.sh' -print0 | xargs -0 -n1 bash -n
       - name: Build Lina
         working-directory: lina
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
         run: |
           yarn install --frozen-lockfile
           yarn build:prod
