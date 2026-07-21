@@ -96,7 +96,8 @@ jobs:
         run: |
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
             gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --title "Yetka ${RELEASE_TAG#yetka-}" --generate-notes
-          gh release upload "$RELEASE_TAG" artifacts/* --repo "$GITHUB_REPOSITORY" --clobber
+          gh release upload "$RELEASE_TAG" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" --clobber
       - uses: actions/upload-artifact@v4
         with:
           name: yetka-${{ env.RELEASE_TAG }}
