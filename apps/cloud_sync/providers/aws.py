@@ -9,6 +9,8 @@ class AWSProvider(BaseProvider):
             aws_access_key_id=self.credentials.get('access_key_id'),
             aws_secret_access_key=self.credentials.get('secret_access_key'),
             region_name=region,
+            # AWS-uyumlu bulutlar / LocalStack icin opsiyonel ozel endpoint
+            endpoint_url=self.credentials.get('endpoint_url') or None,
         )
 
     def _all_regions(self):
