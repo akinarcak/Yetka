@@ -76,7 +76,7 @@ jobs:
           yarn --cwd ui install --frozen-lockfile
           yarn --cwd ui build
           mkdir -p build
-          VERSION="$RELEASE_TAG" make build
+          VERSION="$RELEASE_TAG" make -B build
       - name: Package release assets
         run: |
           mkdir -p artifacts/koko-package/locale
