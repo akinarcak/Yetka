@@ -343,6 +343,10 @@ enable_services() {
   local enabled unit
   runuser -u "$YETKA_USER" -- "$YETKA_INSTALL_DIR/venv/bin/python" "$YETKA_INSTALL_DIR/app/jms" upgrade_db
   runuser -u "$YETKA_USER" -- "$YETKA_INSTALL_DIR/venv/bin/python" "$YETKA_INSTALL_DIR/app/jms" collect_static
+  # collect_static can create or replace nested directories after the bind mount
+  # was prepared. Re-apply public asset permissions at the final deployment step.
+  chmod 0755 "$YETKA_DATA_DIR" "$YETKA_DATA_DIR/core"
+  [[ ! -d "$YETKA_DATA_DIR/core/static" ]] || chmod -R a+rX "$YETKA_DATA_DIR/core/static"
   for enabled in "$YETKA_ENABLE_WEB" "$YETKA_ENABLE_WORKER" "$YETKA_ENABLE_SCHEDULER"; do
     case "$enabled" in true|false) ;; *) die "Service enable flags must be true or false" ;; esac
   done
