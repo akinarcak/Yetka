@@ -180,6 +180,10 @@ prepare_data_mount() {
   mountpoint -q "$target_dir" || mount --bind "$source_dir" "$target_dir"
   grep -Fqx "$fstab_line" /etc/fstab || printf '%s\n' "$fstab_line" >> /etc/fstab
   chown -R "$YETKA_USER:$YETKA_USER" "$source_dir"
+  # cp -a preserves the original data directory mode (normally 0700). Restore
+  # traversal on the bind source and public readability for collected assets.
+  chmod 0755 "$YETKA_DATA_DIR" "$source_dir"
+  [[ ! -d "$source_dir/static" ]] || chmod -R a+rX "$source_dir/static"
 }
 
 configure_standalone() {
@@ -385,4 +389,6 @@ if [[ "$DRY_RUN" == false ]]; then
   chmod 0640 "$YETKA_DATA_DIR/release-version"
 fi
 log "Installation complete. Clean databases initially use admin / ChangeMe. Change it immediately."
-[[ -z ${YETKA_LINA_URL:-} ]] && log "No Lina archive was configured; API is installed but the browser UI intentionally returns 503."
+if [[ -z ${YETKA_LINA_URL:-} ]]; then
+  log "No Lina archive was configured; API is installed but the browser UI intentionally returns 503."
+fi
