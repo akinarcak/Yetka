@@ -122,7 +122,10 @@ create_identity() {
   # Nginx serves Lina and Luna directly from the installation directory, so it
   # needs traverse permission on the parent while application data stays private.
   run install -d -o "$YETKA_USER" -g "$YETKA_USER" -m 0755 "$YETKA_INSTALL_DIR"
-  run install -d -o "$YETKA_USER" -g "$YETKA_USER" -m 0750 "$YETKA_DATA_DIR" "$YETKA_DATA_DIR/core" "$YETKA_CONFIG_DIR"
+  # Nginx serves collected static files and internal media from the data tree.
+  # Only directory traversal is public; files retain their own restrictive modes.
+  run install -d -o "$YETKA_USER" -g "$YETKA_USER" -m 0755 "$YETKA_DATA_DIR" "$YETKA_DATA_DIR/core"
+  run install -d -o "$YETKA_USER" -g "$YETKA_USER" -m 0750 "$YETKA_CONFIG_DIR"
 }
 
 install_uv_python() {
