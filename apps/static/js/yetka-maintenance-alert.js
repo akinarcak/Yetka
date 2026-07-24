@@ -64,6 +64,27 @@
     });
   }
 
+  function showUpdateControl(status) {
+    if (!status.update || !status.update.available || !status.update.can_apply) return;
+    if (document.getElementById('yetka-update-control')) return;
+
+    var control = document.createElement('aside');
+    control.id = 'yetka-update-control';
+    control.setAttribute('aria-label', 'Yetka güncelleme yönetimi');
+    control.innerHTML = '<div class="yetka-update-control-copy">' +
+      '<strong>Yeni Yetka sürümü hazır</strong>' +
+      '<span></span></div>' +
+      '<button type="button">Güncelle</button>';
+    control.querySelector('span').textContent =
+      status.update.current_version + ' → ' + status.update.latest_version;
+
+    var button = control.querySelector('button');
+    button.addEventListener('click', function () {
+      requestUpdate(button, status.update.latest_version);
+    });
+    document.body.appendChild(control);
+  }
+
   function showAlert(status) {
     if (!status.attention_required || !status.fingerprint || isRecentlyDismissed(status.fingerprint)) return;
 
@@ -133,14 +154,24 @@
       '.yetka-update-command{margin:0 0 18px;padding:12px;border:1px solid #bbf7d0;border-radius:8px;background:#f0fdf4}.yetka-update-command span{display:block;margin-bottom:7px;color:#475569;font-size:13px}.yetka-update-command code{display:block;padding:9px;background:#172033;color:#f8fafc;border-radius:6px;overflow:auto}.yetka-update-command .yetka-copy-command{margin-top:8px}' +
       '.yetka-maintenance-actions{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}.yetka-maintenance-actions a,.yetka-maintenance-actions button{border-radius:7px;padding:9px 14px;font-size:14px}' +
       '.yetka-maintenance-actions a{background:#166534;color:#fff;text-decoration:none}.yetka-maintenance-actions button{border:1px solid #cbd5e1;background:#fff;color:#334155;cursor:pointer}' +
-      '.yetka-maintenance-actions .yetka-apply-update{border-color:#166534;background:#166534;color:#fff;font-weight:600}.yetka-maintenance-actions button:disabled{cursor:wait;opacity:.7}';
+      '.yetka-maintenance-actions .yetka-apply-update{border-color:#166534;background:#166534;color:#fff;font-weight:600}.yetka-maintenance-actions button:disabled{cursor:wait;opacity:.7}' +
+      '#yetka-update-control{position:fixed;right:22px;bottom:22px;z-index:2147482990;display:flex;align-items:center;gap:14px;padding:12px 12px 12px 16px;border:1px solid #a7f3d0;border-radius:12px;background:#fff;box-shadow:0 12px 36px rgba(15,23,42,.22);color:#172033;font-family:Arial,sans-serif}' +
+      '.yetka-update-control-copy{display:flex;flex-direction:column;gap:3px}.yetka-update-control-copy strong{font-size:14px}.yetka-update-control-copy span{font-size:12px;color:#64748b}' +
+      '#yetka-update-control button{border:0;border-radius:8px;padding:10px 15px;background:#059669;color:#fff;font-size:14px;font-weight:700;cursor:pointer}#yetka-update-control button:disabled{cursor:wait;opacity:.7}' +
+      '@media(max-width:600px){#yetka-update-control{right:12px;bottom:12px;left:12px;justify-content:space-between}}';
     document.head.appendChild(style);
   }
 
   function check() {
     window.fetch(API_URL, {credentials: 'same-origin', headers: {'Accept': 'application/json'}})
       .then(function (response) { return response.ok ? response.json() : null; })
-      .then(function (status) { if (status) { installStyles(); showAlert(status); } })
+      .then(function (status) {
+        if (status) {
+          installStyles();
+          showUpdateControl(status);
+          showAlert(status);
+        }
+      })
       .catch(function () { /* Login and network failures must not block the console. */ });
   }
 

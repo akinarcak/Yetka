@@ -6,10 +6,11 @@ from pathlib import Path
 
 SCRIPT_TAGS = (
     '<script src="/static/js/yetka-ui-policy.js?v=1" defer></script>',
-    '<script src="/static/js/yetka-maintenance-alert.js?v=2" defer></script>',
+    '<script src="/static/js/yetka-maintenance-alert.js?v=3" defer></script>',
 )
 LEGACY_SCRIPT_TAGS = (
     '<script src="/static/js/yetka-maintenance-alert.js?v=1" defer></script>',
+    '<script src="/static/js/yetka-maintenance-alert.js?v=2" defer></script>',
 )
 
 
