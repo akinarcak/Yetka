@@ -159,7 +159,10 @@ install_source() {
 
 install_management_tools() {
   run install -o root -g root -m 0750 "$YETKA_INSTALL_DIR/app/deploy/yetka-update.sh" /usr/local/sbin/yetka-update
+  run install -o root -g root -m 0750 "$YETKA_INSTALL_DIR/app/deploy/yetka-update-request-runner.sh" /usr/local/sbin/yetka-update-request-runner
+  run install -d -o root -g "$YETKA_USER" -m 0770 /run/yetka-update-requests
   if [[ "$DRY_RUN" == false ]]; then
+    printf 'd /run/yetka-update-requests 0770 root %s -\n' "$YETKA_USER" > /etc/tmpfiles.d/yetka-update.conf
     printf '%s\n' "$ENV_FILE" > "$YETKA_CONFIG_DIR/update.env.path"
     chown root:root "$YETKA_CONFIG_DIR/update.env.path"
     chmod 0600 "$YETKA_CONFIG_DIR/update.env.path"
@@ -291,6 +294,8 @@ Environment=PATH=$YETKA_INSTALL_DIR/venv/bin:/usr/local/sbin:/usr/local/bin:/usr
 Environment=CELERY_COMBINE_QUEUES=1
 Environment=YETKA_MAINTENANCE_CHECK_ENABLED=$YETKA_MAINTENANCE_CHECK_ENABLED
 Environment=YETKA_UPSTREAM_BASE_VERSION=$YETKA_UPSTREAM_BASE_VERSION
+Environment=YETKA_UPDATE_REQUEST_DIR=/run/yetka-update-requests
+Environment=YETKA_RELEASE_VERSION_FILE=$YETKA_DATA_DIR/release-version
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=45
@@ -299,6 +304,8 @@ KillSignal=SIGQUIT"
     local unit=${spec%%:*} service=${spec##*:}
     printf '[Unit]\nDescription=Yetka %s\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\n%s\nExecStart=%s/venv/bin/python apps/manage.py start %s\n\n[Install]\nWantedBy=multi-user.target\n' "$unit" "$common" "$YETKA_INSTALL_DIR" "$service" > "/etc/systemd/system/yetka-$unit.service"
   done
+  printf '[Unit]\nDescription=Watch for administrator-approved Yetka updates\n\n[Path]\nPathExists=/run/yetka-update-requests/request\nUnit=yetka-update-request.service\n\n[Install]\nWantedBy=multi-user.target\n' > /etc/systemd/system/yetka-update-request.path
+  printf '[Unit]\nDescription=Apply an administrator-approved Yetka update\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=oneshot\nEnvironment=YETKA_UPDATE_REQUEST_DIR=/run/yetka-update-requests\nExecStart=/usr/local/sbin/yetka-update-request-runner\n' > /etc/systemd/system/yetka-update-request.service
   if [[ -x "$YETKA_INSTALL_DIR/koko/koko" ]]; then
     printf '[Unit]\nDescription=Yetka Koko connector\nAfter=yetka-web.service\n\n[Service]\nUser=%s\nGroup=%s\nWorkingDirectory=%s/koko\nEnvironmentFile=%s/cluster-secrets.env\nEnvironment=CORE_HOST=http://127.0.0.1:%s\nExecStart=%s/koko/koko\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=multi-user.target\n' "$YETKA_USER" "$YETKA_USER" "$YETKA_INSTALL_DIR" "$YETKA_CONFIG_DIR" "$YETKA_HTTP_PORT" "$YETKA_INSTALL_DIR" > /etc/systemd/system/yetka-koko.service
   fi
@@ -336,6 +343,7 @@ server {
 }
 EOF
   systemctl daemon-reload
+  systemctl enable --now yetka-update-request.path
 }
 
 enable_services() {

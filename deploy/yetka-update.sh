@@ -57,7 +57,7 @@ import sys
 
 with open(sys.argv[1], encoding='utf-8') as stream:
     tag = json.load(stream).get('tag_name', '')
-if not re.fullmatch(r'v?\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?', tag):
+if not re.fullmatch(r'(?:yetka-|v)?\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?', tag):
     raise SystemExit('GitHub did not return a valid Yetka release tag')
 print(tag)
 PY
@@ -117,7 +117,7 @@ set +a
 : "${DB_USE_SSL:=false}"
 
 [[ -n "$TARGET_VERSION" ]] || TARGET_VERSION=$(latest_release)
-[[ "$TARGET_VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+([-+][A-Za-z0-9.-]+)?$ ]] || die "Invalid release tag: $TARGET_VERSION"
+[[ "$TARGET_VERSION" =~ ^(yetka-|v)?[0-9]+\.[0-9]+\.[0-9]+([-+][A-Za-z0-9.-]+)?$ ]] || die "Invalid release tag: $TARGET_VERSION"
 
 WORK_DIR=$(mktemp -d /tmp/yetka-update.XXXXXX)
 chmod 0700 "$WORK_DIR"

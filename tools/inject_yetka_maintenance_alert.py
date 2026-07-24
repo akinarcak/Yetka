@@ -6,6 +6,9 @@ from pathlib import Path
 
 SCRIPT_TAGS = (
     '<script src="/static/js/yetka-ui-policy.js?v=1" defer></script>',
+    '<script src="/static/js/yetka-maintenance-alert.js?v=2" defer></script>',
+)
+LEGACY_SCRIPT_TAGS = (
     '<script src="/static/js/yetka-maintenance-alert.js?v=1" defer></script>',
 )
 
@@ -18,6 +21,8 @@ def inject(index_path):
     content = path.read_text(encoding='utf-8')
     if '</body>' not in content:
         raise RuntimeError(f'Lina index has no closing body tag: {path}')
+    for legacy_tag in LEGACY_SCRIPT_TAGS:
+        content = content.replace(legacy_tag, '')
     missing_tags = [tag for tag in SCRIPT_TAGS if tag not in content]
     if not missing_tags:
         print(f'Yetka UI policy and maintenance alert already installed: {path}')

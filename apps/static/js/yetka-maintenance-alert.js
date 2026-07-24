@@ -24,6 +24,46 @@
     container.appendChild(line);
   }
 
+  function csrfToken() {
+    var cookies = document.cookie ? document.cookie.split(';') : [];
+    for (var i = 0; i < cookies.length; i += 1) {
+      var parts = cookies[i].trim().split('=');
+      if (parts[0].slice(-9) === 'csrftoken') return decodeURIComponent(parts.slice(1).join('='));
+    }
+    return '';
+  }
+
+  function requestUpdate(button, version) {
+    if (!window.confirm(
+      version + ' sürümü uygulanacak. Sunucu önce yedek alacak ve servisler kısa süreliğine kesilebilir. Devam edilsin mi?'
+    )) return;
+
+    button.disabled = true;
+    button.textContent = 'Sıraya alınıyor…';
+    window.fetch(API_URL, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken()
+      },
+      body: JSON.stringify({version: version})
+    }).then(function (response) {
+      return response.json().catch(function () { return {}; }).then(function (body) {
+        if (!response.ok) throw new Error(body.detail || 'Güncelleme isteği kabul edilmedi.');
+        return body;
+      });
+    }).then(function (body) {
+      button.textContent = 'Güncelleme sıraya alındı';
+      button.title = body.detail || '';
+    }).catch(function (error) {
+      button.disabled = false;
+      button.textContent = 'Güncellemeleri al';
+      window.alert(error.message);
+    });
+  }
+
   function showAlert(status) {
     if (!status.attention_required || !status.fingerprint || isRecentlyDismissed(status.fingerprint)) return;
 
@@ -36,6 +76,7 @@
       '<ul class="yetka-maintenance-findings"></ul>' +
       '<div class="yetka-update-command" hidden><span>Sunucuda çalıştırılacak doğrulanmış komut:</span><code></code><button type="button" class="yetka-copy-command">Komutu kopyala</button></div>' +
       '<div class="yetka-maintenance-actions"><a target="_blank" rel="noopener noreferrer">Bakım rehberi</a>' +
+      '<button type="button" class="yetka-apply-update" hidden>Güncellemeleri al</button>' +
       '<button type="button" class="yetka-dismiss">24 saat ertele</button></div></div></div>';
 
     var findings = overlay.querySelector('.yetka-maintenance-findings');
@@ -50,6 +91,13 @@
           window.navigator.clipboard.writeText(status.update.command).then(function () {
             event.target.textContent = 'Kopyalandı';
           }).catch(function () { /* The command remains selectable in the dialog. */ });
+        });
+      }
+      if (status.update.can_apply) {
+        var applyButton = overlay.querySelector('.yetka-apply-update');
+        applyButton.hidden = false;
+        applyButton.addEventListener('click', function () {
+          requestUpdate(applyButton, status.update.latest_version);
         });
       }
     }
@@ -84,7 +132,8 @@
       '.yetka-maintenance-findings{margin:0 0 18px;padding-left:20px;max-height:260px;overflow:auto}.yetka-maintenance-findings li{margin:7px 0;overflow-wrap:anywhere}' +
       '.yetka-update-command{margin:0 0 18px;padding:12px;border:1px solid #bbf7d0;border-radius:8px;background:#f0fdf4}.yetka-update-command span{display:block;margin-bottom:7px;color:#475569;font-size:13px}.yetka-update-command code{display:block;padding:9px;background:#172033;color:#f8fafc;border-radius:6px;overflow:auto}.yetka-update-command .yetka-copy-command{margin-top:8px}' +
       '.yetka-maintenance-actions{display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-wrap:wrap}.yetka-maintenance-actions a,.yetka-maintenance-actions button{border-radius:7px;padding:9px 14px;font-size:14px}' +
-      '.yetka-maintenance-actions a{background:#166534;color:#fff;text-decoration:none}.yetka-maintenance-actions button{border:1px solid #cbd5e1;background:#fff;color:#334155;cursor:pointer}';
+      '.yetka-maintenance-actions a{background:#166534;color:#fff;text-decoration:none}.yetka-maintenance-actions button{border:1px solid #cbd5e1;background:#fff;color:#334155;cursor:pointer}' +
+      '.yetka-maintenance-actions .yetka-apply-update{border-color:#166534;background:#166534;color:#fff;font-weight:600}.yetka-maintenance-actions button:disabled{cursor:wait;opacity:.7}';
     document.head.appendChild(style);
   }
 

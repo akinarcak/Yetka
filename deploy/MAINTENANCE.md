@@ -1,6 +1,6 @@
 # Yetka güvenlik ve sürüm bakım politikası
 
-Yetka üretim kurulumu web sürecinden veya tarayıcıdan yeni kod devreye almaz. Veritabanı migrasyonu, connector uyumu ve HA düğümlerinde aynı anda kesinti riski nedeniyle güncellemeyi root yetkili host aracı yapar. Sistem altı saatte bir kontrol yapar, sonucu yöneticilere popup olarak gösterir ve doğrulanmış `yetka-update` komutunu sunar.
+Yetka üretim kurulumu web sürecinin root komutu çalıştırmasına izin vermez. Sistem altı saatte bir kontrol yapar ve sonucu yöneticilere popup olarak gösterir. Bare-metal kurulumda sistem yöneticisi “Güncellemeleri al” düğmesiyle yalnızca denetlenmiş en son Yetka sürümünü root-owned systemd kuyruğuna iletebilir. Container ve HA kurulumlarında doğrulanmış `yetka-update` komutu gösterilir; rollout host/CI tarafından yapılır.
 
 ## Neler kontrol edilir?
 
@@ -27,6 +27,8 @@ Bir kayıt Yetka’nın kullandığı kod yolunu etkilemiyorsa gerekçesi ve kan
 ## Bare-metal güncelleme komutları
 
 Kurucu `/usr/local/sbin/yetka-update` aracını ve kullanılan env dosyasının yolunu kurar. Araç aynı anda yalnız bir güncellemeye izin verir; GitHub release arşivi ile SHA-256 dosyasını indirir, checksum’u doğrular ve hedef kurucuyu önce dry-run olarak çalıştırır.
+
+Bare-metal kurucu ayrıca `yetka-update-request.path` birimini ve root-owned `/run/yetka-update-requests` kuyruğunu kurar. Web süreci yalnızca sürüm etiketini yetkisiz komut içermeyen sabit bir istek dosyasına atomik olarak yazar. Root-owned runner etiketi tekrar doğrular ve aynı checksum, yedek, rollback ve sağlık kontrolü akışını çalıştırır. API yalnız sistem yöneticilerine açıktır ve CSRF korumalı POST isteği kabul eder.
 
 ```bash
 yetka-update check
