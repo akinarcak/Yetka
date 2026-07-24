@@ -8,6 +8,7 @@ ASSUME_YES=false
 WORK_DIR=""
 BACKUP_DIR=""
 PREVIOUS_COMMIT=""
+PREVIOUS_RELEASE=""
 declare -a PREVIOUSLY_ENABLED=()
 
 log() { printf '[yetka-update] %s\n' "$*"; }
@@ -202,18 +203,36 @@ rollback_application() {
   git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "$PREVIOUS_COMMIT" || true
   uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -r "$YETKA_INSTALL_DIR/app/pyproject.toml" || true
   chown -R "$YETKA_USER:$YETKA_USER" "$YETKA_INSTALL_DIR/app" "$YETKA_INSTALL_DIR/venv" || true
+  if [[ -n "$PREVIOUS_RELEASE" ]]; then
+    printf '%s\n' "$PREVIOUS_RELEASE" > "$YETKA_DATA_DIR/release-version"
+    chown "$YETKA_USER:$YETKA_USER" "$YETKA_DATA_DIR/release-version"
+    chmod 0640 "$YETKA_DATA_DIR/release-version"
+  fi
   restart_previous_services
   printf '[yetka-update] Database migrations were NOT automatically reversed. Restore from %s only after reviewing migration compatibility.\n' "$BACKUP_DIR" >&2
 }
 
 verify_node() {
-  local unit
+  local attempt unit
   for unit in "${PREVIOUSLY_ENABLED[@]}"; do
     systemctl is-active --quiet "$unit" || return 1
   done
   if [[ "$YETKA_ENABLE_WEB" == true ]]; then
-    "$WORK_DIR/package/deploy/check-install.sh" "http://127.0.0.1:$YETKA_HTTP_PORT"
+    for attempt in {1..24}; do
+      if "$WORK_DIR/package/deploy/check-install.sh" "http://127.0.0.1:$YETKA_HTTP_PORT"; then
+        return 0
+      fi
+      log "Health check is not ready yet ($attempt/24); retrying in 5 seconds"
+      sleep 5
+    done
+    return 1
   fi
+}
+
+restore_update_env_path() {
+  printf '%s\n' "$ENV_FILE" > "$YETKA_CONFIG_DIR/update.env.path"
+  chown root:root "$YETKA_CONFIG_DIR/update.env.path"
+  chmod 0600 "$YETKA_CONFIG_DIR/update.env.path"
 }
 
 if [[ "$ASSUME_YES" != true ]]; then
@@ -222,11 +241,14 @@ if [[ "$ASSUME_YES" != true ]]; then
 fi
 
 create_backups
+PREVIOUS_RELEASE=$(current_release)
 remember_and_stop_services
 if ! "$installer" --env "$target_env" --yes; then
+  restore_update_env_path
   rollback_application
   die "Installer failed; application rollback was attempted"
 fi
+restore_update_env_path
 if ! verify_node; then
   rollback_application
   die "Health verification failed; application rollback was attempted"

@@ -121,11 +121,11 @@ matrisiyle derler. Oluşan arşivler Yetka release'ine yüklenir ve SHA-256 ile
 sabitlenmelidir:
 
 ```dotenv
-YETKA_LINA_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.2/lina-yetka-1.0.2.tar.gz
+YETKA_LINA_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.3/lina-yetka-1.0.3.tar.gz
 YETKA_LINA_SHA256=...
-YETKA_LUNA_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.2/luna-yetka-1.0.2.tar.gz
+YETKA_LUNA_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.3/luna-yetka-1.0.3.tar.gz
 YETKA_LUNA_SHA256=...
-YETKA_KOKO_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.2/koko-yetka-1.0.2-linux-amd64.tar.gz
+YETKA_KOKO_URL=https://github.com/akinarcak/Yetka/releases/download/yetka-1.0.3/koko-yetka-1.0.3-linux-amd64.tar.gz
 YETKA_KOKO_SHA256=...
 ```
 
