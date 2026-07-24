@@ -31,5 +31,5 @@ jobs:
           python tools/inject_yetka_maintenance_alert.py --index /tmp/lina-index.html
           python tools/inject_yetka_maintenance_alert.py --index /tmp/lina-index.html
           test "$(grep -c 'yetka-maintenance-alert.js' /tmp/lina-index.html)" -eq 1
-          grep -F 'yetka-maintenance-alert.js?v=2' /tmp/lina-index.html
+          grep -F 'yetka-maintenance-alert.js?v=3' /tmp/lina-index.html
           test "$(grep -c 'yetka-ui-policy.js' /tmp/lina-index.html)" -eq 1
