@@ -69,10 +69,16 @@ data was used.
   alignment (`tools.tests.test_component_matrix`). The offline restore smoke
   now exercises a `yetka-application-backup-v1` tar envelope containing a
   manifest and database payload, preserving tenant ownership on restore.
+- Run `30758188916` passed all three foundation jobs after switching
+  ansible-core 2.16.19 to its valid, hash-pinned PyPI source archive: the
+  self-contained core image built and passed non-root/read-only checks plus
+  tenant isolation tests, Lina source tests/build passed, and provenance,
+  backup/restore, and component matrix tests passed.
 
 ## Open gates before declaring completion
 
-1. Add and run the complete core/Lina/Luna/Koko compatibility matrix, including
+1. Re-run and retain the complete core/Lina/Luna/Koko compatibility matrix,
+   including
    the supported/unavailable component UI states and a restore drill against
    an application-format backup (the offline SQLite fixture is covered).
 2. Re-audit the Definition of Done against release artefacts and only then
