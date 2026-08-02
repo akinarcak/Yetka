@@ -43,3 +43,14 @@ enterprise surfaces.
    from forbidden product-facing xpack/EE text, and enforce it in CI.
 4. Run the existing isolated Linux suite after the documentation/UI changes;
    do not deploy to the customer/test server until it is green.
+
+## Follow-up implementation evidence
+
+- Lina removed the obsolete `/settings/license` route and dead license-page
+  link (`a0d69c4`, `c53c82e`).
+- CareOnCloud logo rendering now uses a cache-busted asset with explicit white,
+  borderless styling (`2e6161c`).
+- Enterprise badges were removed from account automation and ACL cards
+  (`1ad57d8`); the cleaned Lina commit is pinned by Core PR #28.
+- Foundation CI `30771066232` passed provenance, container, replay/signature,
+  tenant-isolation and pinned Lina build checks.
