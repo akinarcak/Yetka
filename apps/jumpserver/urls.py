@@ -38,6 +38,7 @@ resource_api = [
 api_v1 = resource_api + [
     path('prometheus/metrics/', api.PrometheusMetricsApi.as_view()),
     path('search/', api.GlobalSearchView.as_view()),
+    path('components/', api.SupportedComponentsApi.as_view(), name='supported-components'),
 ]
 if settings.MCP_ENABLED:
     api_v1.extend([
