@@ -47,6 +47,10 @@ class ComponentLockTests(TestCase):
         self.assertIn("SHA256SUMS.sig", release_workflow)
         self.assertIn("aquasec/trivy:0.65.0@sha256:", release_workflow)
         self.assertIn("zricethezav/gitleaks:v8.24.3@sha256:", release_workflow)
+        self.assertIn("Build release container for security scan", release_workflow)
+        self.assertIn("Scan release container for high and critical vulnerabilities", release_workflow)
+        self.assertIn("validate_release_licenses.py", release_workflow)
+        self.assertIn("success()", release_workflow)
         self.assertIn("publish_release", release_workflow)
         self.assertIn("inputs.publish_release == true", release_workflow)
 
