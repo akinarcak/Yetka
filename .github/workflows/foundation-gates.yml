@@ -17,7 +17,7 @@ on:
       - apps/jumpserver/urls.py
       - apps/common/apps.py
       - apps/common/ssh.py
-      - apps/common/tests/test_ssh.py
+      - apps/common/ssh_tests.py
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
       - apps/libs/ansible/modules_utils/remote_client.py
@@ -44,7 +44,7 @@ on:
       - apps/jumpserver/urls.py
       - apps/common/apps.py
       - apps/common/ssh.py
-      - apps/common/tests/test_ssh.py
+      - apps/common/ssh_tests.py
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
       - apps/libs/ansible/modules_utils/remote_client.py
@@ -134,5 +134,5 @@ jobs:
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
-              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.tests.test_ssh --verbosity=2
+              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests --verbosity=2
             '
