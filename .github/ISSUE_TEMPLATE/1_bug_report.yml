@@ -14,11 +14,9 @@ body:
 
   - type: checkboxes
     attributes:
-      label: 'Product Edition'
+      label: 'Yetka Distribution'
       options:
-        - label: 'Community Edition'
-        - label: 'Enterprise Edition'
-        - label: 'Enterprise Trial Edition'
+        - label: 'Yetka open-source distribution'
     validations:
       required: true
     
