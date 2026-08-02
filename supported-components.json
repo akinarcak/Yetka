@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "components": {
+    "core": {"status": "supported", "runtime": "embedded"},
+    "lina": {"status": "supported", "runtime": "external", "source": "Yetka-Lina"},
+    "luna": {"status": "supported", "runtime": "external", "source": "Yetka-Luna"},
+    "koko": {"status": "supported", "runtime": "external", "source": "Yetka-Koko"},
+    "lion": {"status": "unavailable", "runtime": "external", "reason": "No Yetka-supported build"},
+    "chen": {"status": "unavailable", "runtime": "external", "reason": "No Yetka-supported build"},
+    "magnus": {"status": "unavailable", "runtime": "external", "reason": "No Yetka-supported build"},
+    "razor": {"status": "unavailable", "runtime": "external", "reason": "No Yetka-supported build"},
+    "nec": {"status": "unavailable", "runtime": "external", "reason": "No Yetka-supported build"}
+  }
+}

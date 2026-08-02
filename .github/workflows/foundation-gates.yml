@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - components.lock.yml
+      - supported-components.json
       - tools/validate_components_lock.py
       - tools/scan_release_artifacts.py
       - tools/tests/test_release_provenance.py
@@ -37,6 +38,7 @@ on:
   push:
     paths:
       - components.lock.yml
+      - supported-components.json
       - tools/validate_components_lock.py
       - tools/scan_release_artifacts.py
       - tools/tests/test_release_provenance.py
@@ -147,5 +149,5 @@ jobs:
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
-              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests terminal.tenant_tests --verbosity=2
+              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests common.component_manifest_tests terminal.tenant_tests --verbosity=2
             '
