@@ -157,16 +157,16 @@ class SignatureAuthentication(signature.SignatureAuthentication):
             return False
 
 
-class ServiceAuthentication(signature.SignatureAuthentication):
-    __instance = None
+class ServiceAuthentication(
+    signature.ReplayResistantServiceSignatureMixin,
+    signature.SignatureAuthentication,
+):
     source = 'jms-pam'
 
     def get_object(self, key_id):
-        if not self.__instance:
-            self.__instance = IntegrationApplication.objects.filter(
-                id=key_id, is_active=True,
-            ).first()
-        return self.__instance
+        return IntegrationApplication.objects.filter(
+            id=key_id, is_active=True,
+        ).first()
 
     def fetch_user_data(self, key_id, algorithm=None):
         obj = self.get_object(key_id)

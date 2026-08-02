@@ -615,6 +615,8 @@ class Config(dict):
         # The backslash only escapes the single quote in this Python string; it is not a forbidden character.
         'SECURITY_ACCOUNT_USERNAME_FORBIDDEN_CHARS': '{[\'"`;|<>',
         'SECURITY_SERVICE_ACCOUNT_REGISTRATION': 'auto',
+        'SECURITY_SERVICE_SIGNATURE_ALLOW_LEGACY': False,
+        'SECURITY_SERVICE_SIGNATURE_WINDOW_SECONDS': 30,
         'SECURITY_VIEW_AUTH_NEED_MFA': True,
         'SECURITY_DISABLE_VIEW_SECRET': False,
         'SECURITY_MAX_IDLE_TIME': 30,

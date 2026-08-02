@@ -1,3 +1,13 @@
+import base64
+import hashlib
+import hmac
+import re
+from email.utils import parsedate_to_datetime
+from datetime import timezone as datetime_timezone
+
+from django.conf import settings
+from django.core.cache import cache
+from django.utils import timezone
 from rest_framework import authentication
 from rest_framework import exceptions
 
@@ -39,6 +49,13 @@ class SignatureAuthentication(authentication.BaseAuthentication):
     source = ''
     www_authenticate_realm = "api"
     required_headers = ["(request-target)", "date"]
+
+    def get_required_headers(self, request, fields):
+        return self.required_headers
+
+    def validate_verified_request(self, request, fields, key_id, user):
+        """Apply authentication-profile checks after the HTTP HMAC verifies."""
+        return None
 
     def fetch_user_data(self, key_id, algorithm=None):
         """Returns a tuple (User, secret) or (None, None)."""
@@ -110,18 +127,113 @@ class SignatureAuthentication(authentication.BaseAuthentication):
                 header = key[5:].lower().replace('_', '-')
                 headers[header] = request.META[key]
 
-        # Verify headers
-        hs = HeaderVerifier(
-            headers,
-            secret,
-            required_headers=self.required_headers,
-            method=request.method.lower(),
-            path=request.get_full_path()
-        )
-
-        # All of that just to get to this.
-        if not hs.verify():
+        try:
+            required_headers = self.get_required_headers(request, fields)
+            hs = HeaderVerifier(
+                headers,
+                secret,
+                required_headers=required_headers,
+                method=request.method.lower(),
+                path=request.get_full_path()
+            )
+            if not hs.verify():
+                raise FAILED
+            self.validate_verified_request(request, fields, key_id, user)
+        except exceptions.AuthenticationFailed:
+            raise
+        except Exception:
             raise FAILED
 
         self.after_authenticate_update_date(user)
         return user, fields["keyid"]
+
+
+class ReplayResistantServiceSignatureMixin:
+    """Strict HTTP-signature profile for machine-to-machine integrations."""
+
+    legacy_required_headers = ["(request-target)", "date"]
+    strict_required_headers = [
+        "(request-target)", "date", "digest", "x-jms-nonce",
+        "x-jms-org", "x-yetka-tenant",
+    ]
+    nonce_pattern = re.compile(r'^[A-Za-z0-9._~-]{16,128}$')
+
+    @staticmethod
+    def _signed_headers(fields):
+        return {
+            value.lower() for value in fields.get('headers', 'date').split()
+        }
+
+    def _is_strict(self, fields):
+        return set(self.strict_required_headers).issubset(
+            self._signed_headers(fields)
+        )
+
+    def get_required_headers(self, request, fields):
+        if fields.get('algorithm', '').lower() != 'hmac-sha256':
+            raise FAILED
+        if self._is_strict(fields):
+            return self.strict_required_headers
+        if getattr(settings, 'SECURITY_SERVICE_SIGNATURE_ALLOW_LEGACY', False):
+            return self.legacy_required_headers
+        raise FAILED
+
+    @staticmethod
+    def _window_seconds():
+        value = int(getattr(
+            settings, 'SECURITY_SERVICE_SIGNATURE_WINDOW_SECONDS', 30
+        ))
+        if value < 1 or value > 300:
+            raise FAILED
+        return value
+
+    def validate_verified_request(self, request, fields, key_id, user):
+        if not self._is_strict(fields):
+            return None
+
+        window = self._window_seconds()
+        try:
+            signed_at = parsedate_to_datetime(request.META['HTTP_DATE'])
+            if signed_at.tzinfo is None:
+                signed_at = signed_at.replace(tzinfo=datetime_timezone.utc)
+            age = abs((timezone.now() - signed_at).total_seconds())
+        except (KeyError, TypeError, ValueError, OverflowError):
+            raise FAILED
+        if age > window:
+            raise FAILED
+
+        digest = request.META.get('HTTP_DIGEST', '')
+        algorithm, separator, supplied_digest = digest.partition('=')
+        if not separator or algorithm.lower() != 'sha-256':
+            raise FAILED
+        body = getattr(request, 'body', b'') or b''
+        if not isinstance(body, bytes):
+            body = str(body).encode()
+        expected_digest = base64.b64encode(hashlib.sha256(body).digest()).decode()
+        if not hmac.compare_digest(expected_digest, supplied_digest):
+            raise FAILED
+
+        nonce = request.META.get('HTTP_X_JMS_NONCE', '')
+        org_id = request.META.get('HTTP_X_JMS_ORG', '')
+        tenant_id = request.META.get('HTTP_X_YETKA_TENANT', '')
+        if not self.nonce_pattern.fullmatch(nonce) or not org_id or not tenant_id:
+            raise FAILED
+        if not hmac.compare_digest(str(user.org_id), org_id):
+            raise FAILED
+
+        request_tenant = getattr(request, 'customer_tenant', None)
+        if request_tenant is not None and not hmac.compare_digest(
+                str(request_tenant.id), tenant_id):
+            raise FAILED
+
+        from tenants.models import TenantOrganization
+        if not TenantOrganization.objects.filter(
+                tenant_id=tenant_id, organization_id=org_id).exists():
+            raise FAILED
+
+        nonce_material = f'{key_id}\0{tenant_id}\0{nonce}'.encode()
+        nonce_hash = hashlib.sha256(nonce_material).hexdigest()
+        nonce_key = f'jms-service-http-signature:v2:{nonce_hash}'
+        if not cache.add(nonce_key, True, timeout=window + 1):
+            raise FAILED
+        return None
