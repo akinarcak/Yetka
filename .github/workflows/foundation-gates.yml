@@ -1,0 +1,32 @@
+name: MSP foundation gates
+
+on:
+  pull_request:
+    paths:
+      - components.lock.yml
+      - tools/validate_components_lock.py
+      - tools/scan_release_artifacts.py
+      - tools/tests/test_release_provenance.py
+      - .github/workflows/foundation-gates.yml
+      - .github/workflows/release-installer.yml
+  push:
+    paths:
+      - components.lock.yml
+      - tools/validate_components_lock.py
+      - tools/scan_release_artifacts.py
+      - tools/tests/test_release_provenance.py
+      - .github/workflows/foundation-gates.yml
+      - .github/workflows/release-installer.yml
+
+permissions:
+  contents: read
+
+jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate immutable component lock
+        run: python tools/validate_components_lock.py --lock components.lock.yml
+      - name: Run release provenance tests
+        run: python -m unittest tools.tests.test_release_provenance -v

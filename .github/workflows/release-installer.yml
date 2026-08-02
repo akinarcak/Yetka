@@ -15,9 +15,9 @@ permissions:
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
-  LINA_REF: yetka-v4.10.16
-  LUNA_REF: yetka-v4.10.16
-  KOKO_REF: yetka-v4.10.16
+  LINA_COMMIT: 009ee6e34b446c4fb257c1e83ec4ab4e8c7efa60
+  LUNA_COMMIT: 505590f439b76c4360032a6016a2684c12ec660f
+  KOKO_COMMIT: aead66ac6718cd4d838a0f84781eece42f712ab1
 
 jobs:
   release:
@@ -31,19 +31,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: akinarcak/Yetka-Lina
-          ref: ${{ env.LINA_REF }}
+          ref: ${{ env.LINA_COMMIT }}
           path: lina
       - name: Checkout Yetka Luna
         uses: actions/checkout@v4
         with:
           repository: akinarcak/Yetka-Luna
-          ref: ${{ env.LUNA_REF }}
+          ref: ${{ env.LUNA_COMMIT }}
           path: luna
       - name: Checkout Yetka Koko
         uses: actions/checkout@v4
         with:
           repository: akinarcak/Yetka-Koko
-          ref: ${{ env.KOKO_REF }}
+          ref: ${{ env.KOKO_COMMIT }}
           path: koko
       - uses: actions/setup-node@v4
         with:
@@ -57,6 +57,12 @@ jobs:
       - name: Validate installer scripts
         working-directory: core
         run: find deploy -type f -name '*.sh' -print0 | xargs -0 -n1 bash -n
+      - name: Validate component lock and provenance tests
+        working-directory: core
+        run: |
+          python tools/validate_components_lock.py \
+            --lock components.lock.yml --checkout-root ..
+          python -m unittest tools.tests.test_release_provenance -v
       - name: Build Lina
         working-directory: lina
         env:
@@ -87,6 +93,13 @@ jobs:
           cp -r koko/locale/. artifacts/koko-package/locale/
           tar -C artifacts/koko-package -czf "artifacts/koko-${RELEASE_TAG}-linux-amd64.tar.gz" .
           tar -C core --create --gzip --file "artifacts/yetka-installer-${RELEASE_TAG}.tar.gz" deploy
+          python core/tools/scan_release_artifacts.py artifacts/*.tar.gz
+          python core/tools/validate_components_lock.py \
+            --lock core/components.lock.yml \
+            --artifacts-dir artifacts \
+            --release-tag "$RELEASE_TAG" \
+            --core-commit "$(git -C core rev-parse HEAD)" \
+            --output artifacts/components.release.json
           cd artifacts
           sha256sum *.tar.gz > SHA256SUMS
           while read -r hash file; do printf '%s  %s\n' "$hash" "$file" > "$file.sha256"; done < SHA256SUMS
@@ -97,6 +110,7 @@ jobs:
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
             gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --title "Yetka ${RELEASE_TAG#yetka-}" --generate-notes
           gh release upload "$RELEASE_TAG" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS \
+            artifacts/components.release.json \
             --repo "$GITHUB_REPOSITORY" --clobber
       - uses: actions/upload-artifact@v4
         with:
