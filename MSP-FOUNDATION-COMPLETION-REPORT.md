@@ -36,6 +36,9 @@ data was used.
 - Run `30755688032` passed all three jobs after adding release vulnerability
   and secret-scan gates. The release workflow itself still requires a tag or
   manual dispatch to produce final scan/SBOM/signature artefact evidence.
+- `tools.tests.test_backup_restore_smoke` passes locally and is now part of the
+  foundation provenance job; it validates an offline SQLite fixture round trip
+  including tenant ownership.
 
 ## Open gates before declaring completion
 
