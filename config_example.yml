@@ -24,6 +24,11 @@ BOOTSTRAP_TOKEN:
 # DB_NAME:
 # MySQL or postgres setting like:
 DB_ENGINE: postgresql
+
+# Optional AWS-compatible API origins. Keep empty unless explicitly required.
+# Only exact HTTPS origins are accepted; paths, credentials, local/private IPs
+# and non-allowlisted endpoints are rejected.
+# CLOUD_SYNC_ALLOWED_ENDPOINTS: https://ec2.vendor.example
 DB_HOST: 127.0.0.1
 DB_PORT: 5432
 DB_USER: yetka

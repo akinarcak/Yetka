@@ -1,10 +1,17 @@
 from rest_framework import serializers
 
 from orgs.mixins.serializers import BulkOrgResourceModelSerializer
-from .models import CloudSyncAccount, CloudSyncExecution
+from .models import CloudSyncAccount, CloudSyncExecution, CloudSyncQuarantine
+from .validation import validate_custom_endpoint
 
 
 class CloudSyncAccountSerializer(BulkOrgResourceModelSerializer):
+    def validate_credentials(self, value):
+        provider = self.initial_data.get('provider') or getattr(self.instance, 'provider', None)
+        if provider == 'aws':
+            validate_custom_endpoint((value or {}).get('endpoint_url'))
+        return value
+
     class Meta:
         model = CloudSyncAccount
         fields = [
@@ -28,5 +35,15 @@ class CloudSyncExecutionSerializer(BulkOrgResourceModelSerializer):
             'id', 'account', 'status', 'date_start', 'date_finished',
             'total', 'created', 'updated', 'failed', 'error', 'summary',
             'date_created',
+        ]
+        read_only_fields = fields
+
+
+class CloudSyncQuarantineSerializer(BulkOrgResourceModelSerializer):
+    class Meta:
+        model = CloudSyncQuarantine
+        fields = [
+            'id', 'account', 'execution', 'provider_object_id', 'reason_code',
+            'reason_detail', 'observed', 'resolved', 'date_created', 'date_updated',
         ]
         read_only_fields = fields

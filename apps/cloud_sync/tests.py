@@ -2,14 +2,34 @@ from contextlib import nullcontext
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
+from rest_framework.exceptions import ValidationError
 
 from .api import IDEMPOTENCY_KEY_RE
 from .services import queue_sync
 from .tasks import sync_cloud_execution
+from .sync import quarantine_instance
+from .validation import validate_custom_endpoint
 
 
 class CloudSyncQueueTests(SimpleTestCase):
+    @override_settings(CLOUD_SYNC_ALLOWED_ENDPOINTS=('https://ec2.example.test',))
+    def test_custom_endpoint_requires_exact_https_allowlist_origin(self):
+        self.assertEqual(
+            validate_custom_endpoint('https://ec2.example.test/'),
+            'https://ec2.example.test',
+        )
+        for endpoint in (
+            'http://ec2.example.test',
+            'https://ec2.example.test.attacker.invalid',
+            'https://169.254.169.254',
+            'https://localhost',
+            'https://user:secret@ec2.example.test',
+            'https://ec2.example.test/path',
+        ):
+            with self.subTest(endpoint=endpoint), self.assertRaises(ValidationError):
+                validate_custom_endpoint(endpoint)
+
     def test_idempotency_key_rejects_unsafe_values(self):
         self.assertIsNone(IDEMPOTENCY_KEY_RE.fullmatch('short'))
         self.assertIsNone(IDEMPOTENCY_KEY_RE.fullmatch('unsafe key;rm'))
@@ -60,3 +80,19 @@ class CloudSyncQueueTests(SimpleTestCase):
             tenant_id='tenant-a',
             account__tenant_id='tenant-a',
         )
+
+    @patch('cloud_sync.sync.CloudSyncQuarantine.objects')
+    def test_quarantine_records_only_bounded_non_secret_observation(self, objects):
+        account = SimpleNamespace(tenant='tenant-a', org_id='org-a')
+        execution = SimpleNamespace(id='execution-a')
+        instance = SimpleNamespace(
+            instance_id='instance-a', name='host-a', private_ip='', public_ip='',
+            region='eu-test-1', os_type='linux', extra={'secret': 'must-not-persist'},
+        )
+
+        quarantine_instance(account, execution, instance, 'missing_address')
+
+        defaults = objects.update_or_create.call_args.kwargs['defaults']
+        self.assertNotIn('secret', defaults['observed'])
+        self.assertEqual(defaults['tenant'], 'tenant-a')
+        self.assertEqual(defaults['reason_code'], 'missing_address')

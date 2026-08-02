@@ -5,11 +5,34 @@ from django.utils import timezone
 from orgs.utils import tmp_to_org
 from assets.models import Node, Platform
 from assets.serializers.asset.host import HostSerializer
-from .models import CloudSyncExecution, CloudSyncedAsset
+from .models import CloudSyncExecution, CloudSyncedAsset, CloudSyncQuarantine
 from .providers import get_provider
 from .const import SyncStatus, HostnameStrategy
 
 logger = logging.getLogger(__name__)
+
+
+def quarantine_instance(account, execution, inst, reason_code, detail=''):
+    observed = {
+        'name': str(inst.name or '')[:128],
+        'private_ip': str(inst.private_ip or '')[:64],
+        'public_ip': str(inst.public_ip or '')[:64],
+        'region': str(inst.region or '')[:64],
+        'os_type': str(inst.os_type or '')[:16],
+    }
+    return CloudSyncQuarantine.objects.update_or_create(
+        account=account,
+        provider_object_id=str(inst.instance_id)[:256],
+        defaults={
+            'tenant': account.tenant,
+            'org_id': account.org_id,
+            'execution': execution,
+            'reason_code': reason_code,
+            'reason_detail': str(detail)[:512],
+            'observed': observed,
+            'resolved': False,
+        },
+    )
 
 
 def _default_platform_id(account, os_type):
@@ -84,6 +107,7 @@ def _run_sync(account, execution=None):
     for inst in instances:
         address = _pick_address(account, inst)
         if not address:
+            quarantine_instance(account, execution, inst, 'missing_address')
             failed += 1
             continue
         name = _asset_name(account, inst)
@@ -112,6 +136,7 @@ def _run_sync(account, execution=None):
                 created += 1
         except Exception as e:
             logger.error('Cloud sync asset error %s: %s', inst.instance_id, e)
+            quarantine_instance(account, execution, inst, 'asset_import_failed', e)
             failed += 1
 
     execution.total = len(instances)

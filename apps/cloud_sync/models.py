@@ -101,3 +101,31 @@ class CloudSyncExecution(JMSOrgBaseModel):
             'total': self.total, 'created': self.created,
             'updated': self.updated, 'failed': self.failed,
         }
+
+
+class CloudSyncQuarantine(JMSOrgBaseModel):
+    tenant = models.ForeignKey(
+        CustomerTenant, null=True, blank=True, on_delete=models.PROTECT,
+        related_name='cloud_sync_quarantine',
+    )
+    account = models.ForeignKey(
+        CloudSyncAccount, on_delete=models.CASCADE, related_name='quarantined_objects'
+    )
+    execution = models.ForeignKey(
+        CloudSyncExecution, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name='quarantined_objects',
+    )
+    provider_object_id = models.CharField(max_length=256)
+    reason_code = models.CharField(max_length=64)
+    reason_detail = models.CharField(max_length=512, blank=True, default='')
+    observed = models.JSONField(default=dict, blank=True)
+    resolved = models.BooleanField(default=False, db_index=True)
+
+    class Meta:
+        ordering = ('-date_updated',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('account', 'provider_object_id'),
+                name='uniq_cloud_quarantine_account_object',
+            ),
+        ]

@@ -697,6 +697,9 @@ class Config(dict):
         'ACTIVITY_LOG_KEEP_DAYS': 180,
         'FTP_LOG_KEEP_DAYS': 180,
         'CLOUD_SYNC_TASK_EXECUTION_KEEP_DAYS': 180,
+        # Comma-separated exact HTTPS origins for optional AWS-compatible APIs.
+        # Empty means custom cloud endpoints are disabled.
+        'CLOUD_SYNC_ALLOWED_ENDPOINTS': '',
         'JOB_EXECUTION_KEEP_DAYS': 180,
         'PASSWORD_CHANGE_LOG_KEEP_DAYS': 999,
         'ACCOUNT_CHANGE_SECRET_RECORD_KEEP_DAYS': 180,

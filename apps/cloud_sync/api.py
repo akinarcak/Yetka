@@ -6,8 +6,11 @@ from rest_framework import status
 
 from orgs.mixins.api import OrgBulkModelViewSet
 from tenants.api import TenantScopedQuerySetMixin
-from .models import CloudSyncAccount, CloudSyncExecution
-from .serializers import CloudSyncAccountSerializer, CloudSyncExecutionSerializer
+from .models import CloudSyncAccount, CloudSyncExecution, CloudSyncQuarantine
+from .serializers import (
+    CloudSyncAccountSerializer, CloudSyncExecutionSerializer,
+    CloudSyncQuarantineSerializer,
+)
 from .providers import get_provider
 from .services import queue_sync
 
@@ -54,3 +57,11 @@ class CloudSyncExecutionViewSet(TenantScopedQuerySetMixin, OrgBulkModelViewSet):
     filterset_fields = ['account', 'status']
     search_fields = ['account__name']
     serializer_class = CloudSyncExecutionSerializer
+
+
+class CloudSyncQuarantineViewSet(TenantScopedQuerySetMixin, OrgBulkModelViewSet):
+    model = CloudSyncQuarantine
+    http_method_names = ['get', 'head', 'options']
+    filterset_fields = ['account', 'execution', 'reason_code', 'resolved']
+    search_fields = ['provider_object_id', 'reason_detail']
+    serializer_class = CloudSyncQuarantineSerializer
