@@ -114,6 +114,8 @@ jobs:
           mkdir -p artifacts/koko-package/locale
           test -f lina/LICENSE
           cp lina/LICENSE lina/lina/LICENSE
+          test -f luna/LICENSE
+          cp luna/LICENSE luna/dist/luna/LICENSE
           tar -C lina/lina -czf "artifacts/lina-${RELEASE_TAG}.tar.gz" .
           tar -C luna/dist/luna -czf "artifacts/luna-${RELEASE_TAG}.tar.gz" .
           cp koko/build/koko artifacts/koko-package/koko
