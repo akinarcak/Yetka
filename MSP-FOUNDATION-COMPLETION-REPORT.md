@@ -1,6 +1,6 @@
 # Yetka MSP Foundation 1 — Completion Report
 
-Status: **in progress** (not release-ready)
+Status: **complete** (foundation release-ready; no public release published)
 
 This report is an evidence index for the foundation work. It intentionally does
 not claim completion until every Definition of Done item has a passing build and
@@ -74,11 +74,21 @@ data was used.
   self-contained core image built and passed non-root/read-only checks plus
   tenant isolation tests, Lina source tests/build passed, and provenance,
   backup/restore, and component matrix tests passed.
+- Final current-commit dry-run `30758442174` passed all release gates after
+  the dependency-source fix. It produced the SBOM, `SHA256SUMS`, Cosign
+  signature and bundle, component manifest, and core/Lina/Luna/Koko archives;
+  the manifest records core commit `a08c1cb92e38e6d7991a1287791b3fdd115e14a9`
+  and the immutable component commits. `publish_release=false`, so no public
+  release was created.
 
-## Open gates before declaring completion
+## Definition of Done audit
 
-1. Re-audit the Definition of Done against release artefacts and only then
-   change this report to `complete` and mark the goal achieved.
+All foundation gates are evidenced by the passing foundation CI and final
+non-publishing release dry-run above: digest-pinned self-contained build,
+forbidden-content scan, tenant isolation, SSH/security/recording/signature and
+Cloud Sync tests, supported-component matrix, backup/restore, SBOM, secret and
+vulnerability scans, and signed release checksums. No customer or production
+system, real secret, or real customer data was used.
 
 ## Recent implementation commits
 
