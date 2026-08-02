@@ -28,6 +28,9 @@ data was used.
   component-manifest, recording, replay-scope, and service-signature suites.
 - Release workflow is pinned to the locked Lina/Luna/Koko commits and uploads
   hashes, SBOM, signature, and signature bundle.
+- Latest observed foundation run (`30755346653`) built the container and passed
+  the runtime non-root/read-only check, but the in-image tenant test command
+  exited with code 1. Therefore the foundation gate is not green.
 
 ## Open gates before declaring completion
 
@@ -52,4 +55,3 @@ data was used.
 - `aa6b1185b` — runtime supported-component manifest
 - `af40efd3d` — fail-closed replay uploads
 - `3750c082b` — replay-resistant service signatures
-
