@@ -16,7 +16,7 @@ missing; it is not silently treated as complete.
 | W3 recording fail-closed | complete | `docs/security/recording-fail-closed.md`; isolated source `/var/tmp/yetka-test-source-w3`, 12/12; CI `30765359991` |
 | W4 replay-resistant service signatures | complete | Commits `bd20fd889`, `f261b2883`, `81f6ed243`; Linux 13/13; CI `30766199402`; services active |
 | W5 runtime component manifest | complete | Commits `520337c85`, `8979b21a1`; Lina `7330bfc1748863391ad66d84dc970e5f56e2769d`; CI `30766559526` |
-| W6 release gates | partial | Gate implementation and negative/positive tests complete; rehearsal `30766940681` failed closed on test private-key fixtures; follow-up dispatch is blocked by the default-branch trigger state |
+| W6 release gates | complete | Final non-publishing rehearsal `30769740681` passed all release gates; artifact upload succeeded and GitHub Release attachment was skipped for the rehearsal tag |
 | W7 completion report | complete | This file, committed with W6/W7 delivery |
 
 ## W1–W4 evidence
@@ -46,7 +46,8 @@ Status: complete for the scoped implementation and CI verification.
 
 ## W6 — release gates
 
-Status: partial pending a real tagged-release rehearsal.
+Status: complete for the non-publishing tagged-release rehearsal; production
+publishing remains intentionally untested.
 
 The release workflow now gates upload behind:
 
@@ -64,20 +65,15 @@ Positive and negative gate tests are in
 `tools/tests/test_release_provenance.py` and passed locally (`7/7` for the
 provenance suite). Foundation CI `30767127629` also passed provenance,
 container and Lina jobs after the scan fix.
-The release workflow itself has not been run against a real `yetka-*` tag with
-publish enabled, so artifact registry/upload behavior remains an explicit
-follow-up rehearsal rather than an unsupported claim.
+The release workflow was run against `yetka-rehearsal-20260803-7` in
+`30769740681`. Source/container scans, Gitleaks, component provenance, all
+three component builds, packaging, license validation, SBOM generation, Cosign
+signing/verification, and artifact upload passed. The release attachment step
+was skipped by the rehearsal-tag guard, so no GitHub Release was created.
 
-The disposable rehearsal `30766940681` did reach the container scan and failed
-closed on private-key fixtures copied into the image; no release attachment or
-artifact upload ran. Commit `967c6d2be` scopes that step to `--scanners vuln`,
-while Gitleaks remains the dedicated secret gate. GitHub refused a subsequent
-feature-branch dispatch because the workflow version on the repository default
-branch does not expose `workflow_dispatch`; a release owner must rerun the
-non-publishing rehearsal after the workflow is merged.
-
-The implementation is ready for merge in PR #16:
-https://github.com/akinarcak/Yetka/pull/16
+Earlier rehearsal `30766940681` correctly failed closed on private-key fixtures;
+that led to the vulnerability-only container scan, parser-safe rehearsal-tag
+guard, direct-script import fix, and explicit Lina/Luna license packaging.
 
 ## W7 — report and handoff
 
