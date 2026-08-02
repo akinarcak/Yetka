@@ -54,6 +54,8 @@ data was used.
   page and paid-upgrade redirect regression checks included.
 - Run `30756669278` passed all three jobs with the mocked SFTP host-key audit
   suite included.
+- Run `30756853370` passed all three jobs after adding the non-publishing
+  release dry-run input and its provenance assertions.
 
 ## Open gates before declaring completion
 
