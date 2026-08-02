@@ -33,4 +33,4 @@ class CustomerTenantListApi(ListAPIView):
     def get_queryset(self):
         return CustomerTenant.objects.filter(
             is_active=True, memberships__user=self.request.user
-        ).distinct()
+        ).prefetch_related('organization_links', 'memberships').distinct()

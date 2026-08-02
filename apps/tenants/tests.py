@@ -12,6 +12,7 @@ from .middleware import (
     validate_organization_ownership,
 )
 from .api import TenantScopedQuerySetMixin
+from .serializers import CustomerTenantSerializer
 
 
 class FakeMemberships:
@@ -59,6 +60,19 @@ class TenantResolutionTests(SimpleTestCase):
         with patch('tenants.middleware.CustomerTenantMembership.objects', manager):
             tenant = resolve_tenant_for_user(SimpleNamespace(id='user-a'), 'tenant-b')
         self.assertEqual(tenant.id, 'tenant-b')
+
+    @patch('tenants.middleware.TenantOrganization.objects')
+    def test_workspace_mapping_selects_assigned_tenant_for_bootstrap(self, organizations):
+        organizations.filter.return_value.values_list.return_value.first.return_value = 'tenant-b'
+        manager = FakeMemberships([membership('tenant-a'), membership('tenant-b')])
+        with patch('tenants.middleware.CustomerTenantMembership.objects', manager):
+            tenant = resolve_tenant_for_user(
+                SimpleNamespace(id='user-a'),
+                organization=SimpleNamespace(id='org-b'),
+            )
+
+        self.assertEqual(tenant.id, 'tenant-b')
+        organizations.filter.assert_called_once()
 
     @patch('tenants.middleware.TenantOrganization.objects')
     def test_cross_tenant_organization_is_rejected(self, objects):
@@ -121,6 +135,30 @@ class TenantScopedQuerySetTests(SimpleTestCase):
 
         view.base_queryset.none.assert_called_once_with()
         self.assertIs(result, view.base_queryset.none.return_value)
+
+
+class CustomerTenantSerializerTests(SimpleTestCase):
+    def test_tenant_switch_payload_contains_only_mapping_and_current_role(self):
+        links = Mock()
+        links.all.return_value = [
+            SimpleNamespace(organization_id='org-a'),
+            SimpleNamespace(organization_id='org-b'),
+        ]
+        memberships = Mock()
+        memberships.filter.return_value.first.return_value = SimpleNamespace(role='admin')
+        tenant = SimpleNamespace(
+            id='tenant-a', name='Tenant A', slug='tenant-a',
+            organization_links=links, memberships=memberships,
+        )
+        user = SimpleNamespace(is_authenticated=True)
+
+        data = CustomerTenantSerializer(
+            tenant, context={'request': SimpleNamespace(user=user)}
+        ).data
+
+        self.assertEqual(data['organization_ids'], ['org-a', 'org-b'])
+        self.assertEqual(data['role'], 'admin')
+        memberships.filter.assert_called_once_with(user=user)
 
 
 class ExampleTenantTask(TenantAwareTask):

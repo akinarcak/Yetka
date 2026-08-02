@@ -9,7 +9,7 @@ TENANT_HEADER = 'HTTP_X_YETKA_TENANT'
 EXEMPT_API_PATHS = ('/api/v1/tenants/', '/api/health/', '/api/v1/health/')
 
 
-def resolve_tenant_for_user(user, requested_id=None):
+def resolve_tenant_for_user(user, requested_id=None, organization=None):
     memberships = CustomerTenantMembership.objects.select_related('tenant').filter(
         user=user, tenant__is_active=True
     )
@@ -21,6 +21,17 @@ def resolve_tenant_for_user(user, requested_id=None):
         if membership is None:
             raise TenantAccessDenied('The requested customer tenant is not assigned to this user')
         return membership.tenant
+
+    if organization is not None:
+        tenant_id = TenantOrganization.objects.filter(
+            organization=organization,
+            tenant__memberships__user=user,
+            tenant__is_active=True,
+        ).values_list('tenant_id', flat=True).first()
+        if tenant_id:
+            membership = memberships.filter(tenant_id=tenant_id).first()
+            if membership:
+                return membership.tenant
 
     available = list(memberships[:2])
     if not available:
@@ -50,7 +61,11 @@ class CustomerTenantMiddleware:
             return self.get_response(request)
 
         try:
-            tenant = resolve_tenant_for_user(request.user, request.META.get(TENANT_HEADER))
+            tenant = resolve_tenant_for_user(
+                request.user,
+                request.META.get(TENANT_HEADER),
+                getattr(request, 'current_org', None),
+            )
             validate_organization_ownership(tenant, getattr(request, 'current_org', None))
         except TenantContextError as exc:
             return JsonResponse({'detail': str(exc), 'code': exc.code}, status=exc.status_code)
