@@ -104,7 +104,7 @@ permissions:
   contents: read
 
 env:
-  LINA_COMMIT: 2e6161cbc61a7f841b6dabe69659ded9b5549005
+  LINA_COMMIT: 1ad57d8ab4f286ec60e991b47d2114fe374e934f
 
 jobs:
   lina-source:
