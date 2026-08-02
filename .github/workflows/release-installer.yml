@@ -70,13 +70,11 @@ jobs:
             --lock components.lock.yml --checkout-root ..
           python -m unittest tools.tests.test_release_provenance -v
       - name: Scan core source for high and critical vulnerabilities
-        uses: aquasecurity/trivy-action@v0.33.1
-        with:
-          scan-type: fs
-          scan-ref: core
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: '1'
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE/core:/scan:ro" \
+            aquasec/trivy:0.65.0 fs /scan \
+            --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1
       - name: Scan core history for leaked secrets
         uses: gitleaks/gitleaks-action@v2
         with:
