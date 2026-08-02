@@ -76,9 +76,11 @@ jobs:
             aquasec/trivy:0.65.0 fs /scan \
             --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1
       - name: Scan core history for leaked secrets
-        uses: gitleaks/gitleaks-action@v2
-        with:
-          working-directory: core
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE/core:/repo:ro" \
+            zricethezav/gitleaks:8.24.3 detect \
+            --source /repo --no-git --redact --exit-code 1
       - name: Build Lina
         working-directory: lina
         env:
