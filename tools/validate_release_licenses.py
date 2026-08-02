@@ -1,8 +1,11 @@
 """Fail closed when release metadata or component license files are missing."""
 
 import argparse
+import sys
 import tarfile
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from tools.validate_components_lock import load_lock
 
