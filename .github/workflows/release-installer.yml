@@ -79,8 +79,11 @@ jobs:
         run: |
           docker run --rm \
             -v "$GITHUB_WORKSPACE/core:/repo:ro" \
+            -v "$RUNNER_TEMP:/out" \
             zricethezav/gitleaks:v8.24.3 detect \
-            --source /repo --no-git --redact --exit-code 1
+            --source /repo --no-git --redact --report-format json --report-path /out/gitleaks.json --exit-code 1 || status=$?
+          jq -r '.[] | [.RuleID, .File] | @tsv' "$RUNNER_TEMP/gitleaks.json" 2>/dev/null || true
+          exit ${status:-0}
       - name: Build Lina
         working-directory: lina
         env:
