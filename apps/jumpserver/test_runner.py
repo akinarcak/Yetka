@@ -10,6 +10,10 @@ class IsolatedDiscoverRunner(DiscoverRunner):
     def setup_databases(self, **kwargs):
         for connection in connections.all():
             test_settings = connection.settings_dict.setdefault("TEST", {})
+            test_settings.setdefault("CHARSET", None)
+            test_settings.setdefault("COLLATION", None)
+            test_settings.setdefault("MIGRATE", True)
+            test_settings.setdefault("MIRROR", None)
             if test_settings.get("NAME") is None:
                 database_name = connection.settings_dict.get("NAME")
                 if database_name:
