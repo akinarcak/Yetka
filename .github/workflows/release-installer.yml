@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
@@ -103,13 +104,24 @@ jobs:
           cd artifacts
           sha256sum *.tar.gz > SHA256SUMS
           while read -r hash file; do printf '%s  %s\n' "$hash" "$file" > "$file.sha256"; done < SHA256SUMS
+      - name: Generate release SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: artifacts
+          format: cyclonedx-json
+          output-file: artifacts/yetka-${{ env.RELEASE_TAG }}.sbom.cdx.json
+          artifact-name: yetka-${{ env.RELEASE_TAG }}.sbom.cdx.json
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Sign release checksums
+        run: cosign sign-blob --yes --output-signature artifacts/SHA256SUMS.sig artifacts/SHA256SUMS
       - name: Attach assets to Yetka release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
             gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --title "Yetka ${RELEASE_TAG#yetka-}" --generate-notes
-          gh release upload "$RELEASE_TAG" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS \
+          gh release upload "$RELEASE_TAG" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS artifacts/SHA256SUMS.sig artifacts/*.sbom.cdx.json \
             artifacts/components.release.json \
             --repo "$GITHUB_REPOSITORY" --clobber
       - uses: actions/upload-artifact@v4

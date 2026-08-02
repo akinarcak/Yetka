@@ -40,6 +40,9 @@ class ComponentLockTests(TestCase):
             with self.subTest(component=component):
                 self.assertIn(metadata["commit"], release_workflow)
         self.assertIn(lock["components"]["lina"]["commit"], foundation_workflow)
+        self.assertIn("anchore/sbom-action", release_workflow)
+        self.assertIn("cosign sign-blob", release_workflow)
+        self.assertIn("SHA256SUMS.sig", release_workflow)
 
     def test_release_manifest_records_artifact_hashes(self):
         with TemporaryDirectory() as directory:
