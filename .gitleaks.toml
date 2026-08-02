@@ -1,0 +1,7 @@
+[[allowlists]]
+description = "Known third-party/minified assets and documentation examples"
+paths = [
+  '''^apps/static/js/''',
+  '''^apps/accounts/demos/''',
+  '''^utils/example_api\.py$''',
+]

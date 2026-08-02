@@ -80,9 +80,7 @@ jobs:
           docker run --rm \
             -v "$GITHUB_WORKSPACE/core:/repo:ro" \
             zricethezav/gitleaks:v8.24.3@sha256:e1b35e12a8c6fa8901f060459cfb6b2fc4c484d3afbe3b029733a3bbfab07055 detect \
-            --source /repo --no-git --redact \
-            --exclude apps/static/js --exclude apps/accounts/demos --exclude utils/example_api.py \
-            --exit-code 1
+            --source /repo --no-git --redact --exit-code 1
       - name: Build Lina
         working-directory: lina
         env:
