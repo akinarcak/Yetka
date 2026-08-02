@@ -45,6 +45,7 @@ RUN set -eux \
     && bash requirements/static_files.sh \
     && bash requirements/clean_site_packages.sh \
     && export SECRET_KEY="$(head -c100 /dev/urandom | base64 | tr -dc A-Za-z0-9 | head -c48)" \
+    && export BOOTSTRAP_TOKEN="$(head -c100 /dev/urandom | base64 | tr -dc A-Za-z0-9 | head -c48)" \
     && cd apps \
     && python manage.py compilemessages
 

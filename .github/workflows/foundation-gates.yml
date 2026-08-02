@@ -9,6 +9,7 @@ on:
       - tools/tests/test_release_provenance.py
       - tools/tests/test_container_security.py
       - Dockerfile
+      - apps/jumpserver/settings/custom.py
       - Dockerfile-base
       - .github/workflows/foundation-gates.yml
       - .github/workflows/release-installer.yml
@@ -39,6 +40,7 @@ on:
       - tools/tests/test_release_provenance.py
       - tools/tests/test_container_security.py
       - Dockerfile
+      - apps/jumpserver/settings/custom.py
       - Dockerfile-base
       - .github/workflows/foundation-gates.yml
       - .github/workflows/release-installer.yml
