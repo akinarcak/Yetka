@@ -4,7 +4,9 @@ from pathlib import Path
 from django.conf import settings
 
 
-DEFAULT_MANIFEST = Path(settings.BASE_DIR).parents[1] / 'supported-components.json'
+# BASE_DIR is the ``apps`` directory in both the source tree and the image.
+# The manifest is shipped once at the application root beside ``apps``.
+DEFAULT_MANIFEST = Path(settings.BASE_DIR).parent / 'supported-components.json'
 
 
 def load_supported_components(path=None):

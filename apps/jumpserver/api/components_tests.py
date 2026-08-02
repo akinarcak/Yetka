@@ -13,7 +13,9 @@ class SupportedComponentsApiTests(SimpleTestCase):
         manifest = {'koko': {'status': 'supported'}, 'lion': {'status': 'unavailable'}}
         loader.return_value = manifest
         request = APIRequestFactory().get('/api/v1/components/')
-        request.user = SimpleNamespace(is_authenticated=True)
+        request.user = SimpleNamespace(
+            is_authenticated=True, is_active=True, is_valid=True
+        )
         response = SupportedComponentsApi.as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, {'components': manifest})

@@ -5,6 +5,11 @@ application must not infer support from an upstream or JumpServer component
 name: entries marked `unavailable` are intentionally shown as unavailable in
 product surfaces until a Yetka-supported build and test matrix exists.
 
+The runtime API `/api/v1/components/` is the UI authority. Lina consumes this
+manifest for component logs: unavailable or unknown entries are labelled
+`Unavailable` and do not expose tail-log actions. A missing manifest response
+fails closed in that surface; it must not invent a supported connector.
+
 Yetka releases use two provenance records:
 
 - `components.lock.yml` pins every external build input to an immutable Git
