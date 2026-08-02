@@ -32,6 +32,9 @@ data was used.
 - Run `30755497508` passed all three jobs (container, Lina source, provenance)
   after the test-suite isolation change. The earlier failure in `30755346653`
   remains historical evidence and is not treated as a release result.
+- Run `30755688032` passed all three jobs after adding release vulnerability
+  and secret-scan gates. The release workflow itself still requires a tag or
+  manual dispatch to produce final scan/SBOM/signature artefact evidence.
 
 ## Open gates before declaring completion
 
