@@ -15,8 +15,11 @@ from .validation import validate_custom_endpoint
 from .providers.aws import AWSProvider
 from .providers.azure import AzureProvider
 from .serializers import CloudSyncAccountSerializer
-from .api import CloudSyncAccountViewSet, CloudSyncExecutionViewSet
-from .models import CloudSyncAccount, CloudSyncExecution
+from .api import (
+    CloudSyncAccountViewSet, CloudSyncExecutionViewSet,
+    CloudSyncQuarantineViewSet,
+)
+from .models import CloudSyncAccount, CloudSyncExecution, CloudSyncQuarantine
 
 
 class CloudProviderMockTests(SimpleTestCase):
@@ -210,6 +213,19 @@ class CloudSyncQueueTests(SimpleTestCase):
 
         queryset.none.assert_called_once_with()
         self.assertIs(result, queryset.none.return_value)
+
+    def test_quarantine_api_queryset_is_tenant_scoped(self):
+        tenant = SimpleNamespace(id='tenant-a')
+        queryset = Mock()
+        queryset.filter.return_value = SimpleNamespace(name='tenant-a-only')
+        view = CloudSyncQuarantineViewSet()
+        view.request = SimpleNamespace(customer_tenant=tenant)
+
+        with patch.object(CloudSyncQuarantine.objects, 'all', return_value=queryset):
+            result = view.get_queryset()
+
+        queryset.filter.assert_called_once_with(tenant=tenant)
+        self.assertEqual(result.name, 'tenant-a-only')
 
     def test_serializer_rejects_missing_or_unknown_credentials_without_secret_echo(self):
         serializer = CloudSyncAccountSerializer(data={

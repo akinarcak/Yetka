@@ -14,7 +14,7 @@ from .middleware import (
     resolve_tenant_for_user,
     validate_organization_ownership,
 )
-from .api import TenantScopedQuerySetMixin
+from .api import CustomerTenantListApi, TenantScopedQuerySetMixin
 from .serializers import CustomerTenantSerializer
 
 
@@ -149,6 +149,23 @@ class TenantScopedQuerySetTests(SimpleTestCase):
 
         view.base_queryset.none.assert_called_once_with()
         self.assertIs(result, view.base_queryset.none.return_value)
+
+
+class CrossTenantApiContractTests(SimpleTestCase):
+    def test_tenant_list_is_membership_scoped(self):
+        queryset = Mock()
+        active = queryset.filter.return_value
+        active.prefetch_related.return_value.distinct.return_value = ['tenant-a']
+        view = CustomerTenantListApi()
+        view.request = SimpleNamespace(user=SimpleNamespace(id='user-a'))
+
+        with patch('tenants.api.CustomerTenant.objects', queryset):
+            result = view.get_queryset()
+
+        queryset.filter.assert_called_once_with(
+            is_active=True, memberships__user=view.request.user
+        )
+        self.assertEqual(result, ['tenant-a'])
 
 
 class CustomerTenantSerializerTests(SimpleTestCase):
