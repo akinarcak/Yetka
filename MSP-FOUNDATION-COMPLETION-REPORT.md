@@ -76,6 +76,9 @@ feature-branch dispatch because the workflow version on the repository default
 branch does not expose `workflow_dispatch`; a release owner must rerun the
 non-publishing rehearsal after the workflow is merged.
 
+The implementation is ready for merge in PR #16:
+https://github.com/akinarcak/Yetka/pull/16
+
 ## W7 — report and handoff
 
 This report is the W7 artifact. Handoff notes are updated with W4 and W5
