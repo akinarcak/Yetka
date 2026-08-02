@@ -77,11 +77,7 @@ data was used.
 
 ## Open gates before declaring completion
 
-1. Re-run and retain the complete core/Lina/Luna/Koko compatibility matrix,
-   including
-   the supported/unavailable component UI states and a restore drill against
-   an application-format backup (the offline SQLite fixture is covered).
-2. Re-audit the Definition of Done against release artefacts and only then
+1. Re-audit the Definition of Done against release artefacts and only then
    change this report to `complete` and mark the goal achieved.
 
 ## Recent implementation commits
