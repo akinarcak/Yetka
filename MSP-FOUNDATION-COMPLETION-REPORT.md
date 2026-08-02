@@ -16,6 +16,7 @@ data was used.
 | Release integrity | `.github/workflows/release-installer.yml` generates CycloneDX SBOM, signs `SHA256SUMS` with Cosign, and verifies the signature before upload |
 | Tenant context | `apps/tenants/middleware.py`, tenant-scoped session replay lookup, WebSocket tenant binding, Celery context validation |
 | SSH security | `apps/common/ssh.py`, pinned known-host policy, legacy crypto opt-in defaults, policy tests and documentation |
+| SFTP audit | `common.sftp_audit_tests` mocks the client and verifies pinned SSH configuration occurs before SFTP connect |
 | Production configuration | `apps/common/security_config.py` rejects weak production secrets and unpinned SSH configuration |
 | Recording | Replay upload tasks fail closed and retain local data after an unsuccessful upload (`apps/terminal/tasks.py`) |
 | Service signatures | `ServiceAccountSignaturePermission` consumes a timestamp nonce once and rejects replay (`apps/common/permissions.py`) |
