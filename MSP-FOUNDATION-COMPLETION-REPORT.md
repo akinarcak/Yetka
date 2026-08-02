@@ -28,9 +28,9 @@ data was used.
   component-manifest, recording, replay-scope, and service-signature suites.
 - Release workflow is pinned to the locked Lina/Luna/Koko commits and uploads
   hashes, SBOM, signature, and signature bundle.
-- Latest observed foundation run (`30755346653`) built the container and passed
-  the runtime non-root/read-only check, but the in-image tenant test command
-  exited with code 1. Therefore the foundation gate is not green.
+- Run `30755497508` passed all three jobs (container, Lina source, provenance)
+  after the test-suite isolation change. The earlier failure in `30755346653`
+  remains historical evidence and is not treated as a release result.
 
 ## Open gates before declaring completion
 
