@@ -49,6 +49,8 @@ data was used.
   regression test included.
 - Run `30756333731` passed all three jobs with the authenticated supported-
   components API test included.
+- Run `30756478787` passed all three jobs with the product-neutral unavailable
+  page and paid-upgrade redirect regression checks included.
 
 ## Open gates before declaring completion
 
