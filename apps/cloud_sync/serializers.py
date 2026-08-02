@@ -6,6 +6,8 @@ from .validation import validate_custom_endpoint
 
 
 class CloudSyncAccountSerializer(BulkOrgResourceModelSerializer):
+    credentials = serializers.JSONField(write_only=True)
+
     CREDENTIAL_FIELDS = {
         'aws': {'access_key_id', 'secret_access_key', 'endpoint_url'},
         'azure': {'tenant_id', 'client_id', 'client_secret', 'subscription_id'},
