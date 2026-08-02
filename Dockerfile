@@ -47,8 +47,6 @@ RUN set -ex \
     && apt-get update > /dev/null \
     && apt-get -y install --no-install-recommends ${DEPENDENCIES} \
     && apt-get -y install --no-install-recommends ${TOOLS} \
-    && mkdir -p /root/.ssh/ \
-    && echo "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null\n\tCiphers +aes128-cbc\n\tKexAlgorithms +diffie-hellman-group1-sha1\n\tHostKeyAlgorithms +ssh-rsa" > /root/.ssh/config \
     && echo "no" | dpkg-reconfigure dash \
     && apt-get clean all \
     && rm -rf /var/lib/apt/lists/* \
