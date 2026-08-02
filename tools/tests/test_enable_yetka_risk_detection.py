@@ -3,7 +3,6 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase, main
-from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -14,6 +13,19 @@ SPEC.loader.exec_module(MODULE)
 
 
 class YetkaUiPatchTests(TestCase):
+    def test_enterprise_overlay_is_removed_without_risk_bundle(self):
+        with TemporaryDirectory() as directory:
+            asset_dir = Path(directory)
+            page = asset_dir / "Page.fixture.js"
+            page.write_text(MODULE.PAGE_DISABLED_OVERLAY, encoding="utf-8")
+
+            MODULE.patch_ui(asset_dir, asset_dir / "nginx.conf")
+
+            self.assertNotIn(
+                MODULE.PAGE_DISABLED_OVERLAY,
+                page.read_text(encoding="utf-8"),
+            )
+
     def test_turkish_element_locale_patch_is_idempotent(self):
         with TemporaryDirectory() as directory:
             asset_dir = Path(directory)
@@ -33,11 +45,11 @@ class YetkaUiPatchTests(TestCase):
                 encoding="utf-8",
             )
 
-            with patch.object(MODULE, "ASSET_DIR", asset_dir):
-                MODULE.main()
-                first = bundle.read_text(encoding="utf-8")
-                MODULE.main()
-                second = bundle.read_text(encoding="utf-8")
+            nginx_config = asset_dir / "nginx.conf"
+            MODULE.patch_ui(asset_dir, nginx_config)
+            first = bundle.read_text(encoding="utf-8")
+            MODULE.patch_ui(asset_dir, nginx_config)
+            second = bundle.read_text(encoding="utf-8")
 
             self.assertEqual(first, second)
             self.assertEqual(first.count("tr:YTl"), 2)

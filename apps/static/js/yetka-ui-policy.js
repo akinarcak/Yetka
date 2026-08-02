@@ -3,6 +3,7 @@
 
   var LICENSE_ROUTE = /^#\/settings\/license(?:[/?]|$)/;
   var LICENSE_LINK_SELECTOR = 'a[href="#/settings/license"],a[href$="/settings/license"]';
+  var ENTERPRISE_OVERLAY_SELECTOR = '.disabled-content:has(> .upgrade-btn)';
   var observer;
   var cleanupScheduled = false;
 
@@ -21,25 +22,34 @@
     });
   }
 
+  function removeEnterpriseOverlays() {
+    document.querySelectorAll(ENTERPRISE_OVERLAY_SELECTOR).forEach(function (overlay) {
+      overlay.remove();
+    });
+  }
+
   function scheduleCleanup() {
     if (cleanupScheduled) return;
     cleanupScheduled = true;
     window.requestAnimationFrame(function () {
       cleanupScheduled = false;
       removeLicenseLinks();
+      removeEnterpriseOverlays();
     });
   }
 
   function installPolicy() {
     if (redirectLicenseRoute()) return;
     removeLicenseLinks();
+    removeEnterpriseOverlays();
     observer = new MutationObserver(scheduleCleanup);
     observer.observe(document.body, {childList: true, subtree: true});
   }
 
   var style = document.createElement('style');
   style.id = 'yetka-ui-policy-style';
-  style.textContent = LICENSE_LINK_SELECTOR + '{display:none!important}';
+  style.textContent = LICENSE_LINK_SELECTOR + ',' + ENTERPRISE_OVERLAY_SELECTOR +
+    '{display:none!important}';
   document.head.appendChild(style);
 
   window.addEventListener('hashchange', redirectLicenseRoute);

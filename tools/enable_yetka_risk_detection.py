@@ -1,6 +1,7 @@
 """Enable the source-backed risk detection page in the community UI bundle."""
 
 from pathlib import Path
+import argparse
 import re
 import shutil
 
@@ -50,15 +51,14 @@ ELEMENT_LOCALE_LOOKUP = '"pt-br":vT,es:hT,ru:yT,ko:_T,vi:bT}'
 ELEMENT_LOCALE_LOOKUP_PATCH = '"pt-br":vT,es:hT,ru:yT,ko:_T,vi:bT,tr:YTl}'
 
 
-def main() -> None:
+def patch_ui(asset_dir=ASSET_DIR, nginx_config=Path("/etc/nginx/conf.d/default.conf")) -> None:
     bundles = [
         bundle
         for pattern in COMMUNITY_BUNDLES
-        for bundle in sorted(ASSET_DIR.glob(pattern))
+        for bundle in sorted(asset_dir.glob(pattern))
     ]
     if not bundles:
-        print("Yetka risk UI bundle not found; leaving the UI unchanged")
-        return
+        print("Yetka risk UI bundle not found; continuing with other UI policies")
 
     for bundle in bundles:
         content = bundle.read_text(encoding="utf-8")
@@ -71,7 +71,7 @@ def main() -> None:
         )
         print(f"Enabled Yetka risk detection: {bundle.name}")
 
-    for bundle in sorted(ASSET_DIR.glob("profile.*.js")):
+    for bundle in sorted(asset_dir.glob("profile.*.js")):
         if bundle.name == "profile.Yetka.js":
             continue
         content = bundle.read_text(encoding="utf-8")
@@ -82,13 +82,13 @@ def main() -> None:
         bundle.write_text(updated, encoding="utf-8")
         print(f"Removed WeChat from Yetka profile: {bundle.name}")
 
-    profile_sources = [p for p in sorted(ASSET_DIR.glob("profile.*.js")) if p.name != "profile.Yetka.js"]
+    profile_sources = [p for p in sorted(asset_dir.glob("profile.*.js")) if p.name != "profile.Yetka.js"]
     if profile_sources:
-        target = ASSET_DIR / "profile.Yetka.js"
+        target = asset_dir / "profile.Yetka.js"
         shutil.copyfile(profile_sources[0], target)
         print("Published cache-busted Yetka profile bundle: profile.Yetka.js")
 
-    for bundle in sorted(ASSET_DIR.glob("License.*.js")):
+    for bundle in sorted(asset_dir.glob("License.*.js")):
         content = bundle.read_text(encoding="utf-8")
         updated = re.sub(
             r"quickActions:\[\{.*?\}\]\}\},computed",
@@ -108,7 +108,7 @@ def main() -> None:
         bundle.write_text(updated, encoding="utf-8")
         print(f"Cleaned Yetka license page: {bundle.name}")
 
-    for bundle in sorted(ASSET_DIR.glob("index.*.js")):
+    for bundle in sorted(asset_dir.glob("index.*.js")):
         content = bundle.read_text(encoding="utf-8")
         updated = content.replace(LICENSE_STORE_GATE, "e.hasValidLicense=!0")
         updated = re.sub(r"profile\.[A-Za-z0-9_-]+\.js", "profile.Yetka.js", updated)
@@ -120,7 +120,7 @@ def main() -> None:
         bundle.write_text(updated, encoding="utf-8")
         print(f"Enabled GPL features without a license gate: {bundle.name}")
 
-    for bundle in sorted(ASSET_DIR.glob("Page.*.js")):
+    for bundle in sorted(asset_dir.glob("Page.*.js")):
         content = bundle.read_text(encoding="utf-8")
         updated = content.replace(PAGE_DISABLED_OVERLAY, "!1?(i(),e(`div`,oe,")
         if updated == content:
@@ -129,7 +129,6 @@ def main() -> None:
         bundle.write_text(updated, encoding="utf-8")
         print(f"Disabled Yetka enterprise overlay: {bundle.name}")
 
-    nginx_config = Path("/etc/nginx/conf.d/default.conf")
     if nginx_config.exists():
         content = nginx_config.read_text(encoding="utf-8")
         if NGINX_UI_LOCATION in content and NGINX_UI_LOCATION_PATCH not in content:
@@ -138,6 +137,18 @@ def main() -> None:
                 encoding="utf-8",
             )
             print("Disabled browser caching for Yetka UI assets")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--asset-dir', type=Path, default=ASSET_DIR)
+    parser.add_argument(
+        '--nginx-config',
+        type=Path,
+        default=Path('/etc/nginx/conf.d/default.conf'),
+    )
+    args = parser.parse_args()
+    patch_ui(args.asset_dir, args.nginx_config)
 
 
 if __name__ == "__main__":
