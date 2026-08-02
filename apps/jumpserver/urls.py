@@ -23,6 +23,7 @@ resource_api = [
     path('ops/', include('ops.urls.api_urls', namespace='api-ops')),
     path('audits/', include('audits.urls.api_urls', namespace='api-audits')),
     path('orgs/', include('orgs.urls.api_urls', namespace='api-orgs')),
+    path('tenants/', include('tenants.urls', namespace='api-tenants')),
     path('settings/', include('settings.urls.api_urls', namespace='api-settings')),
     path('authentication/', include('authentication.urls.api_urls', namespace='api-auth')),
     path('common/', include('common.urls.api_urls', namespace='api-common')),

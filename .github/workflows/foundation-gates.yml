@@ -12,6 +12,10 @@ on:
       - Dockerfile-base
       - .github/workflows/foundation-gates.yml
       - .github/workflows/release-installer.yml
+      - apps/tenants/**
+      - apps/jumpserver/settings/base.py
+      - apps/jumpserver/urls.py
+      - docs/security/customer-tenant-isolation.md
   push:
     paths:
       - components.lock.yml
@@ -23,6 +27,10 @@ on:
       - Dockerfile-base
       - .github/workflows/foundation-gates.yml
       - .github/workflows/release-installer.yml
+      - apps/tenants/**
+      - apps/jumpserver/settings/base.py
+      - apps/jumpserver/urls.py
+      - docs/security/customer-tenant-isolation.md
 
 permissions:
   contents: read
@@ -90,3 +98,12 @@ jobs:
               touch /opt/jumpserver/tmp/.write-test
               test ! -w /opt/jumpserver/apps
             '
+      - name: Run customer tenant isolation tests in the built image
+        run: |
+          docker run --rm --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m \
+            --mount type=volume,destination=/opt/jumpserver/data \
+            --env DB_ENGINE=sqlite3 \
+            --env DB_NAME=/tmp/yetka-tests.sqlite3 \
+            --env SECRET_KEY=foundation-ci-not-for-production \
+            --entrypoint /opt/py3/bin/python \
+            yetka/core:foundation-test jms test tenants.tests --verbosity=2
