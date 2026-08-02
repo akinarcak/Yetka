@@ -9,6 +9,8 @@ on:
       - tools/scan_release_artifacts.py
       - tools/tests/test_release_provenance.py
       - tools/tests/test_container_security.py
+      - tools/backup_restore_smoke.py
+      - tools/tests/test_backup_restore_smoke.py
       - Dockerfile
       - apps/jumpserver/settings/custom.py
       - Dockerfile-base
@@ -47,6 +49,8 @@ on:
       - tools/scan_release_artifacts.py
       - tools/tests/test_release_provenance.py
       - tools/tests/test_container_security.py
+      - tools/backup_restore_smoke.py
+      - tools/tests/test_backup_restore_smoke.py
       - Dockerfile
       - apps/jumpserver/settings/custom.py
       - Dockerfile-base
@@ -116,6 +120,7 @@ jobs:
         run: |
           python -m unittest tools.tests.test_release_provenance -v
           python -m unittest tools.tests.test_container_security -v
+          python -m unittest tools.tests.test_backup_restore_smoke -v
 
   container-build:
     runs-on: ubuntu-latest
