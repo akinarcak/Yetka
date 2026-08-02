@@ -124,6 +124,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
 # Application definition
 
 INSTALLED_APPS = [
+    'tenants.apps.TenantsConfig',
     'orgs.apps.OrgsConfig',
     'users.apps.UsersConfig',
     'assets.apps.AssetsConfig',
@@ -186,6 +187,7 @@ MIDDLEWARE = [
     'jumpserver.middleware.RefererCheckMiddleware',
     'jumpserver.middleware.SQLCountMiddleware',
     'orgs.middleware.OrgMiddleware',
+    'tenants.middleware.CustomerTenantMiddleware',
     'authentication.backends.oidc.middleware.OIDCRefreshIDTokenMiddleware',
     'authentication.backends.cas.middleware.CASMiddleware',
     'authentication.middleware.MFAMiddleware',

@@ -4,6 +4,7 @@ import os
 import paramiko
 
 from common.utils.encode import ssh_key_string_to_obj
+from common.ssh import configure_ssh_client
 
 from .base import ObjectStorage
 
@@ -21,10 +22,10 @@ class SFTPStorage(ObjectStorage):
         self.sftp_passphrase = config.get('STP_PASSPHRASE', '')
         self.sftp_root_path = config.get('SFTP_ROOT_PATH', '/tmp')
         self.ssh = paramiko.SSHClient()
+        configure_ssh_client(self.ssh)
         self.connect()
 
     def connect(self):
-        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         if self.sftp_secret_type == 'password':
             self.ssh.connect(self.sftp_host, self.sftp_port, self.sftp_username, self.sftp_password)
         elif self.sftp_secret_type == 'ssh_key':

@@ -1,16 +1,18 @@
 from .base import BaseProvider, CloudInstance
+from ..validation import validate_custom_endpoint
 
 
 class AWSProvider(BaseProvider):
     def _session(self, region=None):
         import boto3
+        endpoint_url = validate_custom_endpoint(self.credentials.get('endpoint_url'))
         return boto3.client(
             'ec2',
             aws_access_key_id=self.credentials.get('access_key_id'),
             aws_secret_access_key=self.credentials.get('secret_access_key'),
             region_name=region,
             # AWS-uyumlu bulutlar / LocalStack icin opsiyonel ozel endpoint
-            endpoint_url=self.credentials.get('endpoint_url') or None,
+            endpoint_url=endpoint_url,
         )
 
     def _all_regions(self):

@@ -4,6 +4,7 @@ import os
 
 from celery import Celery
 from kombu import Exchange, Queue
+from tenants.celery import TenantAwareTask
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jumpserver.settings')
@@ -13,6 +14,7 @@ from .heatbeat import *
 # from django.conf import settings
 
 app = Celery('jumpserver')
+app.Task = TenantAwareTask
 
 configs = {k: v for k, v in settings.__dict__.items() if k.startswith('CELERY')}
 # Using a string here means the worker will not have to

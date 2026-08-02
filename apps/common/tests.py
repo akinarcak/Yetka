@@ -1,10 +1,18 @@
+import os
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from django.test import SimpleTestCase, override_settings
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from .security_updates import _fetch_release, _version, refresh_maintenance_status
+from .security_updates import (
+    _fetch_release,
+    _current_yetka_version,
+    _version,
+    queue_update,
+    refresh_maintenance_status,
+)
 from jumpserver.api.maintenance import MaintenanceStatusApi
 
 # Create your tests here.
@@ -35,6 +43,37 @@ class MaintenanceStatusTestCase(SimpleTestCase):
 
         with self.assertRaisesRegex(ValueError, 'valid version tag'):
             _fetch_release(session, 'https://example.test/releases/latest')
+
+    def test_release_tag_accepts_yetka_prefix(self):
+        response = Mock()
+        response.json.return_value = {'tag_name': 'yetka-1.0.1'}
+        session = Mock()
+        session.get.return_value = response
+
+        self.assertEqual(
+            _fetch_release(session, 'https://example.test/releases/latest')['tag_name'],
+            'yetka-1.0.1',
+        )
+
+    def test_update_queue_creates_exclusive_request(self):
+        with TemporaryDirectory() as request_dir, patch(
+            'common.security_updates.UPDATE_REQUEST_DIR', request_dir
+        ):
+            queue_update('yetka-1.0.1')
+            with open(os.path.join(request_dir, 'request'), encoding='ascii') as stream:
+                self.assertEqual(stream.read(), 'yetka-1.0.1\n')
+            with self.assertRaises(FileExistsError):
+                queue_update('yetka-1.0.1')
+
+    def test_current_version_prefers_installed_yetka_release_file(self):
+        with TemporaryDirectory() as directory:
+            version_file = os.path.join(directory, 'release-version')
+            with open(version_file, 'w', encoding='ascii') as stream:
+                stream.write('yetka-1.0.1\n')
+            with patch(
+                'common.security_updates.YETKA_RELEASE_VERSION_FILE', version_file
+            ):
+                self.assertEqual(_current_yetka_version(), 'yetka-1.0.1')
 
     def test_slack_renderer_supports_current_mistune(self):
         from common.sdk.im.slack import Slack
@@ -155,3 +194,27 @@ class MaintenanceStatusTestCase(SimpleTestCase):
             is_superuser=True,
         ))
         self.assertEqual(view(allowed_request).status_code, 200)
+
+    @patch('jumpserver.api.maintenance.queue_update')
+    @patch('jumpserver.api.maintenance.get_maintenance_status')
+    def test_system_admin_can_queue_only_latest_reviewed_update(
+        self, get_status, queue
+    ):
+        get_status.return_value = {
+            'update': {'available': True, 'latest_version': 'yetka-1.0.1'}
+        }
+        factory = APIRequestFactory()
+        request = factory.post(
+            '/api/v1/maintenance/status/',
+            {'version': 'yetka-1.0.1'},
+            format='json',
+        )
+        force_authenticate(request, user=SimpleNamespace(
+            pk='system-admin', is_authenticated=True, is_valid=True,
+            is_superuser=True,
+        ))
+
+        response = MaintenanceStatusApi.as_view()(request)
+
+        self.assertEqual(response.status_code, 202)
+        queue.assert_called_once_with('yetka-1.0.1')

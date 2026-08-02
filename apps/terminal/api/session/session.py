@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.files.storage import default_storage
 from django.db.models import F
-from django.http import FileResponse, HttpResponse
+from django.http import FileResponse, Http404, HttpResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.utils.encoding import escape_uri_path
 from django.utils.translation import gettext_noop, gettext as _
@@ -40,6 +40,7 @@ from terminal.permissions import IsSessionAssignee
 from terminal.reporting import SessionReportExporter
 from terminal.session_lifecycle import lifecycle_events_map, reasons_map
 from terminal.utils import is_session_approver
+from tenants.models import TenantOrganization
 from users.models import User
 
 __all__ = [
@@ -202,6 +203,12 @@ class SessionViewSet(ReportExportMixin, OrgBulkModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        tenant = getattr(self.request, 'customer_tenant', None)
+        if tenant is not None:
+            organization_ids = TenantOrganization.objects.filter(
+                tenant=tenant
+            ).values_list('organization_id', flat=True)
+            queryset = queryset.filter(org_id__in=organization_ids)
         if self.request.method in ('GET',):
             queryset = queryset.prefetch_related('terminal').annotate(terminal_display=F('terminal__name'))
         elif self.request.method in ('PATCH',):
@@ -225,9 +232,24 @@ class SessionReplayViewSet(AsyncApiMixin, viewsets.ViewSet):
         'retrieve': 'terminal.view_sessionreplay',
     }
 
+    def _get_tenant_session(self, request, session_id):
+        """Resolve replay sessions only inside the verified tenant boundary."""
+        tenant = getattr(request, 'customer_tenant', None)
+        if tenant is None:
+            raise Http404
+        organization_ids = TenantOrganization.objects.filter(
+            tenant=tenant
+        ).values_list('organization_id', flat=True)
+        session = Session.objects.filter(
+            id=session_id, org_id__in=organization_ids
+        ).first()
+        if session is None:
+            raise Http404
+        return session
+
     def create(self, request, *args, **kwargs):
         session_id = kwargs.get('pk')
-        session = get_object_or_404(Session, id=session_id)
+        session = self._get_tenant_session(request, session_id)
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
@@ -285,7 +307,7 @@ class SessionReplayViewSet(AsyncApiMixin, viewsets.ViewSet):
 
     def async_callback(self, *args, **kwargs):
         session_id = kwargs.get('pk')
-        session = get_object_or_404(Session, id=session_id)
+        session = self._get_tenant_session(self.request, session_id)
         detail = i18n_fmt(
             REPLAY_OP, self.request.user, _('View'), str(session)
         )
@@ -300,7 +322,7 @@ class SessionReplayViewSet(AsyncApiMixin, viewsets.ViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         session_id = kwargs.get('pk')
-        session = get_object_or_404(Session, id=session_id)
+        session = self._get_tenant_session(request, session_id)
         part_filename = request.query_params.get('part_filename')
         if part_filename:
             storage = SessionPartReplayStorageHandler(session)

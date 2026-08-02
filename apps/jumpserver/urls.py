@@ -23,6 +23,7 @@ resource_api = [
     path('ops/', include('ops.urls.api_urls', namespace='api-ops')),
     path('audits/', include('audits.urls.api_urls', namespace='api-audits')),
     path('orgs/', include('orgs.urls.api_urls', namespace='api-orgs')),
+    path('tenants/', include('tenants.urls', namespace='api-tenants')),
     path('settings/', include('settings.urls.api_urls', namespace='api-settings')),
     path('authentication/', include('authentication.urls.api_urls', namespace='api-auth')),
     path('common/', include('common.urls.api_urls', namespace='api-common')),
@@ -37,6 +38,7 @@ resource_api = [
 api_v1 = resource_api + [
     path('prometheus/metrics/', api.PrometheusMetricsApi.as_view()),
     path('search/', api.GlobalSearchView.as_view()),
+    path('components/', api.SupportedComponentsApi.as_view(), name='supported-components'),
 ]
 if settings.MCP_ENABLED:
     api_v1.extend([

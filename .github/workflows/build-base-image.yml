@@ -28,20 +28,13 @@ on:
         default: 'main'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Lock Pull Request
-        if: github.event_name == 'push'
-        run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -d '{"state":"pending", "description":"Action running, merge disabled", "context":"Lock PR"}' \
-          "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}"
-
       - name: Checkout repository (PR branch)
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/checkout@v4
@@ -69,53 +62,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract date
-        id: vars
-        run: echo "IMAGE_TAG=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
-
-      - name: Extract repository name
-        id: repo
-        run: echo "REPO=$(basename ${{ github.repository }})" >> $GITHUB_ENV
-
       - name: Build and push multi-arch image
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
           push: true
           file: Dockerfile-base
-          tags: akinarcak/yetka-core-base:${{ env.IMAGE_TAG }}
+          tags: akinarcak/yetka-core-base:${{ github.sha }}
           context: .
-
-      - name: Update Dockerfile
-        run: |
-          sed -i 's|-base:.* AS stage-build|-base:${{ env.IMAGE_TAG }} AS stage-build|' Dockerfile
-
-      - name: Commit changes
-        run: |
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes to commit."
-            exit 0
-          fi
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add Dockerfile
-          git commit -m "perf: Update Dockerfile with new base image tag"
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git push origin HEAD:${{ github.event.pull_request.head.ref }}
-          else
-            git push origin HEAD:${{ inputs.branch }}
-          fi
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.fork == false }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Skip push for fork PR
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
-        run: echo "Pull request is from a fork, skipping commit and push."
-
-      - name: Unlock Pull Request
-        if: github.event_name == 'push'
-        run: |
-          curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -d '{"state":"success", "description":"Action running, merge disabled", "context":"Lock PR"}' \
-          "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}"

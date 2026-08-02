@@ -21,7 +21,13 @@ OSV_BATCH_API = 'https://api.osv.dev/v1/querybatch'
 MAINTENANCE_GUIDE_URL = 'https://github.com/akinarcak/Yetka/blob/main/deploy/MAINTENANCE.md'
 UPSTREAM_BASE_VERSION = os.environ.get('YETKA_UPSTREAM_BASE_VERSION', 'v4.10.17')
 SKIPPED_PACKAGES = {'jumpserver', 'yetka'}
-RELEASE_TAG_PATTERN = re.compile(r'^v?\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$')
+RELEASE_TAG_PATTERN = re.compile(
+    r'^(?:yetka-|v)?\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$'
+)
+UPDATE_REQUEST_DIR = os.environ.get('YETKA_UPDATE_REQUEST_DIR', '')
+YETKA_RELEASE_VERSION_FILE = os.environ.get(
+    'YETKA_RELEASE_VERSION_FILE', '/var/lib/yetka/release-version'
+)
 
 
 def maintenance_checks_enabled():
@@ -37,6 +43,46 @@ def _version(value):
         return tuple(int(part) for part in match.group(0).split('.'))
     except ValueError:
         return None
+
+
+def update_queue_available():
+    if not UPDATE_REQUEST_DIR:
+        return False
+    try:
+        return os.path.isdir(UPDATE_REQUEST_DIR) and not os.path.islink(UPDATE_REQUEST_DIR)
+    except OSError:
+        return False
+
+
+def queue_update(version):
+    if not RELEASE_TAG_PATTERN.fullmatch(version or ''):
+        raise ValueError('Invalid release tag')
+    if not update_queue_available():
+        raise RuntimeError('Host update queue is not available')
+
+    request_path = os.path.join(UPDATE_REQUEST_DIR, 'request')
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    flags |= getattr(os, 'O_NOFOLLOW', 0)
+    try:
+        fd = os.open(request_path, flags, 0o600)
+    except FileExistsError as exc:
+        raise FileExistsError('Another update request is already pending') from exc
+    try:
+        os.write(fd, f'{version}\n'.encode('ascii'))
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _current_yetka_version():
+    try:
+        with open(YETKA_RELEASE_VERSION_FILE, encoding='ascii') as stream:
+            version = stream.readline().strip()
+        if RELEASE_TAG_PATTERN.fullmatch(version):
+            return version
+    except (OSError, UnicodeError):
+        pass
+    return settings.VERSION
 
 
 def _installed_python_packages():
@@ -70,7 +116,7 @@ def _fetch_release(session, api_url):
 def _check_yetka_release(session):
     release = _fetch_release(session, YETKA_RELEASE_API)
     latest = release['tag_name']
-    current = settings.VERSION
+    current = _current_yetka_version()
     current_version = _version(current)
     latest_version = _version(latest)
     available = bool(

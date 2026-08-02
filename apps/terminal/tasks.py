@@ -28,6 +28,10 @@ RUNNING = False
 logger = get_task_logger(__name__)
 
 
+class ReplayUploadError(RuntimeError):
+    """Raised when a replay cannot be durably uploaded."""
+
+
 @shared_task(
     verbose_name=_('Periodic delete terminal status'),
     description=_("Unused")
@@ -76,20 +80,20 @@ def upload_session_replay_to_external_storage(session_id):
     session = Session.objects.filter(id=session_id).first()
     if not session:
         logger.error(f'Session db item not found: {session_id}')
-        return
+        raise ReplayUploadError(f'Session db item not found: {session_id}')
 
     replay_storage = ReplayStorageHandler(session)
     local_path, url = replay_storage.find_local()
     if not local_path:
         logger.error(f'Session replay not found, may be upload error: {local_path}')
-        return
+        raise ReplayUploadError(f'Session replay not found: {session_id}')
 
     abs_path = default_storage.path(local_path)
     remote_path = session.get_relative_path_by_local_path(abs_path)
     ok, err = server_replay_storage.upload(abs_path, remote_path)
     if not ok:
         logger.error(f'Session replay upload to external error: {err}')
-        return
+        raise ReplayUploadError(f'Session replay upload failed: {err}')
 
     try:
         default_storage.delete(local_path)
@@ -105,11 +109,13 @@ def upload_session_replay_to_external_storage(session_id):
         recordings will be uploaded to external storage"""
     ))
 def upload_session_replay_file_to_external_storage(session_id, local_path, remote_path):
+    if not default_storage.exists(local_path):
+        raise ReplayUploadError(f'Session replay file not found: {local_path}')
     abs_path = default_storage.path(local_path)
     ok, err = server_replay_storage.upload(abs_path, remote_path)
     if not ok:
         logger.error(f'Session replay file {local_path} upload to external error: {err}')
-        return
+        raise ReplayUploadError(f'Session replay file upload failed: {err}')
 
     try:
         default_storage.delete(local_path)

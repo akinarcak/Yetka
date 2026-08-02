@@ -9,6 +9,8 @@ from functools import wraps
 import paramiko
 from sshtunnel import SSHTunnelForwarder
 
+from common.ssh import configure_ssh_client
+
 DEFAULT_RE = '.*'
 SU_PROMPT_LOCALIZATIONS = [
     'Password', '암호', 'パスワード', 'Adgangskode', 'Contraseña', 'Contrasenya',
@@ -132,7 +134,7 @@ class SSHClient:
         self.module = module
         self.gateway_server = None
         self.client = paramiko.SSHClient()
-        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        configure_ssh_client(self.client)
         self.debug_enabled = (
             str(os.environ.get('JMS_REMOTE_CLIENT_DEBUG', '')).lower()
             in {'1', 'true', 'yes', 'on'}
@@ -439,7 +441,7 @@ class SSHClient:
         gateway_args = self.module.params['gateway_args'] or ''
         gateway_args = normalize_gateway_args_for_legacy_parser(gateway_args)
         pattern = (
-            r"(?:sshpass -p ([^ ]+))?\s*ssh -o Port=(\d+)\s+-o StrictHostKeyChecking=no\s+"
+            r"(?:sshpass -p ([^ ]+))?\s*ssh -o Port=(\d+)\s+-o StrictHostKeyChecking=yes\s+"
             r"([^@\s]+)@([^\s]+)\s+-W %h:%p -q(?: -i ([^']+))?'"
         )
         match = re.search(pattern, gateway_args)

@@ -185,6 +185,11 @@ class Config(dict):
         # Django Config, Must set before start
         'SECRET_KEY': '',
         'BOOTSTRAP_TOKEN': '',
+        # SSH host keys are verified against this file; unknown keys fail closed.
+        'SSH_KNOWN_HOSTS_FILE': '/etc/yetka/known_hosts',
+        'SSH_ALLOW_UNPINNED_HOST_KEYS': False,
+        # Legacy SSH algorithms remain disabled unless explicitly enabled.
+        'SSH_LEGACY_CRYPTO_ENABLED': False,
         'DEBUG': False,
         'DEBUG_DEV': False,
         'DEBUG_ANSIBLE': False,
@@ -610,6 +615,8 @@ class Config(dict):
         # The backslash only escapes the single quote in this Python string; it is not a forbidden character.
         'SECURITY_ACCOUNT_USERNAME_FORBIDDEN_CHARS': '{[\'"`;|<>',
         'SECURITY_SERVICE_ACCOUNT_REGISTRATION': 'auto',
+        'SECURITY_SERVICE_SIGNATURE_ALLOW_LEGACY': False,
+        'SECURITY_SERVICE_SIGNATURE_WINDOW_SECONDS': 30,
         'SECURITY_VIEW_AUTH_NEED_MFA': True,
         'SECURITY_DISABLE_VIEW_SECRET': False,
         'SECURITY_MAX_IDLE_TIME': 30,
@@ -697,6 +704,9 @@ class Config(dict):
         'ACTIVITY_LOG_KEEP_DAYS': 180,
         'FTP_LOG_KEEP_DAYS': 180,
         'CLOUD_SYNC_TASK_EXECUTION_KEEP_DAYS': 180,
+        # Comma-separated exact HTTPS origins for optional AWS-compatible APIs.
+        # Empty means custom cloud endpoints are disabled.
+        'CLOUD_SYNC_ALLOWED_ENDPOINTS': '',
         'JOB_EXECUTION_KEEP_DAYS': 180,
         'PASSWORD_CHANGE_LOG_KEEP_DAYS': 999,
         'ACCOUNT_CHANGE_SECRET_RECORD_KEEP_DAYS': 180,

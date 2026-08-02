@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from assets.const import AutomationTypes, Connectivity
 from assets.models import Gateway
 from common.utils import get_logger
+from common.ssh import configure_ssh_client
 
 logger = get_logger(__name__)
 
@@ -25,9 +26,9 @@ class PingGatewayManager:
         local_port = self.execution.snapshot.get('local_port')
         local_port = gateway.port if local_port is None else local_port
         client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        configure_ssh_client(client)
         proxy = paramiko.SSHClient()
-        proxy.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        configure_ssh_client(proxy)
 
         if not isinstance(account, Account):
             err = _('No account')

@@ -14,6 +14,7 @@ from ops.urls.ws_urls import urlpatterns as ops_urlpatterns
 from settings.urls.ws_urls import urlpatterns as setting_urlpatterns
 from terminal.urls.ws_urls import urlpatterns as terminal_urlpatterns
 from common.utils import get_logger
+from tenants.middleware import CustomerTenantWebSocketMiddleware
 import socket
 
 logger = get_logger(__name__)
@@ -108,7 +109,9 @@ application = ProtocolTypeRouter({
     "websocket": SocketContextMiddleware(
         WsSignatureAuthMiddleware(
             AuthMiddlewareStack(
-                URLRouter(urlpatterns)
+                CustomerTenantWebSocketMiddleware(
+                    URLRouter(urlpatterns)
+                )
             )
         )
     ),
