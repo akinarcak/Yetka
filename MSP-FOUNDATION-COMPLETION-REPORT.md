@@ -1,100 +1,83 @@
-# Yetka MSP Foundation 1 — Completion Report
+# Yetka MSP Foundation 1 — completion report
 
-Status: **complete** (foundation release-ready; no public release published)
+Date: 2026-08-03
 
-This report is an evidence index for the foundation work. It intentionally does
-not claim completion until every Definition of Done item has a passing build and
-runtime proof. No customer, production system, real secret, or real customer
-data was used.
+This report records the current evidence for each foundation Definition of
+Done item. `complete` means the implementation and its scoped verification are
+present. `partial` means a required production/release rehearsal is still
+missing; it is not silently treated as complete.
 
-## Evidence completed in this iteration
+## Summary
 
-| Area | Evidence |
-| --- | --- |
-| Component provenance | `components.lock.yml`, immutable commit validation, `tools/validate_components_lock.py` |
-| Forbidden artefacts | `tools/scan_release_artifacts.py` and `tools/tests/test_release_provenance.py` reject xpack paths |
-| Release integrity | `.github/workflows/release-installer.yml` generates CycloneDX SBOM, signs `SHA256SUMS` with Cosign, and verifies the signature before upload |
-| Tenant context | `apps/tenants/middleware.py`, tenant-scoped session replay lookup, WebSocket tenant binding, Celery context validation |
-| SSH security | `apps/common/ssh.py`, pinned known-host policy, legacy crypto opt-in defaults, policy tests and documentation |
-| SFTP audit | `common.sftp_audit_tests` mocks the client and verifies pinned SSH configuration occurs before SFTP connect |
-| Production configuration | `apps/common/security_config.py` rejects weak production secrets and unpinned SSH configuration |
-| Recording | Replay upload tasks fail closed and retain local data after an unsuccessful upload (`apps/terminal/tasks.py`) |
-| Service signatures | `ServiceAccountSignaturePermission` consumes a timestamp nonce once and rejects replay (`apps/common/permissions.py`) |
-| Supported components | `supported-components.json` explicitly marks unsupported external components unavailable |
-| Supported components API | Authenticated `/api/v1/components/` exposes the runtime manifest without mutating status (`jumpserver.api.components_tests`) |
-| Operations/governance | `NOTICE`, `docs/operations/production-checklist.md`, `docs/governance/fork-governance.md`, and `docs/security/recording-fail-closed.md` |
-| Migration plan | `docs/security/tenant-migration-plan.md` defines additive phases, acceptance evidence, and rollback |
-| Lina overlay removal | Lina `5b8685c01aafed3ffc2f2f0a6152a3aeb2c8c216` renders unavailable pages without the legacy blur/mask overlay or paid upgrade redirect and includes a regression test; the lock and workflows pin this commit |
+| Workstream | Status | Evidence |
+| --- | --- | --- |
+| W1 tenant API isolation | complete | Core tenant/cloud-sync tests; CI `30765091779`; isolated Linux W1/W2 evidence in handoff |
+| W2 worker/download/WebSocket isolation | complete | Core tenant task/session/WebSocket tests; isolated source `/var/tmp/yetka-test-source-w2`; CI `30765091779` |
+| W3 recording fail-closed | complete | `docs/security/recording-fail-closed.md`; isolated source `/var/tmp/yetka-test-source-w3`, 12/12; CI `30765359991` |
+| W4 replay-resistant service signatures | complete | Commits `bd20fd889`, `f261b2883`, `81f6ed243`; Linux 13/13; CI `30766199402`; services active |
+| W5 runtime component manifest | complete | Commits `520337c85`, `8979b21a1`; Lina `7330bfc1748863391ad66d84dc970e5f56e2769d`; CI `30766559526` |
+| W6 release gates | partial | Gate implementation and negative/positive tests complete; end-to-end tagged release/publish rehearsal not run |
+| W7 completion report | complete | This file, committed with W6/W7 delivery |
 
-## Verification already run
+## W1–W4 evidence
 
-- `python -m unittest tools.tests.test_release_provenance -v` — 6 tests passed.
-- Foundation CI workflow includes tenant, Cloud Sync, SSH, security-config,
-  component-manifest, recording, replay-scope, and service-signature suites.
-- Release workflow is pinned to the locked Lina/Luna/Koko commits and uploads
-  hashes, SBOM, signature, and signature bundle.
-- Run `30755497508` passed all three jobs (container, Lina source, provenance)
-  after the test-suite isolation change. The earlier failure in `30755346653`
-  remains historical evidence and is not treated as a release result.
-- Run `30755688032` passed all three jobs after adding release vulnerability
-  and secret-scan gates. The release workflow itself still requires a tag or
-  manual dispatch to produce final scan/SBOM/signature artefact evidence.
-- `tools.tests.test_backup_restore_smoke` passes locally and is now part of the
-  foundation provenance job; it validates an offline SQLite fixture round trip
-  including tenant ownership.
-- Run `30755865774` passed container, Lina source, and provenance jobs with the
-  offline backup/restore smoke gate included.
-- Run `30756035540` passed container, Lina source, and provenance jobs using
-  the overlay-free Lina commit pinned in the current lock.
-- Run `30756175027` passed all three jobs with the Lina unavailable-page
-  regression test included.
-- Run `30756333731` passed all three jobs with the authenticated supported-
-  components API test included.
-- Run `30756478787` passed all three jobs with the product-neutral unavailable
-  page and paid-upgrade redirect regression checks included.
-- Run `30756669278` passed all three jobs with the mocked SFTP host-key audit
-  suite included.
-- Run `30756853370` passed all three jobs after adding the non-publishing
-  release dry-run input and its provenance assertions.
-- Run `30757561384` passed the non-publishing release dry-run end to end:
-  pinned Trivy and Gitleaks scans passed, Lina/Luna/Koko builds passed, and
-  SBOM/checksum/Cosign signature verification passed. The uploaded artefacts
-  included `yetka-yetka-foundation-dryrun-9.sbom.cdx.json`, `SHA256SUMS`,
-  `SHA256SUMS.sig`, `SHA256SUMS.sigstore.json`, and
-  `components.release.json`; no GitHub release was published. The manifest
-  records immutable component commits and SHA-256 hashes for all three
-  component archives.
-- The component matrix gate now asserts the four supported build targets,
-  five explicitly unavailable components with reasons, and lock/manifest
-  alignment (`tools.tests.test_component_matrix`). The offline restore smoke
-  now exercises a `yetka-application-backup-v1` tar envelope containing a
-  manifest and database payload, preserving tenant ownership on restore.
-- Run `30758188916` passed all three foundation jobs after switching
-  ansible-core 2.16.19 to its valid, hash-pinned PyPI source archive: the
-  self-contained core image built and passed non-root/read-only checks plus
-  tenant isolation tests, Lina source tests/build passed, and provenance,
-  backup/restore, and component matrix tests passed.
-- Final current-commit dry-run `30758442174` passed all release gates after
-  the dependency-source fix. It produced the SBOM, `SHA256SUMS`, Cosign
-  signature and bundle, component manifest, and core/Lina/Luna/Koko archives;
-  the manifest records core commit `a08c1cb92e38e6d7991a1287791b3fdd115e14a9`
-  and the immutable component commits. `publish_release=false`, so no public
-  release was created.
+The detailed test counts, isolated Linux source paths, service checks, design
+decisions and rollback boundaries are maintained in
+`YETKA-HANDOFF-CONTEXT.md`. The authoritative recent W4 CI run is
+`30766199402`; its dedicated replay-resistant signature step propagates the
+test exit code instead of relying on a later command in the same shell.
 
-## Definition of Done audit
+## W5 — runtime supported-components manifest
 
-All foundation gates are evidenced by the passing foundation CI and final
-non-publishing release dry-run above: digest-pinned self-contained build,
-forbidden-content scan, tenant isolation, SSH/security/recording/signature and
-Cloud Sync tests, supported-component matrix, backup/restore, SBOM, secret and
-vulnerability scans, and signed release checksums. No customer or production
-system, real secret, or real customer data was used.
+Status: complete for the scoped implementation and CI verification.
 
-## Recent implementation commits
+- `supported-components.json` is the runtime status authority.
+- `components.lock.yml` remains the immutable external build-input authority;
+  the lock and manifest matrix tests require supported `core/lina/luna/koko`
+  and unavailable `lion/chen/magnus/razor/nec` entries with explanations.
+- `apps/common/component_manifest.py` resolves the manifest beside `apps` in
+  both source and container layouts.
+- `/api/v1/components/` exposes the manifest. Lina Component Log consumes it,
+  labels unavailable/unknown components, and disables tail-log actions for
+  them. No fake endpoint or connector was added.
+- Core matrix/provenance tests passed locally (`9/9` in the final gate set).
+- CI `30766559526` passed provenance, container, manifest and manifest-aware
+  Lina build steps.
 
-- `3663462d6` — WebSocket customer-tenant binding
-- `85d48d36e` — Celery tenant context cleanup test
-- `9e2ac7aa3` — signed and verified release checksums
-- `aa6b1185b` — runtime supported-component manifest
-- `af40efd3d` — fail-closed replay uploads
-- `3750c082b` — replay-resistant service signatures
+## W6 — release gates
+
+Status: partial pending a real tagged-release rehearsal.
+
+The release workflow now gates upload behind:
+
+1. immutable component lock/provenance tests;
+2. pinned Trivy source and release-container scans;
+3. pinned Gitleaks secret scan;
+4. archive forbidden-content scan for xpack/EE/enterprise paths and names;
+5. GPL metadata plus LICENSE/COPYING archive validation;
+6. Lina/Luna/Koko build and tests;
+7. CycloneDX SBOM generation;
+8. Cosign checksum signing and verification;
+9. `success()` conditions on GitHub release and artifact upload.
+
+Positive and negative gate tests are in
+`tools/tests/test_release_provenance.py` and passed locally (`7/7` for the
+provenance suite). Foundation CI also runs these tests in its provenance job.
+The release workflow itself has not been run against a real `yetka-*` tag with
+publish enabled, so artifact registry/upload behavior remains an explicit
+follow-up rehearsal rather than an unsupported claim.
+
+## W7 — report and handoff
+
+This report is the W7 artifact. Handoff notes are updated with W4 and W5
+design/evidence records. Production/test-server application code was not
+deployed by W5–W7; changes were verified in CI and local isolated/build
+environments.
+
+## Remaining acceptance item
+
+Run one disposable, non-production `workflow_dispatch` release with
+`publish_release=false` (or an equivalent isolated release rehearsal) and
+record its run URL and artifact scan/signature results. Until that happens,
+the overall MSP Foundation goal should remain open because W6 is explicitly
+partial.
