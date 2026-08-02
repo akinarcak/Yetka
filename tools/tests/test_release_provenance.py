@@ -45,7 +45,7 @@ class ComponentLockTests(TestCase):
         self.assertIn("cosign verify-blob", release_workflow)
         self.assertIn("SHA256SUMS.sig", release_workflow)
         self.assertIn("aquasec/trivy:0.65.0", release_workflow)
-        self.assertIn("zricethezav/gitleaks:8.24.3", release_workflow)
+        self.assertIn("zricethezav/gitleaks:v8.24.3", release_workflow)
         self.assertIn("publish_release", release_workflow)
         self.assertIn("inputs.publish_release == true", release_workflow)
 
