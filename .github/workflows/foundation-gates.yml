@@ -107,5 +107,7 @@ jobs:
             --env DB_ENGINE=sqlite3 \
             --env DB_NAME=/tmp/yetka-tests.sqlite3 \
             --env SECRET_KEY=foundation-ci-not-for-production \
+            --env DJANGO_SETTINGS_MODULE=jumpserver.settings \
+            --workdir /opt/jumpserver/apps \
             --entrypoint /opt/py3/bin/python \
-            yetka/core:foundation-test jms test tenants.tests --verbosity=2
+            yetka/core:foundation-test -m django test tenants.tests --verbosity=2
