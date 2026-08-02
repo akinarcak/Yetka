@@ -7,6 +7,7 @@ from unittest import TestCase
 
 from tools.scan_release_artifacts import violations
 from tools.validate_components_lock import load_lock, release_manifest
+from tools.validate_release_licenses import validate as validate_licenses
 
 
 class ComponentLockTests(TestCase):
@@ -63,6 +64,20 @@ class ComponentLockTests(TestCase):
             artifact.write_bytes(b"artifact")
             manifest = release_manifest(lock, root, "yetka-1.0.0", "1" * 40)
             self.assertEqual(len(manifest["components"]["lina"]["sha256"]), 64)
+
+    def test_release_license_gate_rejects_archive_without_license(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            archive = root / "lina.tar.gz"
+            with tarfile.open(archive, "w:gz") as package:
+                info = tarfile.TarInfo("index.html")
+                info.size = 0
+                package.addfile(info)
+            with self.assertRaises(ValueError):
+                validate_licenses(
+                    Path(__file__).resolve().parents[2] / "components.lock.yml",
+                    [archive],
+                )
 
 
 class ForbiddenContentTests(TestCase):
