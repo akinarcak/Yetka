@@ -2,7 +2,7 @@ import logging
 
 from django.utils import timezone
 
-from orgs.utils import set_current_org
+from orgs.utils import tmp_to_org
 from assets.models import Node, Platform
 from assets.serializers.asset.host import HostSerializer
 from .models import CloudSyncExecution, CloudSyncedAsset
@@ -52,12 +52,21 @@ def _create_asset(account, node, inst, name):
     return s.save()
 
 
-def run_sync(account):
-    set_current_org(account.org)
-    execution = CloudSyncExecution.objects.create(
-        account=account, tenant=account.tenant, org_id=account.org_id,
-        status=SyncStatus.running, date_start=timezone.now(),
-    )
+def run_sync(account, execution=None):
+    with tmp_to_org(account.org):
+        return _run_sync(account, execution)
+
+
+def _run_sync(account, execution=None):
+    if execution is None:
+        execution = CloudSyncExecution.objects.create(
+            account=account, tenant=account.tenant, org_id=account.org_id,
+            status=SyncStatus.running, date_start=timezone.now(),
+        )
+    else:
+        execution.status = SyncStatus.running
+        execution.date_start = timezone.now()
+        execution.save(update_fields=['status', 'date_start', 'date_updated'])
     try:
         provider = get_provider(account)
         instances = provider.list_instances()
