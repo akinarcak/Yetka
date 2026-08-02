@@ -57,9 +57,10 @@ data was used.
 
 ## Open gates before declaring completion
 
-1. Run a tagged or manually dispatched release and retain final artefact
-   evidence for SBOM, vulnerability/secret scans, checksum signature/bundle,
-   and component manifest verification.
+1. Run the release workflow in its non-publishing manual dry-run mode and
+   retain final artefact evidence for SBOM, vulnerability/secret scans,
+   checksum signature/bundle, and component manifest verification; publish
+   only after that evidence is reviewed.
 2. Add and run the complete core/Lina/Luna/Koko compatibility matrix, including
    the supported/unavailable component UI states and a restore drill against
    an application-format backup (the offline SQLite fixture is covered).
