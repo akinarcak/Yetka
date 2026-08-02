@@ -46,6 +46,8 @@ class ComponentLockTests(TestCase):
         self.assertIn("SHA256SUMS.sig", release_workflow)
         self.assertIn("aquasecurity/trivy-action", release_workflow)
         self.assertIn("gitleaks/gitleaks-action", release_workflow)
+        self.assertIn("publish_release", release_workflow)
+        self.assertIn("inputs.publish_release == true", release_workflow)
 
     def test_release_manifest_records_artifact_hashes(self):
         with TemporaryDirectory() as directory:

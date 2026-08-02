@@ -9,6 +9,11 @@ on:
         description: Existing or new Yetka release tag
         required: true
         default: yetka-1.0.6
+      publish_release:
+        description: Publish generated assets to a GitHub Release
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -134,6 +139,7 @@ jobs:
             --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
             artifacts/SHA256SUMS
       - name: Attach assets to Yetka release
+        if: ${{ inputs.publish_release == true || startsWith(github.ref, 'refs/tags/') }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
