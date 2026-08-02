@@ -21,6 +21,8 @@ on:
       - apps/common/ssh.py
       - apps/common/security_config.py
       - apps/common/security_config_tests.py
+      - apps/common/permissions.py
+      - apps/common/service_signature_tests.py
       - apps/common/ssh_tests.py
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
@@ -57,6 +59,8 @@ on:
       - apps/common/ssh.py
       - apps/common/security_config.py
       - apps/common/security_config_tests.py
+      - apps/common/permissions.py
+      - apps/common/service_signature_tests.py
       - apps/common/ssh_tests.py
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
@@ -153,5 +157,5 @@ jobs:
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
-              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests common.component_manifest_tests terminal.tenant_tests terminal.recording_tests --verbosity=2
+              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests common.service_signature_tests common.component_manifest_tests terminal.tenant_tests terminal.recording_tests --verbosity=2
             '

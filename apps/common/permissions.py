@@ -89,6 +89,12 @@ class ServiceAccountSignaturePermission(permissions.BasePermission):
             interval = abs(int(time.time()) - timestamp)
             if interval > 30:
                 return False
+            # The encrypted timestamp is the service request nonce.  Consume it
+            # once so a captured valid signature cannot be replayed within the
+            # clock-skew window.  Failure to persist the nonce fails closed.
+            nonce_key = f'jms-service-signature:{ak_id}:{time_sign}'
+            if not cache.add(nonce_key, True, timeout=31):
+                return False
             return True
         except Exception:
             return False
