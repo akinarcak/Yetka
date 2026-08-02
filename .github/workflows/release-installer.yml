@@ -150,7 +150,7 @@ jobs:
             --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
             artifacts/SHA256SUMS
       - name: Attach assets to Yetka release
-        if: "${{ success() && (inputs.publish_release == true || (startsWith(github.ref, 'refs/tags/') && !startsWith(github.ref, 'refs/tags/yetka-rehearsal-'))) }}"
+        if: ${{ success() && (inputs.publish_release == true || (startsWith(github.ref, 'refs/tags/') && contains(github.ref, 'refs/tags/yetka-rehearsal-') == false)) }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
