@@ -57,17 +57,13 @@ data was used.
 
 ## Open gates before declaring completion
 
-1. Obtain a green CI run for the latest WebSocket, recording, signature, and
-   manifest commits, including the container test image.
-2. Add and run the complete core/Lina/Luna/Koko matrix, backup/restore,
-   secret/license/container scans, and SFTP audit evidence.
-3. Verify source-level Lina route/menu/permission behavior and remove any
-   remaining DOM overlay or mask workaround in the Lina source repository.
-4. Expose the supported-component manifest through the product surface and
-   prove unavailable states in Lina UI tests.
-5. Finish migration/rollback, fork governance, NOTICE, production checklist,
-   SSH, recording, and tenant documentation review.
-6. Re-audit the Definition of Done against release artefacts and only then
+1. Run a tagged or manually dispatched release and retain final artefact
+   evidence for SBOM, vulnerability/secret scans, checksum signature/bundle,
+   and component manifest verification.
+2. Add and run the complete core/Lina/Luna/Koko compatibility matrix, including
+   the supported/unavailable component UI states and a restore drill against
+   an application-format backup (the offline SQLite fixture is covered).
+3. Re-audit the Definition of Done against release artefacts and only then
    change this report to `complete` and mark the goal achieved.
 
 ## Recent implementation commits
