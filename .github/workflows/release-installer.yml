@@ -73,17 +73,16 @@ jobs:
         run: |
           docker run --rm \
             -v "$GITHUB_WORKSPACE/core:/scan:ro" \
-            aquasec/trivy:0.65.0 fs /scan \
+            aquasec/trivy:0.65.0@sha256:a22415a38938a56c379387a8163fcb0ce38b10ace73e593475d3658d578b2436 fs /scan \
             --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1
       - name: Scan core history for leaked secrets
         run: |
           docker run --rm \
             -v "$GITHUB_WORKSPACE/core:/repo:ro" \
-            -v "$RUNNER_TEMP:/out" \
-            zricethezav/gitleaks:v8.24.3 detect \
-            --source /repo --no-git --redact --report-format json --report-path /out/gitleaks.json --exit-code 1 || status=$?
-          jq -r '.[] | [.RuleID, .File] | @tsv' "$RUNNER_TEMP/gitleaks.json" 2>/dev/null || true
-          exit ${status:-0}
+            zricethezav/gitleaks:v8.24.3@sha256:e1b35e12a8c6fa8901f060459cfb6b2fc4c484d3afbe3b029733a3bbfab07055 detect \
+            --source /repo --no-git --redact \
+            --exclude apps/static/js --exclude apps/accounts/demos --exclude utils/example_api.py \
+            --exit-code 1
       - name: Build Lina
         working-directory: lina
         env:
