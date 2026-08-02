@@ -163,7 +163,7 @@ Homepage = "https://www.jumpserver.com"
 Documentation = "https://www.jumpserver.com/docs"
 
 [tool.uv]
-default-groups = ["xpack", "dev"]
+default-groups = []
 
 
 [dependency-groups]

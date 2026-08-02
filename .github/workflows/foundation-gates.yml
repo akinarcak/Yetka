@@ -38,3 +38,31 @@ jobs:
         run: |
           python -m unittest tools.tests.test_release_provenance -v
           python -m unittest tools.tests.test_container_security -v
+
+  container-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build self-contained Yetka core image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: yetka/core:foundation-test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Verify non-root read-only runtime and forbidden paths
+        run: |
+          test "$(docker image inspect yetka/core:foundation-test --format '{{.Config.User}}')" = "10001:10001"
+          docker run --rm --read-only --tmpfs /tmp:rw,noexec,nosuid,size=128m \
+            --mount type=volume,destination=/opt/jumpserver/data \
+            --entrypoint /bin/sh yetka/core:foundation-test -c '
+              test "$(id -u)" = 10001
+              test ! -d /opt/jumpserver/apps/xpack
+              touch /opt/jumpserver/data/.write-test
+              touch /opt/jumpserver/tmp/.write-test
+              test ! -w /opt/jumpserver/apps
+            '
