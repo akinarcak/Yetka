@@ -46,7 +46,7 @@ permissions:
   contents: read
 
 env:
-  LINA_COMMIT: d01364da573e45ca5cf9a55efbb2f239237df252
+  LINA_COMMIT: b2fcacf16fab9f07b84c95e2d761aac8bf549e1e
 
 jobs:
   lina-source:
@@ -67,7 +67,7 @@ jobs:
         run: |
           corepack enable
           yarn install --frozen-lockfile
-          yarn test:unit --runInBand tests/unit/components/MaintenanceStatus.spec.js tests/unit/store/settings.spec.js
+          yarn test:unit --runInBand tests/unit/components/MaintenanceStatus.spec.js tests/unit/store/settings.spec.js tests/unit/utils/yetkaTenant.spec.js
           yarn build:prod
 
   provenance:

@@ -3,7 +3,7 @@
   "components": {
     "lina": {
       "repository": "https://github.com/akinarcak/Yetka-Lina.git",
-      "commit": "d01364da573e45ca5cf9a55efbb2f239237df252",
+      "commit": "b2fcacf16fab9f07b84c95e2d761aac8bf549e1e",
       "version": "yetka-v4.10.16",
       "license": "GPL-3.0-or-later",
       "artifact": "lina-{release_tag}.tar.gz"
