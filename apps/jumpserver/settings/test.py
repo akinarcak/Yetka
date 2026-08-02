@@ -29,3 +29,4 @@ _default_database["TEST"] = {
 # Tests must never send work to the live asynchronous workers.
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
+TEST_RUNNER = "jumpserver.test_runner.IsolatedDiscoverRunner"
