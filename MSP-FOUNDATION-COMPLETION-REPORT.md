@@ -44,6 +44,8 @@ data was used.
   offline backup/restore smoke gate included.
 - Run `30756035540` passed container, Lina source, and provenance jobs using
   the overlay-free Lina commit pinned in the current lock.
+- Run `30756175027` passed all three jobs with the Lina unavailable-page
+  regression test included.
 
 ## Open gates before declaring completion
 
