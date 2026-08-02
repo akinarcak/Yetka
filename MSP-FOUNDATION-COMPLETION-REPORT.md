@@ -56,17 +56,21 @@ data was used.
   suite included.
 - Run `30756853370` passed all three jobs after adding the non-publishing
   release dry-run input and its provenance assertions.
+- Run `30757561384` passed the non-publishing release dry-run end to end:
+  pinned Trivy and Gitleaks scans passed, Lina/Luna/Koko builds passed, and
+  SBOM/checksum/Cosign signature verification passed. The uploaded artefacts
+  included `yetka-yetka-foundation-dryrun-9.sbom.cdx.json`, `SHA256SUMS`,
+  `SHA256SUMS.sig`, `SHA256SUMS.sigstore.json`, and
+  `components.release.json`; no GitHub release was published. The manifest
+  records immutable component commits and SHA-256 hashes for all three
+  component archives.
 
 ## Open gates before declaring completion
 
-1. Run the release workflow in its non-publishing manual dry-run mode and
-   retain final artefact evidence for SBOM, vulnerability/secret scans,
-   checksum signature/bundle, and component manifest verification; publish
-   only after that evidence is reviewed.
-2. Add and run the complete core/Lina/Luna/Koko compatibility matrix, including
+1. Add and run the complete core/Lina/Luna/Koko compatibility matrix, including
    the supported/unavailable component UI states and a restore drill against
    an application-format backup (the offline SQLite fixture is covered).
-3. Re-audit the Definition of Done against release artefacts and only then
+2. Re-audit the Definition of Done against release artefacts and only then
    change this report to `complete` and mark the goal achieved.
 
 ## Recent implementation commits
