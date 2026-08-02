@@ -16,7 +16,7 @@ permissions:
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
-  LINA_COMMIT: bd27b4221be74b53006ea879f08a61622ea03357
+  LINA_COMMIT: b1bebf07927062a85a6358bc1905d89204625034
   LUNA_COMMIT: 505590f439b76c4360032a6016a2684c12ec660f
   KOKO_COMMIT: aead66ac6718cd4d838a0f84781eece42f712ab1
 
@@ -82,7 +82,7 @@ jobs:
           NODE_OPTIONS: --openssl-legacy-provider
         run: |
           yarn install --frozen-lockfile
-          yarn test:unit --runInBand tests/unit/components/MaintenanceStatus.spec.js tests/unit/store/settings.spec.js tests/unit/utils/yetkaTenant.spec.js
+          yarn test:unit --runInBand tests/unit/components/MaintenanceStatus.spec.js tests/unit/components/Page.spec.js tests/unit/store/settings.spec.js tests/unit/utils/yetkaTenant.spec.js
           yarn build:prod
       - name: Build Luna
         working-directory: luna

@@ -22,7 +22,7 @@ data was used.
 | Supported components | `supported-components.json` explicitly marks unsupported external components unavailable |
 | Operations/governance | `NOTICE`, `docs/operations/production-checklist.md`, `docs/governance/fork-governance.md`, and `docs/security/recording-fail-closed.md` |
 | Migration plan | `docs/security/tenant-migration-plan.md` defines additive phases, acceptance evidence, and rollback |
-| Lina overlay removal | Lina `bd27b4221be74b53006ea879f08a61622ea03357` renders unavailable pages without the legacy blur/mask overlay; the lock and workflows pin this commit |
+| Lina overlay removal | Lina `b1bebf07927062a85a6358bc1905d89204625034` renders unavailable pages without the legacy blur/mask overlay and includes a regression test; the lock and workflows pin this commit |
 
 ## Verification already run
 
