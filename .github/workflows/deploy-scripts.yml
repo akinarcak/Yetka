@@ -33,6 +33,6 @@ jobs:
           test "$(grep -c 'yetka-maintenance-alert.js' /tmp/lina-index.html)" -eq 1
           grep -F 'yetka-maintenance-alert.js?v=3' /tmp/lina-index.html
           test "$(grep -c 'yetka-ui-policy.js' /tmp/lina-index.html)" -eq 1
-          grep -F 'yetka-ui-policy.js?v=3' /tmp/lina-index.html
+          grep -F 'yetka-ui-policy.js?v=4' /tmp/lina-index.html
       - name: Yetka UI policy patch tests
         run: python -m unittest tools.tests.test_enable_yetka_risk_detection -v

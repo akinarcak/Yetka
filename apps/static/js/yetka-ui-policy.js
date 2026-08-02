@@ -4,6 +4,7 @@
   var LICENSE_ROUTE = /^#\/settings\/license(?:[/?]|$)/;
   var LICENSE_LINK_SELECTOR = 'a[href="#/settings/license"],a[href$="/settings/license"]';
   var ENTERPRISE_OVERLAY_SELECTOR = '.disabled-content:has(> .upgrade-btn)';
+  var ENTERPRISE_MASK_SELECTOR = '.content-disabled-mask';
   var observer;
   var cleanupScheduled = false;
 
@@ -23,7 +24,9 @@
   }
 
   function removeEnterpriseOverlays() {
-    document.querySelectorAll(ENTERPRISE_OVERLAY_SELECTOR).forEach(function (overlay) {
+    document.querySelectorAll(
+      ENTERPRISE_OVERLAY_SELECTOR + ',' + ENTERPRISE_MASK_SELECTOR
+    ).forEach(function (overlay) {
       overlay.remove();
     });
   }
@@ -48,7 +51,8 @@
 
   var style = document.createElement('style');
   style.id = 'yetka-ui-policy-style';
-  style.textContent = LICENSE_LINK_SELECTOR + ',' + ENTERPRISE_OVERLAY_SELECTOR +
+  style.textContent = LICENSE_LINK_SELECTOR + ',' + ENTERPRISE_OVERLAY_SELECTOR + ',' +
+    ENTERPRISE_MASK_SELECTOR +
     '{display:none!important}';
   document.head.appendChild(style);
 
