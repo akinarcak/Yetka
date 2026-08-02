@@ -23,7 +23,7 @@ data was used.
 | Supported components API | Authenticated `/api/v1/components/` exposes the runtime manifest without mutating status (`jumpserver.api.components_tests`) |
 | Operations/governance | `NOTICE`, `docs/operations/production-checklist.md`, `docs/governance/fork-governance.md`, and `docs/security/recording-fail-closed.md` |
 | Migration plan | `docs/security/tenant-migration-plan.md` defines additive phases, acceptance evidence, and rollback |
-| Lina overlay removal | Lina `b1bebf07927062a85a6358bc1905d89204625034` renders unavailable pages without the legacy blur/mask overlay and includes a regression test; the lock and workflows pin this commit |
+| Lina overlay removal | Lina `5b8685c01aafed3ffc2f2f0a6152a3aeb2c8c216` renders unavailable pages without the legacy blur/mask overlay or paid upgrade redirect and includes a regression test; the lock and workflows pin this commit |
 
 ## Verification already run
 
