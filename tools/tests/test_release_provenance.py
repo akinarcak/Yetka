@@ -44,6 +44,8 @@ class ComponentLockTests(TestCase):
         self.assertIn("cosign sign-blob", release_workflow)
         self.assertIn("cosign verify-blob", release_workflow)
         self.assertIn("SHA256SUMS.sig", release_workflow)
+        self.assertIn("aquasecurity/trivy-action", release_workflow)
+        self.assertIn("gitleaks/gitleaks-action", release_workflow)
 
     def test_release_manifest_records_artifact_hashes(self):
         with TemporaryDirectory() as directory:

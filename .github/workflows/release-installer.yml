@@ -64,6 +64,18 @@ jobs:
           python tools/validate_components_lock.py \
             --lock components.lock.yml --checkout-root ..
           python -m unittest tools.tests.test_release_provenance -v
+      - name: Scan core source for high and critical vulnerabilities
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          scan-ref: core
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+      - name: Scan core history for leaked secrets
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          working-directory: core
       - name: Build Lina
         working-directory: lina
         env:
