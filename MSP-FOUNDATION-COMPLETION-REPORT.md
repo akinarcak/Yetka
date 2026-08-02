@@ -20,6 +20,7 @@ data was used.
 | Recording | Replay upload tasks fail closed and retain local data after an unsuccessful upload (`apps/terminal/tasks.py`) |
 | Service signatures | `ServiceAccountSignaturePermission` consumes a timestamp nonce once and rejects replay (`apps/common/permissions.py`) |
 | Supported components | `supported-components.json` explicitly marks unsupported external components unavailable |
+| Supported components API | Authenticated `/api/v1/components/` exposes the runtime manifest without mutating status (`jumpserver.api.components_tests`) |
 | Operations/governance | `NOTICE`, `docs/operations/production-checklist.md`, `docs/governance/fork-governance.md`, and `docs/security/recording-fail-closed.md` |
 | Migration plan | `docs/security/tenant-migration-plan.md` defines additive phases, acceptance evidence, and rollback |
 | Lina overlay removal | Lina `b1bebf07927062a85a6358bc1905d89204625034` renders unavailable pages without the legacy blur/mask overlay and includes a regression test; the lock and workflows pin this commit |
