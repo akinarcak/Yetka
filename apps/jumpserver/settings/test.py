@@ -9,6 +9,7 @@ details but provide an explicit, isolated test-database name.
 from copy import deepcopy
 
 from .base import *  # noqa: F401,F403
+from .custom import *  # noqa: F401,F403
 
 
 DATABASES = deepcopy(DATABASES)
