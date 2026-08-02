@@ -38,7 +38,7 @@ COPY . .
 
 RUN set -eux \
     && echo > config.yml \
-    && if [ -n "${VERSION}" ]; then \
+    && if [ -n "${VERSION:-}" ]; then \
          sed -i "s@VERSION = .*@VERSION = '${VERSION}'@g" apps/jumpserver/const.py; \
        fi \
     && ansible-galaxy collection install -r requirements/collections.yml --force \
