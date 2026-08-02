@@ -55,7 +55,7 @@ def _create_asset(account, node, inst, name):
 def run_sync(account):
     set_current_org(account.org)
     execution = CloudSyncExecution.objects.create(
-        account=account, org_id=account.org_id,
+        account=account, tenant=account.tenant, org_id=account.org_id,
         status=SyncStatus.running, date_start=timezone.now(),
     )
     try:
@@ -97,7 +97,7 @@ def run_sync(account):
             else:
                 asset = _create_asset(account, node, inst, name)
                 CloudSyncedAsset.objects.create(
-                    account=account, org_id=account.org_id,
+                    account=account, tenant=account.tenant, org_id=account.org_id,
                     instance_id=inst.instance_id, asset=asset,
                 )
                 created += 1

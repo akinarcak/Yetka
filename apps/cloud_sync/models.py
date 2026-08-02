@@ -3,11 +3,16 @@ from django.utils.translation import gettext_lazy as _
 
 from common.db.fields import EncryptJsonDictTextField
 from orgs.mixins.models import JMSOrgBaseModel
+from tenants.models import CustomerTenant
 from .const import CloudProvider, SyncStatus, HostnameStrategy
 
 
 class CloudSyncAccount(JMSOrgBaseModel):
     """AWS/Azure gibi bir bulut hesabi; envanteri Yetka'ya asset olarak senkronlar."""
+    tenant = models.ForeignKey(
+        CustomerTenant, null=True, blank=True, on_delete=models.PROTECT,
+        related_name='cloud_sync_accounts',
+    )
     name = models.CharField(max_length=128, verbose_name=_('Name'))
     provider = models.CharField(
         max_length=16, choices=CloudProvider.choices, verbose_name=_('Provider')
@@ -35,7 +40,7 @@ class CloudSyncAccount(JMSOrgBaseModel):
 
     class Meta:
         verbose_name = _('Cloud sync account')
-        unique_together = [('org_id', 'name')]
+        unique_together = [('tenant', 'name')]
 
     def __str__(self):
         return f'{self.name}({self.provider})'
@@ -43,6 +48,10 @@ class CloudSyncAccount(JMSOrgBaseModel):
 
 class CloudSyncedAsset(JMSOrgBaseModel):
     """account + bulut instance_id -> olusturulan asset eslesmesi (idempotent sync icin)."""
+    tenant = models.ForeignKey(
+        CustomerTenant, null=True, blank=True, on_delete=models.PROTECT,
+        related_name='cloud_synced_assets',
+    )
     account = models.ForeignKey(
         CloudSyncAccount, on_delete=models.CASCADE, related_name='synced_assets'
     )
@@ -57,6 +66,10 @@ class CloudSyncedAsset(JMSOrgBaseModel):
 
 
 class CloudSyncExecution(JMSOrgBaseModel):
+    tenant = models.ForeignKey(
+        CustomerTenant, null=True, blank=True, on_delete=models.PROTECT,
+        related_name='cloud_sync_executions',
+    )
     account = models.ForeignKey(
         CloudSyncAccount, on_delete=models.CASCADE, related_name='executions'
     )
@@ -70,10 +83,17 @@ class CloudSyncExecution(JMSOrgBaseModel):
     updated = models.IntegerField(default=0)
     failed = models.IntegerField(default=0)
     error = models.TextField(blank=True, default='')
+    idempotency_key = models.CharField(max_length=64, null=True, blank=True)
 
     class Meta:
         verbose_name = _('Cloud sync execution')
         ordering = ['-date_created']
+        constraints = [
+            models.UniqueConstraint(
+                fields=('account', 'idempotency_key'),
+                name='uniq_cloud_sync_account_idempotency',
+            ),
+        ]
 
     @property
     def summary(self):

@@ -2,13 +2,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from orgs.mixins.api import OrgBulkModelViewSet
+from tenants.api import TenantScopedQuerySetMixin
 from .models import CloudSyncAccount, CloudSyncExecution
 from .serializers import CloudSyncAccountSerializer, CloudSyncExecutionSerializer
 from .providers import get_provider
 from .sync import run_sync
 
 
-class CloudSyncAccountViewSet(OrgBulkModelViewSet):
+class CloudSyncAccountViewSet(TenantScopedQuerySetMixin, OrgBulkModelViewSet):
     model = CloudSyncAccount
     search_fields = ['name', 'provider', 'comment']
     filterset_fields = ['provider', 'is_active']
@@ -30,7 +31,7 @@ class CloudSyncAccountViewSet(OrgBulkModelViewSet):
             return Response({'ok': False, 'error': str(e)}, status=400)
 
 
-class CloudSyncExecutionViewSet(OrgBulkModelViewSet):
+class CloudSyncExecutionViewSet(TenantScopedQuerySetMixin, OrgBulkModelViewSet):
     model = CloudSyncExecution
     http_method_names = ['get', 'head', 'options']
     filterset_fields = ['account', 'status']

@@ -11,6 +11,7 @@ from .middleware import (
     resolve_tenant_for_user,
     validate_organization_ownership,
 )
+from .api import TenantScopedQuerySetMixin
 
 
 class FakeMemberships:
@@ -88,6 +89,38 @@ class TenantResolutionTests(SimpleTestCase):
         self.assertIs(observed[0], tenant)
         self.assertIsNone(get_current_tenant())
         self.assertIs(request.customer_tenant, tenant)
+
+
+class FakeViewSetBase:
+    def get_queryset(self):
+        return self.base_queryset
+
+
+class TenantScopedViewSet(TenantScopedQuerySetMixin, FakeViewSetBase):
+    pass
+
+
+class TenantScopedQuerySetTests(SimpleTestCase):
+    def test_queryset_is_explicitly_filtered_by_verified_tenant(self):
+        tenant = SimpleNamespace(id='tenant-a')
+        view = TenantScopedViewSet()
+        view.request = SimpleNamespace(customer_tenant=tenant)
+        view.base_queryset = Mock()
+
+        result = view.get_queryset()
+
+        view.base_queryset.filter.assert_called_once_with(tenant=tenant)
+        self.assertIs(result, view.base_queryset.filter.return_value)
+
+    def test_queryset_is_empty_without_verified_tenant(self):
+        view = TenantScopedViewSet()
+        view.request = SimpleNamespace()
+        view.base_queryset = Mock()
+
+        result = view.get_queryset()
+
+        view.base_queryset.none.assert_called_once_with()
+        self.assertIs(result, view.base_queryset.none.return_value)
 
 
 class ExampleTenantTask(TenantAwareTask):

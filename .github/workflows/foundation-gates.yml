@@ -18,6 +18,7 @@ on:
       - apps/common/apps.py
       - apps/ops/celery/__init__.py
       - apps/ops/signal_handlers.py
+      - apps/cloud_sync/**
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
   push:
@@ -37,6 +38,7 @@ on:
       - apps/common/apps.py
       - apps/ops/celery/__init__.py
       - apps/ops/signal_handlers.py
+      - apps/cloud_sync/**
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
 
@@ -115,5 +117,8 @@ jobs:
             --env SECRET_KEY=foundation-ci-not-for-production \
             --env DJANGO_SETTINGS_MODULE=jumpserver.settings \
             --workdir /opt/jumpserver/apps \
-            --entrypoint /opt/py3/bin/python \
-            yetka/core:foundation-test -m django test tenants.tests --verbosity=2
+            --entrypoint /bin/sh \
+            yetka/core:foundation-test -c '
+              /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
+              /opt/py3/bin/python -m django test tenants.tests --verbosity=2
+            '
