@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 import hmac
+import hashlib
 import time
 
 from django.conf import settings
@@ -63,39 +64,80 @@ class WithBootstrapToken(permissions.BasePermission):
 
 
 class ServiceAccountSignaturePermission(permissions.BasePermission):
+    window_seconds = 30
+
+    @staticmethod
+    def _request_body(request):
+        body = getattr(request, 'body', b'') or b''
+        return body if isinstance(body, bytes) else str(body).encode()
+
+    @classmethod
+    def _canonical_request(cls, request, timestamp, nonce, tenant_id):
+        body_digest = hashlib.sha256(cls._request_body(request)).hexdigest()
+        method = getattr(request, 'method', '').upper()
+        path = request.get_full_path()
+        return '\n'.join((method, path, body_digest, str(timestamp), nonce, tenant_id))
+
+    def _verify_v2(self, request, ak, data):
+        parts = data.split(':', 5)
+        if len(parts) != 6:
+            return False
+        ak_id, timestamp, nonce, tenant_id, algorithm, signature = parts
+        if str(ak.id) != ak_id or algorithm.lower() != 'hmac-sha256':
+            return False
+        if not timestamp.isdigit() or not nonce or not tenant_id or not signature:
+            return False
+        if abs(int(time.time()) - int(timestamp)) > self.window_seconds:
+            return False
+
+        request_tenant = getattr(request, 'customer_tenant', None)
+        expected_tenant = str(request_tenant.id) if request_tenant is not None else '-'
+        if not hmac.compare_digest(expected_tenant, tenant_id):
+            return False
+
+        canonical = self._canonical_request(request, timestamp, nonce, tenant_id)
+        expected = hmac.new(
+            str(ak.secret).encode(), canonical.encode(), hashlib.sha256
+        ).hexdigest()
+        if not hmac.compare_digest(expected, signature.lower()):
+            return False
+        nonce_key = f'jms-service-signature:v2:{ak_id}:{nonce}'
+        return cache.add(nonce_key, True, timeout=self.window_seconds + 1)
+
+    def _verify_legacy(self, ak_id, ak, time_sign):
+        from common.utils.crypto import get_aes_crypto
+        if not getattr(settings, 'SECURITY_SERVICE_SIGNATURE_ALLOW_LEGACY', False):
+            return False
+        aes = get_aes_crypto(str(ak.secret).replace('-', ''), mode='ECB')
+        timestamp = aes.decrypt(time_sign)
+        if not timestamp or not timestamp.isdigit():
+            return False
+        if abs(int(time.time()) - int(timestamp)) > self.window_seconds:
+            return False
+        nonce_key = f'jms-service-signature:{ak_id}:{time_sign}'
+        return cache.add(nonce_key, True, timeout=self.window_seconds + 1)
+
     def has_permission(self, request, view):
         from authentication.models import AccessKey
-        from common.utils.crypto import get_aes_crypto
         signature = request.META.get('HTTP_X_JMS_SVC', '')
-        if not signature or not signature.startswith('Sign'):
+        if not signature or not (signature.startswith('SignV2 ') or signature.startswith('Sign ')):
             return False
-        data = signature[4:].strip()
+        is_v2 = signature.startswith('SignV2 ')
+        data = signature[7:].strip() if is_v2 else signature[5:].strip()
         if not data or ':' not in data:
             return False
-        ak_id, time_sign = data.split(':', 1)
-        if not ak_id or not time_sign:
+        ak_id = data.split(':', 1)[0]
+        if not ak_id:
             return False
         ak = AccessKey.objects.filter(id=ak_id).first()
         if not ak or not ak.is_active:
             return False
         if not ak.user or not ak.user.is_active or not ak.user.is_service_account:
             return False
-        aes = get_aes_crypto(str(ak.secret).replace('-', ''), mode='ECB')
         try:
-            timestamp = aes.decrypt(time_sign)
-            if not timestamp or not timestamp.isdigit():
-                return False
-            timestamp = int(timestamp)
-            interval = abs(int(time.time()) - timestamp)
-            if interval > 30:
-                return False
-            # The encrypted timestamp is the service request nonce.  Consume it
-            # once so a captured valid signature cannot be replayed within the
-            # clock-skew window.  Failure to persist the nonce fails closed.
-            nonce_key = f'jms-service-signature:{ak_id}:{time_sign}'
-            if not cache.add(nonce_key, True, timeout=31):
-                return False
-            return True
+            if is_v2:
+                return self._verify_v2(request, ak, data)
+            return self._verify_legacy(ak_id, ak, data.split(':', 1)[1])
         except Exception:
             return False
 
