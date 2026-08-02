@@ -21,6 +21,7 @@ data was used.
 | Service signatures | `ServiceAccountSignaturePermission` consumes a timestamp nonce once and rejects replay (`apps/common/permissions.py`) |
 | Supported components | `supported-components.json` explicitly marks unsupported external components unavailable |
 | Operations/governance | `NOTICE`, `docs/operations/production-checklist.md`, `docs/governance/fork-governance.md`, and `docs/security/recording-fail-closed.md` |
+| Migration plan | `docs/security/tenant-migration-plan.md` defines additive phases, acceptance evidence, and rollback |
 
 ## Verification already run
 
