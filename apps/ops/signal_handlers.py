@@ -16,6 +16,8 @@ from common.signals import django_ready
 from common.utils.connection import RedisPubSub
 from jumpserver.utils import get_current_request
 from orgs.utils import get_current_org_id, set_current_org
+from tenants.celery import TENANT_ORG_TASK_KEY, TENANT_TASK_KEY
+from tenants.context import get_current_tenant_id
 from .ansible.runner import interface
 from .celery import app
 from .models import CeleryTaskExecution, CeleryTask, Job
@@ -85,6 +87,10 @@ def before_task_publish(body=None, **kwargs):
     args, kwargs = body[:2]
     kwargs['__current_lang'] = current_lang
     kwargs['__current_org_id'] = current_org_id
+    # Always overwrite caller-provided internal context. Tenant selection is
+    # derived only from the backend-verified request/task context.
+    kwargs[TENANT_TASK_KEY] = get_current_tenant_id()
+    kwargs[TENANT_ORG_TASK_KEY] = current_org_id if get_current_tenant_id() else None
 
 
 @signals.task_prerun.connect
@@ -143,6 +149,8 @@ def task_sent_handler(headers=None, body=None, **kwargs):
     # 不要保存__current_lang和__current_org_id参数,防止系统任务中点击再次执行报错
     kwargs.pop('__current_lang', None)
     kwargs.pop('__current_org_id', None)
+    kwargs.pop(TENANT_TASK_KEY, None)
+    kwargs.pop(TENANT_ORG_TASK_KEY, None)
     data = {
         'id': i,
         'name': task,

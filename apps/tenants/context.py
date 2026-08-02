@@ -14,10 +14,18 @@ def get_current_tenant_id():
     return str(tenant.id) if tenant else None
 
 
+def set_current_tenant(tenant):
+    return _current_tenant.set(tenant)
+
+
+def reset_current_tenant(token):
+    _current_tenant.reset(token)
+
+
 @contextmanager
 def tenant_context(tenant):
-    token = _current_tenant.set(tenant)
+    token = set_current_tenant(tenant)
     try:
         yield tenant
     finally:
-        _current_tenant.reset(token)
+        reset_current_tenant(token)

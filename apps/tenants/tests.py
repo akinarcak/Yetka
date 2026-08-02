@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 from django.test import RequestFactory, SimpleTestCase
 
 from .context import get_current_tenant
+from .celery import TENANT_ORG_TASK_KEY, TENANT_TASK_KEY, TenantAwareTask
 from .exceptions import TenantAccessDenied, TenantSelectionRequired
 from .middleware import (
     CustomerTenantMiddleware,
@@ -87,3 +88,54 @@ class TenantResolutionTests(SimpleTestCase):
         self.assertIs(observed[0], tenant)
         self.assertIsNone(get_current_tenant())
         self.assertIs(request.customer_tenant, tenant)
+
+
+class ExampleTenantTask(TenantAwareTask):
+    name = 'tenants.tests.example'
+
+    def run(self, value):
+        return value, get_current_tenant()
+
+
+class TenantCeleryContextTests(SimpleTestCase):
+    @patch('ops.signal_handlers.get_current_org_id', return_value='org-a')
+    @patch('ops.signal_handlers.get_current_tenant_id', return_value='tenant-a')
+    def test_publish_overwrites_forged_internal_context(self, tenant_id, org_id):
+        from ops.signal_handlers import before_task_publish
+
+        task_kwargs = {
+            TENANT_TASK_KEY: 'tenant-attacker',
+            TENANT_ORG_TASK_KEY: 'org-attacker',
+        }
+        before_task_publish(body=((), task_kwargs, {}))
+
+        self.assertEqual(task_kwargs[TENANT_TASK_KEY], 'tenant-a')
+        self.assertEqual(task_kwargs[TENANT_ORG_TASK_KEY], 'org-a')
+
+    @patch('tenants.celery.TenantOrganization.objects')
+    @patch('tenants.celery.CustomerTenant.objects')
+    def test_task_runs_in_verified_tenant_and_resets_context(self, tenants, organizations):
+        tenant = SimpleNamespace(id='tenant-a')
+        tenants.filter.return_value.first.return_value = tenant
+        organizations.filter.return_value.exists.return_value = True
+
+        value, observed_tenant = ExampleTenantTask()(
+            'ok',
+            **{TENANT_TASK_KEY: 'tenant-a', TENANT_ORG_TASK_KEY: 'org-a'},
+        )
+
+        self.assertEqual(value, 'ok')
+        self.assertIs(observed_tenant, tenant)
+        self.assertIsNone(get_current_tenant())
+
+    @patch('tenants.celery.TenantOrganization.objects')
+    @patch('tenants.celery.CustomerTenant.objects')
+    def test_cross_tenant_task_organization_is_rejected(self, tenants, organizations):
+        tenants.filter.return_value.first.return_value = SimpleNamespace(id='tenant-a')
+        organizations.filter.return_value.exists.return_value = False
+
+        with self.assertRaises(TenantAccessDenied):
+            ExampleTenantTask()(
+                'unsafe',
+                **{TENANT_TASK_KEY: 'tenant-a', TENANT_ORG_TASK_KEY: 'org-b'},
+            )

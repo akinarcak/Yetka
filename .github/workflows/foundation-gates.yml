@@ -16,6 +16,9 @@ on:
       - apps/jumpserver/settings/base.py
       - apps/jumpserver/urls.py
       - apps/common/apps.py
+      - apps/ops/celery/__init__.py
+      - apps/ops/signal_handlers.py
+      - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
   push:
     paths:
@@ -32,6 +35,9 @@ on:
       - apps/jumpserver/settings/base.py
       - apps/jumpserver/urls.py
       - apps/common/apps.py
+      - apps/ops/celery/__init__.py
+      - apps/ops/signal_handlers.py
+      - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
 
 permissions:
