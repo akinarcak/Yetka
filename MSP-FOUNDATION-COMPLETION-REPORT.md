@@ -20,6 +20,7 @@ data was used.
 | Recording | Replay upload tasks fail closed and retain local data after an unsuccessful upload (`apps/terminal/tasks.py`) |
 | Service signatures | `ServiceAccountSignaturePermission` consumes a timestamp nonce once and rejects replay (`apps/common/permissions.py`) |
 | Supported components | `supported-components.json` explicitly marks unsupported external components unavailable |
+| Operations/governance | `NOTICE`, `docs/operations/production-checklist.md`, `docs/governance/fork-governance.md`, and `docs/security/recording-fail-closed.md` |
 
 ## Verification already run
 
