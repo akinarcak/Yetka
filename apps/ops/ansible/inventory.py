@@ -6,6 +6,8 @@ import shlex
 import sys
 from collections import defaultdict
 
+from django.conf import settings
+
 from django.utils.translation import gettext as _
 
 from assets import const
@@ -78,7 +80,10 @@ class JMSInventory:
         )
         proxy_command_args = [
             "ssh", "-o", "Port={}".format(escape_ssh_config_percent(gateway.port)),
-            "-o", "StrictHostKeyChecking=no",
+            "-o", "StrictHostKeyChecking=yes",
+            "-o", "UserKnownHostsFile={}".format(
+                escape_ssh_config_percent(getattr(settings, 'SSH_KNOWN_HOSTS_FILE', '/etc/yetka/known_hosts'))
+            ),
         ]
 
         if gateway.private_key:

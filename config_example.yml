@@ -5,6 +5,12 @@ SECRET_KEY:
 # SECURITY WARNING: keep the bootstrap token used in production secret!
 BOOTSTRAP_TOKEN:
 
+# SSH host keys must be pre-pinned in this file. Unknown or changed keys fail closed.
+# SSH_KNOWN_HOSTS_FILE: /etc/yetka/known_hosts
+# Keep both options false unless a separately audited legacy exception is required.
+# SSH_ALLOW_UNPINNED_HOST_KEYS: false
+# SSH_LEGACY_CRYPTO_ENABLED: false
+
 # Development env open this, when error occur display the full process track, Production disable it
 # DEBUG: true
 

@@ -185,6 +185,11 @@ class Config(dict):
         # Django Config, Must set before start
         'SECRET_KEY': '',
         'BOOTSTRAP_TOKEN': '',
+        # SSH host keys are verified against this file; unknown keys fail closed.
+        'SSH_KNOWN_HOSTS_FILE': '/etc/yetka/known_hosts',
+        'SSH_ALLOW_UNPINNED_HOST_KEYS': False,
+        # Legacy SSH algorithms remain disabled unless explicitly enabled.
+        'SSH_LEGACY_CRYPTO_ENABLED': False,
         'DEBUG': False,
         'DEBUG_DEV': False,
         'DEBUG_ANSIBLE': False,
