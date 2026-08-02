@@ -70,7 +70,7 @@ jobs:
             --lock components.lock.yml --checkout-root ..
           python -m unittest tools.tests.test_release_provenance -v
       - name: Scan core source for high and critical vulnerabilities
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.33.1
         with:
           scan-type: fs
           scan-ref: core
