@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - components.lock.yml
+      - pyproject.toml
+      - uv.lock
       - supported-components.json
       - tools/validate_components_lock.py
       - tools/scan_release_artifacts.py
@@ -48,6 +50,8 @@ on:
   push:
     paths:
       - components.lock.yml
+      - pyproject.toml
+      - uv.lock
       - supported-components.json
       - tools/validate_components_lock.py
       - tools/scan_release_artifacts.py
