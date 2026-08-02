@@ -47,6 +47,8 @@ data was used.
   the overlay-free Lina commit pinned in the current lock.
 - Run `30756175027` passed all three jobs with the Lina unavailable-page
   regression test included.
+- Run `30756333731` passed all three jobs with the authenticated supported-
+  components API test included.
 
 ## Open gates before declaring completion
 
