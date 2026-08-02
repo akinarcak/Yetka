@@ -5,8 +5,18 @@ from urllib.parse import quote
 
 from .base import TEMPLATES, STATIC_DIR
 from ..const import CONFIG
+from common.security_config import validate_production_config
 
 # Storage settings
+
+validate_production_config(
+    debug=CONFIG.DEBUG,
+    secret_key=CONFIG.SECRET_KEY,
+    bootstrap_token=CONFIG.BOOTSTRAP_TOKEN,
+    ssh_known_hosts_file=CONFIG.SSH_KNOWN_HOSTS_FILE,
+    ssh_allow_unpinned_host_keys=CONFIG.SSH_ALLOW_UNPINNED_HOST_KEYS,
+)
+
 COMMAND_STORAGE = {
     'ENGINE': 'terminal.backends.command.db',
 }

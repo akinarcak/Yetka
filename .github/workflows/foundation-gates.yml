@@ -17,6 +17,8 @@ on:
       - apps/jumpserver/urls.py
       - apps/common/apps.py
       - apps/common/ssh.py
+      - apps/common/security_config.py
+      - apps/common/security_config_tests.py
       - apps/common/ssh_tests.py
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
@@ -45,6 +47,8 @@ on:
       - apps/jumpserver/urls.py
       - apps/common/apps.py
       - apps/common/ssh.py
+      - apps/common/security_config.py
+      - apps/common/security_config_tests.py
       - apps/common/ssh_tests.py
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
@@ -131,10 +135,11 @@ jobs:
             --env DB_ENGINE=sqlite3 \
             --env DB_NAME=/tmp/yetka-tests.sqlite3 \
             --env SECRET_KEY=foundation-ci-not-for-production \
+            --env BOOTSTRAP_TOKEN=foundation-ci-bootstrap-not-for-production \
             --env DJANGO_SETTINGS_MODULE=jumpserver.settings \
             --workdir /opt/jumpserver/apps \
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
-              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests --verbosity=2
+              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests --verbosity=2
             '
