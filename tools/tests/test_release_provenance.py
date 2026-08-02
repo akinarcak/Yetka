@@ -49,6 +49,7 @@ class ComponentLockTests(TestCase):
         self.assertIn("zricethezav/gitleaks:v8.24.3@sha256:", release_workflow)
         self.assertIn("Build release container for security scan", release_workflow)
         self.assertIn("Scan release container for high and critical vulnerabilities", release_workflow)
+        self.assertIn("--scanners vuln", release_workflow)
         self.assertIn("validate_release_licenses.py", release_workflow)
         self.assertIn("success()", release_workflow)
         self.assertIn("publish_release", release_workflow)
