@@ -175,8 +175,11 @@ class CrossTenantApiContractTests(SimpleTestCase):
 
     @patch('tenants.middleware.TenantOrganization.objects')
     def test_two_workspace_fixture_mapping_rejects_cross_tenant_pair(self, organizations):
-        organizations.filter.return_value.exists.side_effect = lambda **kwargs: (
-            kwargs['tenant'] is self.tenant_a and kwargs['organization'] is self.org_a
+        organizations.filter.side_effect = lambda **kwargs: SimpleNamespace(
+            exists=lambda: (
+                kwargs['tenant'] is self.tenant_a
+                and kwargs['organization'] is self.org_a
+            )
         )
         validate_organization_ownership(self.tenant_a, self.org_a)
         with self.assertRaises(TenantAccessDenied):
