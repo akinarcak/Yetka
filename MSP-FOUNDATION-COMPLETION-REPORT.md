@@ -64,6 +64,11 @@ data was used.
   `components.release.json`; no GitHub release was published. The manifest
   records immutable component commits and SHA-256 hashes for all three
   component archives.
+- The component matrix gate now asserts the four supported build targets,
+  five explicitly unavailable components with reasons, and lock/manifest
+  alignment (`tools.tests.test_component_matrix`). The offline restore smoke
+  now exercises a `yetka-application-backup-v1` tar envelope containing a
+  manifest and database payload, preserving tenant ownership on restore.
 
 ## Open gates before declaring completion
 

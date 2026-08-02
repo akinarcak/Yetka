@@ -1,6 +1,8 @@
 """Offline fixture backup/restore smoke test for the MSP foundation gate."""
 
 import sqlite3
+import json
+import tarfile
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -21,7 +23,23 @@ def run_smoke_test():
         backup.close()
         source.close()
 
-        restored = sqlite3.connect(root / 'backup.sqlite3')
+        # Model the application backup envelope: metadata plus the database
+        # payload, as consumed by an offline restore operator.
+        (root / 'manifest.json').write_text(json.dumps({
+            'format': 'yetka-application-backup-v1',
+            'tenant_ids': ['tenant-a'],
+        }), encoding='utf-8')
+        with tarfile.open(root / 'yetka-backup.tar.gz', 'w:gz') as archive:
+            archive.add(root / 'manifest.json', arcname='manifest.json')
+            archive.add(root / 'backup.sqlite3', arcname='database.sqlite3')
+        restore_root = root / 'restore'
+        restore_root.mkdir()
+        with tarfile.open(root / 'yetka-backup.tar.gz', 'r:gz') as archive:
+            archive.extractall(restore_root)
+        manifest = json.loads((restore_root / 'manifest.json').read_text(encoding='utf-8'))
+        assert manifest['format'] == 'yetka-application-backup-v1'
+
+        restored = sqlite3.connect(restore_root / 'database.sqlite3')
         assert restored.execute('SELECT id, name FROM tenants').fetchall() == [
             ('tenant-a', 'Fixture tenant')
         ]
