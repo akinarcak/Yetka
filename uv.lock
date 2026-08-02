@@ -304,7 +304,7 @@ wheels = [
 [[package]]
 name = "ansible-core"
 version = "2.16.19"
-source = { url = "https://github.com/ansible/ansible/archive/refs/tags/v2.16.19.zip" }
+source = { url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz" }
 dependencies = [
     { name = "cryptography" },
     { name = "jinja2" },
@@ -312,7 +312,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "resolvelib" },
 ]
-sdist = { hash = "sha256:2b4c319a122564f5a5dd51b7b8c90a9eb620213a93c7f217ddaf2fa6c90d5a8a", size = 5749232 }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz", hash = "sha256:5125f26412039ffb99a3a7723618535ab80e6ef38944aa2453997350388f4ef4", size = 3172397, upload-time = "2026-06-18T19:40:08.000Z" }
 
 [package.metadata]
 requires-dist = [
@@ -2322,7 +2322,7 @@ requires-dist = [
     { name = "annotated-types", specifier = ">=0.6.0" },
     { name = "ansible", specifier = "==9.13.0" },
     { name = "ansible-builder", specifier = ">=3.1.1" },
-    { name = "ansible-core", url = "https://github.com/jumpserver-dev/ansible/archive/refs/tags/v2.16.18.3.zip" },
+    { name = "ansible-core", url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz" },
     { name = "ansible-runner", url = "https://github.com/jumpserver-dev/ansible-runner/archive/refs/tags/v2.4.0.2.zip" },
     { name = "asn1crypto", specifier = "==1.5.1" },
     { name = "azure-identity", specifier = "==1.16.1" },
