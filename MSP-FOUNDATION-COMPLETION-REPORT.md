@@ -16,7 +16,7 @@ missing; it is not silently treated as complete.
 | W3 recording fail-closed | complete | `docs/security/recording-fail-closed.md`; isolated source `/var/tmp/yetka-test-source-w3`, 12/12; CI `30765359991` |
 | W4 replay-resistant service signatures | complete | Commits `bd20fd889`, `f261b2883`, `81f6ed243`; Linux 13/13; CI `30766199402`; services active |
 | W5 runtime component manifest | complete | Commits `520337c85`, `8979b21a1`; Lina `7330bfc1748863391ad66d84dc970e5f56e2769d`; CI `30766559526` |
-| W6 release gates | partial | Gate implementation and negative/positive tests complete; end-to-end tagged release/publish rehearsal not run |
+| W6 release gates | partial | Gate implementation and negative/positive tests complete; rehearsal `30766940681` failed closed on test private-key fixtures; follow-up dispatch is blocked by the default-branch trigger state |
 | W7 completion report | complete | This file, committed with W6/W7 delivery |
 
 ## W1–W4 evidence
@@ -66,6 +66,14 @@ provenance suite). Foundation CI also runs these tests in its provenance job.
 The release workflow itself has not been run against a real `yetka-*` tag with
 publish enabled, so artifact registry/upload behavior remains an explicit
 follow-up rehearsal rather than an unsupported claim.
+
+The disposable rehearsal `30766940681` did reach the container scan and failed
+closed on private-key fixtures copied into the image; no release attachment or
+artifact upload ran. Commit `967c6d2be` scopes that step to `--scanners vuln`,
+while Gitleaks remains the dedicated secret gate. GitHub refused a subsequent
+feature-branch dispatch because the workflow version on the repository default
+branch does not expose `workflow_dispatch`; a release owner must rerun the
+non-publishing rehearsal after the workflow is merged.
 
 ## W7 — report and handoff
 
