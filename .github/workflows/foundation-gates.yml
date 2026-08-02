@@ -134,5 +134,5 @@ jobs:
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
-              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests --verbosity=2
+              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.tests.test_ssh --verbosity=2
             '
