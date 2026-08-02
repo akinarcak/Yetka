@@ -1,8 +1,16 @@
-# Recording fail-closed policy
+# Recording fail-closed lifecycle
 
-Replay metadata and parts are security evidence. An upload task must report a
-failure when the source session/part is missing or remote storage rejects the
-upload. Local evidence is deleted only after a confirmed successful upload.
-Consumers must not expose a partial replay as complete; operators should
-retry or restore from the retained local evidence according to the production
-checklist.
+Replay recording has three states: local capture, external replication, and
+availability. A local file is the durable source until external replication
+reports success. The upload worker deletes the local copy only after the
+external storage returns success; missing sessions, missing parts, and upload
+errors raise `ReplayUploadError` and retain the local file for retry/recovery.
+
+Replay metadata is authoritative for multipart recordings. Missing or empty
+metadata, or any missing part referenced by it, fails the download operation;
+the API must return an unavailable/error response rather than marking the
+session replay as available or producing a partial archive.
+
+The invariant is: no successful upload acknowledgement means no destructive
+cleanup, and no complete metadata-plus-parts set means no replay download.
+Tests in `apps/terminal/recording_tests.py` lock these failure semantics.
