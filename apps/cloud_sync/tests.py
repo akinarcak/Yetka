@@ -14,6 +14,7 @@ from .sync import quarantine_instance
 from .validation import validate_custom_endpoint
 from .providers.aws import AWSProvider
 from .providers.azure import AzureProvider
+from .serializers import CloudSyncAccountSerializer
 
 
 class CloudProviderMockTests(SimpleTestCase):
@@ -184,6 +185,27 @@ class CloudProviderMockTests(SimpleTestCase):
 
 
 class CloudSyncQueueTests(SimpleTestCase):
+    def test_serializer_rejects_missing_or_unknown_credentials_without_secret_echo(self):
+        serializer = CloudSyncAccountSerializer(data={
+            'name': 'aws-a', 'provider': 'aws',
+            'credentials': {'access_key_id': 'mock-access', 'unexpected': 'secret-value'},
+        })
+
+        self.assertFalse(serializer.is_valid())
+        rendered = str(serializer.errors)
+        self.assertIn('unsupported fields', rendered)
+        self.assertNotIn('secret-value', rendered)
+
+        serializer = CloudSyncAccountSerializer(data={
+            'name': 'azure-a', 'provider': 'azure',
+            'credentials': {
+                'tenant_id': 'tenant', 'client_id': 'client',
+                'client_secret': '', 'subscription_id': 'subscription',
+            },
+        })
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('Required provider credential fields', str(serializer.errors))
+
     @override_settings(CLOUD_SYNC_ALLOWED_ENDPOINTS=('https://ec2.example.test',))
     def test_custom_endpoint_requires_exact_https_allowlist_origin(self):
         self.assertEqual(
