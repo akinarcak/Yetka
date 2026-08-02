@@ -157,5 +157,7 @@ jobs:
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
-              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests common.service_signature_tests common.component_manifest_tests terminal.tenant_tests terminal.recording_tests --verbosity=2
+              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests --verbosity=2
+              /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.component_manifest_tests --verbosity=2
+              /opt/py3/bin/python -m django test terminal.tenant_tests terminal.recording_tests --verbosity=2
             '
