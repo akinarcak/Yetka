@@ -52,6 +52,8 @@ data was used.
   components API test included.
 - Run `30756478787` passed all three jobs with the product-neutral unavailable
   page and paid-upgrade redirect regression checks included.
+- Run `30756669278` passed all three jobs with the mocked SFTP host-key audit
+  suite included.
 
 ## Open gates before declaring completion
 
