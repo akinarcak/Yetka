@@ -32,6 +32,8 @@ on:
       - apps/cloud_sync/**
       - apps/terminal/api/session/session.py
       - apps/terminal/tenant_tests.py
+      - apps/terminal/tasks.py
+      - apps/terminal/recording_tests.py
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
       - docs/security/ssh-host-key-policy.md
@@ -66,6 +68,8 @@ on:
       - apps/cloud_sync/**
       - apps/terminal/api/session/session.py
       - apps/terminal/tenant_tests.py
+      - apps/terminal/tasks.py
+      - apps/terminal/recording_tests.py
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
       - docs/security/ssh-host-key-policy.md
@@ -149,5 +153,5 @@ jobs:
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
-              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests common.component_manifest_tests terminal.tenant_tests --verbosity=2
+              /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests common.ssh_tests common.security_config_tests common.component_manifest_tests terminal.tenant_tests terminal.recording_tests --verbosity=2
             '
