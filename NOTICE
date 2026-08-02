@@ -1,0 +1,11 @@
+Yetka
+=====
+
+Yetka is a GPL-3.0-or-later community distribution built from the JumpServer
+community codebase. Copyright and license notices in source files and bundled
+third-party dependencies remain authoritative and must be preserved.
+
+External Yetka components are independently maintained repositories pinned in
+`components.lock.yml`. Their individual notices and licenses are included in
+their release archives. No xpack/EE or closed enterprise artefact is part of
+the Yetka foundation release.
