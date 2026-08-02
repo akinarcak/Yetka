@@ -62,7 +62,8 @@ The release workflow now gates upload behind:
 
 Positive and negative gate tests are in
 `tools/tests/test_release_provenance.py` and passed locally (`7/7` for the
-provenance suite). Foundation CI also runs these tests in its provenance job.
+provenance suite). Foundation CI `30767127629` also passed provenance,
+container and Lina jobs after the scan fix.
 The release workflow itself has not been run against a real `yetka-*` tag with
 publish enabled, so artifact registry/upload behavior remains an explicit
 follow-up rehearsal rather than an unsupported claim.
