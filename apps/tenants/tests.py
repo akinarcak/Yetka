@@ -1,7 +1,9 @@
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest import IsolatedAsyncioTestCase
+from unittest.mock import AsyncMock, Mock, patch
 
 from django.test import RequestFactory, SimpleTestCase
+from channels.exceptions import DenyConnection
 
 from .context import get_current_tenant
 from .celery import TENANT_ORG_TASK_KEY, TENANT_TASK_KEY, TenantAwareTask
@@ -56,6 +58,32 @@ class TenantResolutionTests(SimpleTestCase):
 
     def test_websocket_middleware_has_explicit_tenant_contract(self):
         self.assertTrue(hasattr(CustomerTenantWebSocketMiddleware, '__call__'))
+
+
+class TenantWebSocketScopeTests(IsolatedAsyncioTestCase):
+    async def test_websocket_scope_receives_verified_tenant(self):
+        tenant = SimpleNamespace(id='tenant-a')
+        app = AsyncMock()
+        middleware = CustomerTenantWebSocketMiddleware(app)
+        scope = {
+            'user': SimpleNamespace(is_authenticated=True),
+            'headers': [(b'x-yetka-tenant', b'tenant-a')],
+        }
+        with patch('tenants.middleware.resolve_websocket_tenant', new=AsyncMock(return_value=tenant)):
+            await middleware(scope, Mock(), Mock())
+
+        self.assertIs(scope['customer_tenant'], tenant)
+        app.assert_awaited_once()
+
+    async def test_websocket_scope_denies_unverified_tenant(self):
+        middleware = CustomerTenantWebSocketMiddleware(AsyncMock())
+        scope = {
+            'user': SimpleNamespace(is_authenticated=True),
+            'headers': [(b'x-yetka-tenant', b'tenant-attacker')],
+        }
+        with patch('tenants.middleware.resolve_websocket_tenant', new=AsyncMock(return_value=None)):
+            with self.assertRaises(DenyConnection):
+                await middleware(scope, Mock(), Mock())
 
     def test_multiple_memberships_require_explicit_header(self):
         manager = FakeMemberships([membership('tenant-a'), membership('tenant-b')])
