@@ -182,6 +182,13 @@ class ExampleTenantTask(TenantAwareTask):
         return value, get_current_tenant()
 
 
+class FailingTenantTask(TenantAwareTask):
+    name = 'tenants.tests.failing'
+
+    def run(self):
+        raise RuntimeError('boom')
+
+
 def example_tenant_task():
     from ops.celery import app
 
@@ -232,3 +239,14 @@ class TenantCeleryContextTests(SimpleTestCase):
                 'unsafe',
                 **{TENANT_TASK_KEY: 'tenant-a', TENANT_ORG_TASK_KEY: 'org-b'},
             )
+
+    @patch('tenants.models.CustomerTenant.objects')
+    def test_task_context_is_reset_when_task_raises(self, tenants):
+        tenants.filter.return_value.first.return_value = SimpleNamespace(id='tenant-a')
+        task = FailingTenantTask()
+        from ops.celery import app
+        task.bind(app)
+
+        with self.assertRaises(RuntimeError):
+            task(**{TENANT_TASK_KEY: 'tenant-a'})
+        self.assertIsNone(get_current_tenant())
