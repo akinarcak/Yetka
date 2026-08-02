@@ -303,8 +303,8 @@ wheels = [
 
 [[package]]
 name = "ansible-core"
-version = "2.16.18"
-source = { url = "https://github.com/jumpserver-dev/ansible/archive/refs/tags/v2.16.18.3.zip" }
+version = "2.16.19"
+source = { url = "https://github.com/ansible/ansible/archive/refs/tags/v2.16.19.zip" }
 dependencies = [
     { name = "cryptography" },
     { name = "jinja2" },
@@ -312,7 +312,7 @@ dependencies = [
     { name = "pyyaml" },
     { name = "resolvelib" },
 ]
-sdist = { hash = "sha256:539c00b75066960ba8c5002195f556713fb933559638f6e958b68ae163636a82" }
+sdist = { hash = "sha256:2b4c319a122564f5a5dd51b7b8c90a9eb620213a93c7f217ddaf2fa6c90d5a8a", size = 5749232 }
 
 [package.metadata]
 requires-dist = [
