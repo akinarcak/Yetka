@@ -39,6 +39,8 @@ data was used.
 - `tools.tests.test_backup_restore_smoke` passes locally and is now part of the
   foundation provenance job; it validates an offline SQLite fixture round trip
   including tenant ownership.
+- Run `30755865774` passed container, Lina source, and provenance jobs with the
+  offline backup/restore smoke gate included.
 
 ## Open gates before declaring completion
 
