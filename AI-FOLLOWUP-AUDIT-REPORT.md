@@ -24,6 +24,9 @@ enterprise surfaces.
 - `validate_components_lock.py --lock components.lock.yml`: passed.
 - `tools.tests.test_release_provenance`: 7/7 passed, including positive and
   negative forbidden-content/license/provenance checks.
+- Lina full ESLint was re-run; it reports the pre-existing baseline of 6 errors
+  and 209 warnings, with no changed README code involved. The authoritative
+  pinned Lina build remains green in Foundation CI.
 - Final release rehearsal `30769740681`: all source/container scans, Gitleaks,
   component builds, packaging, license gate, SBOM, Cosign and artifact upload
   passed; no GitHub Release was created.
