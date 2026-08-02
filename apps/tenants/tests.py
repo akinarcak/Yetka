@@ -152,6 +152,12 @@ class TenantScopedQuerySetTests(SimpleTestCase):
 
 
 class CrossTenantApiContractTests(SimpleTestCase):
+    def setUp(self):
+        self.tenant_a = SimpleNamespace(id='tenant-a', name='Tenant A')
+        self.tenant_b = SimpleNamespace(id='tenant-b', name='Tenant B')
+        self.org_a = SimpleNamespace(id='org-a')
+        self.org_b = SimpleNamespace(id='org-b')
+
     def test_tenant_list_is_membership_scoped(self):
         queryset = Mock()
         active = queryset.filter.return_value
@@ -166,6 +172,15 @@ class CrossTenantApiContractTests(SimpleTestCase):
             is_active=True, memberships__user=view.request.user
         )
         self.assertEqual(result, ['tenant-a'])
+
+    @patch('tenants.middleware.TenantOrganization.objects')
+    def test_two_workspace_fixture_mapping_rejects_cross_tenant_pair(self, organizations):
+        organizations.filter.return_value.exists.side_effect = lambda **kwargs: (
+            kwargs['tenant'] is self.tenant_a and kwargs['organization'] is self.org_a
+        )
+        validate_organization_ownership(self.tenant_a, self.org_a)
+        with self.assertRaises(TenantAccessDenied):
+            validate_organization_ownership(self.tenant_a, self.org_b)
 
 
 class CustomerTenantSerializerTests(SimpleTestCase):
