@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from .context import tenant_context
 from .exceptions import TenantAccessDenied, TenantContextError, TenantSelectionRequired
 from .models import CustomerTenantMembership, TenantOrganization
+from channels.db import database_sync_to_async
+from channels.exceptions import DenyConnection
 
 
 TENANT_HEADER = 'HTTP_X_YETKA_TENANT'
@@ -73,3 +75,54 @@ class CustomerTenantMiddleware:
         request.customer_tenant = tenant
         with tenant_context(tenant):
             return self.get_response(request)
+
+
+def _scope_value(scope, name):
+    """Return a decoded ASGI header value, case-insensitively."""
+    wanted = name.lower().encode()
+    for key, value in scope.get('headers', []):
+        if key.lower() == wanted:
+            return value.decode('latin1')
+    return None
+
+
+def _workspace_from_cookie(scope):
+    cookie = _scope_value(scope, 'cookie') or ''
+    for item in cookie.split(';'):
+        key, separator, value = item.strip().partition('=')
+        if separator and key == 'X-JMS-ORG':
+            return value or None
+    return None
+
+
+@database_sync_to_async
+def resolve_websocket_tenant(user, requested_id=None, organization_id=None):
+    organization = None
+    if organization_id:
+        from orgs.models import Organization
+        organization = Organization.objects.filter(id=organization_id).first()
+    return resolve_tenant_for_user(user, requested_id, organization)
+
+
+class CustomerTenantWebSocketMiddleware:
+    """Bind every authenticated websocket to an authorized customer tenant."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        user = scope.get('user')
+        if not user or not user.is_authenticated:
+            raise DenyConnection()
+        requested_id = _scope_value(scope, 'x-yetka-tenant')
+        organization_id = _workspace_from_cookie(scope)
+        try:
+            tenant = await resolve_websocket_tenant(user, requested_id, organization_id)
+        except Exception as exc:
+            logger.warning('Websocket tenant resolution denied: %s', exc)
+            raise DenyConnection()
+        if tenant is None:
+            raise DenyConnection()
+        scope['customer_tenant'] = tenant
+        with tenant_context(tenant):
+            return await self.app(scope, receive, send)

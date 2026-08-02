@@ -8,6 +8,9 @@ from .celery import TENANT_ORG_TASK_KEY, TENANT_TASK_KEY, TenantAwareTask
 from .exceptions import TenantAccessDenied, TenantSelectionRequired
 from .middleware import (
     CustomerTenantMiddleware,
+    CustomerTenantWebSocketMiddleware,
+    _scope_value,
+    _workspace_from_cookie,
     resolve_tenant_for_user,
     validate_organization_ownership,
 )
@@ -43,6 +46,17 @@ def membership(tenant_id):
 
 
 class TenantResolutionTests(SimpleTestCase):
+    def test_websocket_scope_values_are_case_insensitive(self):
+        scope = {'headers': [(b'X-YETKA-TENANT', b'tenant-a')]}
+        self.assertEqual(_scope_value(scope, 'x-yetka-tenant'), 'tenant-a')
+
+    def test_websocket_workspace_is_read_from_cookie(self):
+        scope = {'headers': [(b'cookie', b'foo=bar; X-JMS-ORG=org-a') ]}
+        self.assertEqual(_workspace_from_cookie(scope), 'org-a')
+
+    def test_websocket_middleware_has_explicit_tenant_contract(self):
+        self.assertTrue(hasattr(CustomerTenantWebSocketMiddleware, '__call__'))
+
     def test_multiple_memberships_require_explicit_header(self):
         manager = FakeMemberships([membership('tenant-a'), membership('tenant-b')])
         with patch('tenants.middleware.CustomerTenantMembership.objects', manager):
