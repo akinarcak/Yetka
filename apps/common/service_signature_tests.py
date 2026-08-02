@@ -4,7 +4,7 @@ import base64
 from datetime import datetime, timezone
 from email.utils import format_datetime
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 from django.test import SimpleTestCase
 from rest_framework.exceptions import AuthenticationFailed
@@ -50,9 +50,11 @@ class ServiceSignatureReplayTests(SimpleTestCase):
         with patch('common.permissions.time.time', return_value=100):
             self.assertTrue(self.permission.has_permission(request, None))
             self.assertFalse(self.permission.has_permission(request, None))
-        cache.add.assert_called_once_with(
-            'jms-service-signature:v2:key:nonce', True, timeout=31
-        )
+        cache.add.assert_has_calls([
+            call('jms-service-signature:v2:key:nonce', True, timeout=31),
+            call('jms-service-signature:v2:key:nonce', True, timeout=31),
+        ])
+        self.assertEqual(cache.add.call_count, 2)
 
     @patch('common.permissions.cache')
     @patch('authentication.models.AccessKey.objects')

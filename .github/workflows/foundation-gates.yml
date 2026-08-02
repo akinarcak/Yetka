@@ -29,6 +29,8 @@ on:
       - apps/jumpserver/api/components.py
       - apps/jumpserver/api/components_tests.py
       - apps/common/permissions.py
+      - apps/common/auth/signature.py
+      - apps/authentication/backends/drf.py
       - apps/common/service_signature_tests.py
       - apps/common/sftp_audit_tests.py
       - apps/common/ssh_tests.py
@@ -47,6 +49,7 @@ on:
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
       - docs/security/ssh-host-key-policy.md
+      - docs/security/service-signature-v2.md
   push:
     paths:
       - components.lock.yml
@@ -75,6 +78,8 @@ on:
       - apps/jumpserver/api/components.py
       - apps/jumpserver/api/components_tests.py
       - apps/common/permissions.py
+      - apps/common/auth/signature.py
+      - apps/authentication/backends/drf.py
       - apps/common/service_signature_tests.py
       - apps/common/sftp_audit_tests.py
       - apps/common/ssh_tests.py
@@ -93,6 +98,7 @@ on:
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
       - docs/security/ssh-host-key-policy.md
+      - docs/security/service-signature-v2.md
 
 permissions:
   contents: read
@@ -162,6 +168,19 @@ jobs:
               touch /opt/jumpserver/tmp/.write-test
               test ! -w /opt/jumpserver/apps
             '
+      - name: Run replay-resistant service signature tests
+        run: |
+          docker run --rm --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m \
+            --mount type=volume,destination=/opt/jumpserver/data \
+            --env DB_ENGINE=sqlite3 \
+            --env DB_NAME=/tmp/yetka-signature-tests.sqlite3 \
+            --env SECRET_KEY=foundation-ci-not-for-production \
+            --env BOOTSTRAP_TOKEN=foundation-ci-bootstrap-not-for-production \
+            --env DJANGO_SETTINGS_MODULE=jumpserver.settings \
+            --workdir /opt/jumpserver/apps \
+            --entrypoint /opt/py3/bin/python \
+            yetka/core:foundation-test \
+            -m django test common.service_signature_tests --verbosity=2
       - name: Run customer tenant isolation tests in the built image
         run: |
           docker run --rm --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m \
