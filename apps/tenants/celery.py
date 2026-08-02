@@ -2,7 +2,6 @@ from celery import Task
 
 from .context import tenant_context
 from .exceptions import TenantAccessDenied
-from .models import CustomerTenant, TenantOrganization
 
 
 TENANT_TASK_KEY = '__customer_tenant_id'
@@ -13,6 +12,10 @@ class TenantAwareTask(Task):
     abstract = True
 
     def __call__(self, *args, **kwargs):
+        # The Celery app is imported while Django is still constructing the app
+        # registry, so ORM models must be resolved only when a task executes.
+        from .models import CustomerTenant, TenantOrganization
+
         tenant_id = kwargs.get(TENANT_TASK_KEY)
         org_id = kwargs.get(TENANT_ORG_TASK_KEY)
         task_kwargs = dict(kwargs)

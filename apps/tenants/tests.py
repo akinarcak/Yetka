@@ -112,8 +112,8 @@ class TenantCeleryContextTests(SimpleTestCase):
         self.assertEqual(task_kwargs[TENANT_TASK_KEY], 'tenant-a')
         self.assertEqual(task_kwargs[TENANT_ORG_TASK_KEY], 'org-a')
 
-    @patch('tenants.celery.TenantOrganization.objects')
-    @patch('tenants.celery.CustomerTenant.objects')
+    @patch('tenants.models.TenantOrganization.objects')
+    @patch('tenants.models.CustomerTenant.objects')
     def test_task_runs_in_verified_tenant_and_resets_context(self, tenants, organizations):
         tenant = SimpleNamespace(id='tenant-a')
         tenants.filter.return_value.first.return_value = tenant
@@ -128,8 +128,8 @@ class TenantCeleryContextTests(SimpleTestCase):
         self.assertIs(observed_tenant, tenant)
         self.assertIsNone(get_current_tenant())
 
-    @patch('tenants.celery.TenantOrganization.objects')
-    @patch('tenants.celery.CustomerTenant.objects')
+    @patch('tenants.models.TenantOrganization.objects')
+    @patch('tenants.models.CustomerTenant.objects')
     def test_cross_tenant_task_organization_is_rejected(self, tenants, organizations):
         tenants.filter.return_value.first.return_value = SimpleNamespace(id='tenant-a')
         organizations.filter.return_value.exists.return_value = False
