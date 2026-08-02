@@ -16,6 +16,13 @@ on:
       - apps/jumpserver/settings/base.py
       - apps/jumpserver/urls.py
       - apps/common/apps.py
+      - apps/common/ssh.py
+      - apps/common/tests/test_ssh.py
+      - apps/common/storage/jms_storage/sftp.py
+      - apps/assets/automations/ping_gateway/manager.py
+      - apps/libs/ansible/modules_utils/remote_client.py
+      - apps/ops/ansible/inventory.py
+      - config_example.yml
       - apps/ops/celery/__init__.py
       - apps/ops/signal_handlers.py
       - apps/cloud_sync/**
@@ -36,6 +43,13 @@ on:
       - apps/jumpserver/settings/base.py
       - apps/jumpserver/urls.py
       - apps/common/apps.py
+      - apps/common/ssh.py
+      - apps/common/tests/test_ssh.py
+      - apps/common/storage/jms_storage/sftp.py
+      - apps/assets/automations/ping_gateway/manager.py
+      - apps/libs/ansible/modules_utils/remote_client.py
+      - apps/ops/ansible/inventory.py
+      - config_example.yml
       - apps/ops/celery/__init__.py
       - apps/ops/signal_handlers.py
       - apps/cloud_sync/**
