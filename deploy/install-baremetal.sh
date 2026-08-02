@@ -279,12 +279,6 @@ install_optional_assets() {
   if download_archive Koko "${YETKA_KOKO_URL:-}" "${YETKA_KOKO_SHA256:-}" "$YETKA_INSTALL_DIR/koko"; then
     log "Koko archive installed; systemd passes its token without writing it to command arguments"
   fi
-  if [[ -f "$YETKA_INSTALL_DIR/lina/index.html" && "$DRY_RUN" == false ]]; then
-    "$YETKA_INSTALL_DIR/venv/bin/python" "$YETKA_INSTALL_DIR/app/tools/enable_yetka_risk_detection.py" \
-      --asset-dir "$YETKA_INSTALL_DIR/lina/assets/js" \
-      --nginx-config /etc/nginx/conf.d/yetka.conf
-    "$YETKA_INSTALL_DIR/venv/bin/python" "$YETKA_INSTALL_DIR/app/tools/inject_yetka_maintenance_alert.py" --index "$YETKA_INSTALL_DIR/lina/index.html"
-  fi
 }
 
 write_units() {

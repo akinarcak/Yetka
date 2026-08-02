@@ -30,6 +30,17 @@ class ComponentLockTests(TestCase):
             with self.assertRaisesRegex(ValueError, "immutable SHA-1"):
                 load_lock(lock_path)
 
+    def test_workflow_component_refs_match_lock(self):
+        root = Path(__file__).resolve().parents[2]
+        lock = load_lock(root / "components.lock.yml")
+        release_workflow = (root / ".github/workflows/release-installer.yml").read_text(encoding="utf-8")
+        foundation_workflow = (root / ".github/workflows/foundation-gates.yml").read_text(encoding="utf-8")
+
+        for component, metadata in lock["components"].items():
+            with self.subTest(component=component):
+                self.assertIn(metadata["commit"], release_workflow)
+        self.assertIn(lock["components"]["lina"]["commit"], foundation_workflow)
+
     def test_release_manifest_records_artifact_hashes(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)

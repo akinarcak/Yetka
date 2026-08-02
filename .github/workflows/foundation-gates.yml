@@ -27,7 +27,31 @@ on:
 permissions:
   contents: read
 
+env:
+  LINA_COMMIT: d01364da573e45ca5cf9a55efbb2f239237df252
+
 jobs:
+  lina-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pinned Yetka Lina source
+        uses: actions/checkout@v4
+        with:
+          repository: akinarcak/Yetka-Lina
+          ref: ${{ env.LINA_COMMIT }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+      - name: Test and build source-level UI policies
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+        run: |
+          corepack enable
+          yarn install --frozen-lockfile
+          yarn test:unit --runInBand tests/unit/components/MaintenanceStatus.spec.js tests/unit/store/settings.spec.js
+          yarn build:prod
+
   provenance:
     runs-on: ubuntu-latest
     steps:
