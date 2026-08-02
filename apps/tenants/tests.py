@@ -97,6 +97,14 @@ class ExampleTenantTask(TenantAwareTask):
         return value, get_current_tenant()
 
 
+def example_tenant_task():
+    from ops.celery import app
+
+    task = ExampleTenantTask()
+    task.bind(app)
+    return task
+
+
 class TenantCeleryContextTests(SimpleTestCase):
     @patch('ops.signal_handlers.get_current_org_id', return_value='org-a')
     @patch('ops.signal_handlers.get_current_tenant_id', return_value='tenant-a')
@@ -119,7 +127,7 @@ class TenantCeleryContextTests(SimpleTestCase):
         tenants.filter.return_value.first.return_value = tenant
         organizations.filter.return_value.exists.return_value = True
 
-        value, observed_tenant = ExampleTenantTask()(
+        value, observed_tenant = example_tenant_task()(
             'ok',
             **{TENANT_TASK_KEY: 'tenant-a', TENANT_ORG_TASK_KEY: 'org-a'},
         )
@@ -135,7 +143,7 @@ class TenantCeleryContextTests(SimpleTestCase):
         organizations.filter.return_value.exists.return_value = False
 
         with self.assertRaises(TenantAccessDenied):
-            ExampleTenantTask()(
+            example_tenant_task()(
                 'unsafe',
                 **{TENANT_TASK_KEY: 'tenant-a', TENANT_ORG_TASK_KEY: 'org-b'},
             )
