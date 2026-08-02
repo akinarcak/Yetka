@@ -42,6 +42,8 @@ data was used.
   including tenant ownership.
 - Run `30755865774` passed container, Lina source, and provenance jobs with the
   offline backup/restore smoke gate included.
+- Run `30756035540` passed container, Lina source, and provenance jobs using
+  the overlay-free Lina commit pinned in the current lock.
 
 ## Open gates before declaring completion
 
