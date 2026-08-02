@@ -6,6 +6,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class ContainerSecurityTests(TestCase):
+    def test_entrypoint_does_not_mutate_frontend_assets(self):
+        entrypoint = (ROOT / "entrypoint.sh").read_text(encoding="utf-8")
+        self.assertNotIn("enable_yetka_risk_detection.py", entrypoint)
+        self.assertNotIn("inject_yetka_maintenance_alert.py", entrypoint)
+
     def test_container_build_uses_only_digest_pinned_official_python_base(self):
         dockerfile = (ROOT / "Dockerfile").read_text(encoding="utf-8")
         base = (ROOT / "Dockerfile-base").read_text(encoding="utf-8")
