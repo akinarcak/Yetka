@@ -28,6 +28,7 @@ on:
       - apps/cloud_sync/**
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
+      - docs/security/ssh-host-key-policy.md
   push:
     paths:
       - components.lock.yml
@@ -55,6 +56,7 @@ on:
       - apps/cloud_sync/**
       - docs/architecture/0001-tenant-workspace-product-language.md
       - docs/security/customer-tenant-isolation.md
+      - docs/security/ssh-host-key-policy.md
 
 permissions:
   contents: read
