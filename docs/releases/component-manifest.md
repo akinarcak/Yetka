@@ -1,5 +1,10 @@
 # Yetka component manifest
 
+Runtime support boundaries are declared in `supported-components.json`. The
+application must not infer support from an upstream or JumpServer component
+name: entries marked `unavailable` are intentionally shown as unavailable in
+product surfaces until a Yetka-supported build and test matrix exists.
+
 Yetka releases use two provenance records:
 
 - `components.lock.yml` pins every external build input to an immutable Git
