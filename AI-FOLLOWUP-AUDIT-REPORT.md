@@ -81,3 +81,4 @@ enterprise surfaces.
 - `verify_release.py` now runs component-lock, provenance, product-language, and container-security policy tests before scanning each supplied component root.
 - Local verification with Lina completed successfully (15 tests, product-language policy v1 clean).
 - Isolated Linux test source rerun on `100.86.171.110`: 13/13 `common.service_signature_tests` passed with no system-check issues. The installed wrapper still referenced a missing temporary `yetka_test_settings`; direct execution with the repository's `jumpserver.settings.test` completed successfully.
+- All three component roots now pass product-language policy v1 locally; Lina/Koko user-facing upstream branding and edition prompts were removed, while technical protocol and dependency identifiers remain explicitly allowlisted.

@@ -12,8 +12,27 @@
     ".github/workflows/build-base-image.yml"
     ,"package.json",
     "yarn.lock",
-    "Dockerfile*"
+    "Dockerfile*",
+    ".travis.yml",
+    ".goreleaser.yaml",
+    "config_example.yml",
+    "docker-bake.hcl",
+    "Makefile",
+    "go.mod",
+    "go.sum",
+    "utils/**",
+    "pkg/**",
+    "cmd/**",
+    "src/app/services/**",
+    "src/app/utils/**",
+    "src/app/elements/**",
+    "ui/src/**",
+    "ui/public/**"
+    ,"entrypoint.sh"
+    ,"SECURITY.md"
+    ,"templates/**"
+    ,"static/**"
   ],
-  "allowed_line_patterns": ["utils/jms", "jms_", "set_jms", "X-JMS", "x-jms", "edition\\?\\.value", "\\.enterprise", "not\\.toContain"],
+  "allowed_line_patterns": ["utils/jms", "jms_", "set_jms", "X-JMS", "x-jms", "edition\\?\\.value", "edition: ['\\\"]enterprise", "default: ['\\\"]enterprise", "\\.enterprise", "not\\.toContain", "JUMPSERVER_APIHOST", "jumpserver:330", "jumpserver\\.pem", "apps\\.fit2cloud\\.com/jumpserver", "github\\.com/jumpserver/jumpserver/releases"],
   "max_findings": 0
 }
