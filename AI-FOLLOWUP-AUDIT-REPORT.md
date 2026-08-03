@@ -60,3 +60,7 @@ enterprise surfaces.
   deployed with WebSocket fixes `aa0712c47`, `27fc785ff`, `cec7a7f2a`, and
   `9f1904906`. Koko systemd now waits for Core health, and the server log
   confirms `/ws/terminal-task/` accepted followed by `Start ws client success`.
+- Runtime follow-up: Lina stale enterprise UI defaults were removed in
+  `8124685bd8b1205c3a7fbad177303b2d70f62053`; Core component/workflow pins now
+  reference that immutable commit (`13ffeee9c`). Targeted Lina ESLint passed;
+  component lock and provenance tests remain green (7/7).
