@@ -153,7 +153,7 @@ install_source() {
   fi
   run bash "$YETKA_INSTALL_DIR/app/requirements/static_files.sh"
   run env UV_PYTHON_INSTALL_DIR="$YETKA_INSTALL_DIR/python" uv venv --clear --python 3.14 "$YETKA_INSTALL_DIR/venv"
-  run uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -r "$YETKA_INSTALL_DIR/app/pyproject.toml"
+  run uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -e "$YETKA_INSTALL_DIR/app"
   run chown -R "$YETKA_USER:$YETKA_USER" "$YETKA_INSTALL_DIR/app" "$YETKA_INSTALL_DIR/venv" "$YETKA_INSTALL_DIR/python"
 }
 

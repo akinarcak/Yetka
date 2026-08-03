@@ -206,7 +206,7 @@ rollback_application() {
   [[ -n "$PREVIOUS_COMMIT" ]] || return 0
   log "Health/update failure: restoring application commit $PREVIOUS_COMMIT"
   git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "$PREVIOUS_COMMIT" || true
-  uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -r "$YETKA_INSTALL_DIR/app/pyproject.toml" || true
+  uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -e "$YETKA_INSTALL_DIR/app" || true
   chown -R "$YETKA_USER:$YETKA_USER" "$YETKA_INSTALL_DIR/app" "$YETKA_INSTALL_DIR/venv" || true
   if [[ -n "$PREVIOUS_RELEASE" ]]; then
     printf '%s\n' "$PREVIOUS_RELEASE" > "$YETKA_DATA_DIR/release-version"
