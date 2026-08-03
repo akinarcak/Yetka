@@ -130,6 +130,7 @@ log "Downloading $TARGET_VERSION installer and checksum"
 curl --fail --silent --show-error --location --retry 3 -o "$archive" "$release_base/$archive_name"
 curl --fail --silent --show-error --location --retry 3 -o "$checksum" "$release_base/$archive_name.sha256"
 read -r expected_hash listed_name < "$checksum" || die "Invalid checksum file"
+listed_name=${listed_name%$'\r'}
 [[ "$expected_hash" =~ ^[a-fA-F0-9]{64}$ && "$listed_name" == "$archive_name" ]] || die "Checksum file does not describe the expected archive"
 (cd "$WORK_DIR" && printf '%s  %s\n' "$expected_hash" "$archive_name" | sha256sum -c -)
 mkdir "$WORK_DIR/package"

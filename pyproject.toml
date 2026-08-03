@@ -158,6 +158,10 @@ dependencies = [
     "markdownify>=1.2.3",
 ]
 
+[tool.setuptools.packages.find]
+where = ["apps"]
+include = ["*"]
+
 [project.urls]
 Homepage = "https://www.jumpserver.com"
 Documentation = "https://www.jumpserver.com/docs"
