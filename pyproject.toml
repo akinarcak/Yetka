@@ -158,9 +158,11 @@ dependencies = [
     "markdownify>=1.2.3",
 ]
 
-[tool.setuptools.packages.find]
-where = ["apps"]
-include = ["*"]
+# The application is executed from the repository root; editable installation
+# is used for dependency management only. Explicitly disable flat-layout
+# fallback discovery so data/deploy directories are never treated as packages.
+[tool.setuptools]
+packages = []
 
 [project.urls]
 Homepage = "https://www.jumpserver.com"
