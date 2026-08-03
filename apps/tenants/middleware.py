@@ -118,6 +118,12 @@ class CustomerTenantWebSocketMiddleware:
         user = scope.get('user')
         if not user or not user.is_authenticated:
             raise DenyConnection()
+        # Component service accounts (Koko/Lion/etc.) authenticate with a
+        # signed access key and are intentionally not customer members.
+        # Their terminal task channel must be available before a user tenant
+        # context exists; user-facing sockets still require tenant binding.
+        if getattr(user, 'terminal', None) is not None:
+            return await self.app(scope, receive, send)
         requested_id = _scope_value(scope, 'x-yetka-tenant')
         organization_id = _workspace_from_cookie(scope)
         try:
