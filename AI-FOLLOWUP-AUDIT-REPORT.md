@@ -101,3 +101,4 @@ enterprise surfaces.
 - Nginx currently forwards `/ws/` with HTTP/1.1 upgrade headers and Koko reports `Start ws client success`; this rules out a missing proxy upgrade as the primary cause.
 - The browser notification socket is `/ws/notifications/site-msg/`. Its backend route is protected by `CustomerTenantWebSocketMiddleware`, which denies authenticated users when no active customer-tenant membership can be resolved. This is the leading cause to reproduce with the affected admin session before changing behavior.
 - Lina currently ships `en`, `ja`, `zh`, and `zh_hant` locale bundles; there is no Turkish locale bundle. The Turkish maintenance text therefore comes from the server/update overlay rather than a consistent frontend locale.
+- Lina follow-up commits `195eea3` and `31cbc3e` remove the obsolete License route/JumpServer links and add a Turkish locale fallback with the WebSocket/update/common navigation strings translated.
