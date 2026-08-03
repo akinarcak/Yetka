@@ -80,3 +80,4 @@ enterprise surfaces.
 - Pinned cleaned Luna (`315f6d26b64e99bb4b749d61a13dc549fbef3a97`) and Koko (`4a7deb7e3c2b068f959fbb1976d74e3935a3030e`) sources in the component lock and release workflow.
 - `verify_release.py` now runs component-lock, provenance, product-language, and container-security policy tests before scanning each supplied component root.
 - Local verification with Lina completed successfully (15 tests, product-language policy v1 clean).
+- Isolated Linux test source rerun on `100.86.171.110`: 13/13 `common.service_signature_tests` passed with no system-check issues. The installed wrapper still referenced a missing temporary `yetka_test_settings`; direct execution with the repository's `jumpserver.settings.test` completed successfully.
