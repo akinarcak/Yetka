@@ -69,3 +69,6 @@ enterprise surfaces.
 - Foundation CI run `30791411997` passed after the latest immutable Lina pin:
   provenance, Lina source-level policy/build, container security, replay
   signature, and customer-tenant isolation jobs all succeeded.
+- Release-hardening policy tests (`tools/tests/test_product_language_policy.py`)
+  pass 2/2 locally; Foundation CI PR run `30791863890` passed Lina policy/build,
+  container security, provenance, replay-signature, and tenant-isolation jobs.
