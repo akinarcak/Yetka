@@ -75,6 +75,20 @@ class TenantWebSocketScopeTests(IsolatedAsyncioTestCase):
         resolve.assert_not_awaited()
         app.assert_awaited_once()
 
+    async def test_service_account_socket_does_not_require_customer_tenant(self):
+        app = AsyncMock()
+        middleware = CustomerTenantWebSocketMiddleware(app)
+        scope = {
+            'user': SimpleNamespace(is_authenticated=True, is_superuser=False, is_service_account=True),
+            'headers': [],
+        }
+
+        with patch('tenants.middleware.resolve_websocket_tenant', new=AsyncMock()) as resolve:
+            await middleware(scope, Mock(), Mock())
+
+        resolve.assert_not_awaited()
+        app.assert_awaited_once()
+
     async def test_websocket_scope_receives_verified_tenant(self):
         tenant = SimpleNamespace(id='tenant-a')
         app = AsyncMock()
