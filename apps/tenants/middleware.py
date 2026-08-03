@@ -123,10 +123,10 @@ class CustomerTenantWebSocketMiddleware:
         user = scope.get('user')
         if not user or not user.is_authenticated:
             raise DenyConnection()
-        # System administrators are not customer-tenant members. They still
-        # need the notification and terminal sockets used by the global UI.
-        # Keep tenant binding mandatory for ordinary users and service users.
-        if user.is_superuser or getattr(user, 'is_service_account', False):
+        # System administrators are not customer-tenant members, but the
+        # global notification socket is not tenant-scoped. Keep tenant
+        # binding mandatory for terminal and component sockets.
+        if user.is_superuser and scope.get('path') == '/ws/notifications/site-msg/':
             return await self.app(scope, receive, send)
         # Component service accounts (Koko/Lion/etc.) authenticate with a
         # signed access key and are intentionally not customer members.
