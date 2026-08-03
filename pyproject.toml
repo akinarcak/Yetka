@@ -165,8 +165,8 @@ dependencies = [
 packages = []
 
 [project.urls]
-Homepage = "https://www.jumpserver.com"
-Documentation = "https://www.jumpserver.com/docs"
+Homepage = "https://yetka.dev"
+Documentation = "https://yetka.dev/docs"
 
 [tool.uv]
 default-groups = []
