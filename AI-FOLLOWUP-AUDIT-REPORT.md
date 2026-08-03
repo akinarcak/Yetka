@@ -89,3 +89,9 @@ enterprise surfaces.
 - Recovery after failed updater retry: services briefly stopped during the installer attempt, causing the observed `Connection to websocket failed`. The application remained on `yetka-1.0.4`; `yetka-scheduler`, `yetka-worker`, `yetka-web`, and `yetka-koko` were restarted successfully, Core health returned HTTP 200, and the corrected wrapper passed 13/13 tests. The update was not declared successful.
 - Root cause identified for the second update failure: the installer invoked `uv pip install -r .../pyproject.toml`, which is not a valid requirements-file input. Both install paths now use editable project installation (`uv pip install ... -e /opt/yetka/app`); CI validation is required before any further retry.
 - Rehearsal deployment reached the corrected backup and dependency stages, then failed safely because setuptools rejected flat-layout editable discovery (`apps`, `data`, `deploy`, `tmp`). The host rolled back/remained on `yetka-1.0.4`; all four services and health were restored. Core now declares `[tool.setuptools.packages.find] where = ["apps"] include = ["*"]`; a fresh CI-green artifact is required before another retry.
+## 2026-08-03 deployment continuation
+
+- The updater now honors `YETKA_GIT_REF_OVERRIDE` when preparing the target environment.
+- A deployment rehearsal initially rolled back because the release tag pointed at an older Core commit; a clean deploy tag (`yetka-deploy-20260803`) was published at the package-discovery fix and used for the controlled test deployment.
+- Test server deployment completed successfully. All four services are active, `/api/health/` reports `status`, `db_status`, and `redis_status` true, and the permanent wrapper passes 13/13 tests with no system-check issues.
+- The updater backup/rollback path remains exercised and preserved the 1.0.4 state during prior failures; the current server is running the deployed commit `yetka-deploy-20260803`.

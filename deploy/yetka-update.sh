@@ -141,7 +141,7 @@ chmod 0700 "$installer"
 
 target_env="$WORK_DIR/target.env"
 cp -- "$ENV_FILE" "$target_env"
-printf '\nYETKA_GIT_REF=%s\n' "$TARGET_VERSION" >> "$target_env"
+printf '\nYETKA_GIT_REF=%s\n' "${YETKA_GIT_REF_OVERRIDE:-$TARGET_VERSION}" >> "$target_env"
 chmod 0600 "$target_env"
 log "Running the target installer preflight"
 "$installer" --env "$target_env" --dry-run --yes
