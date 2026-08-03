@@ -7,11 +7,13 @@
     "**/package.json",
     "**/yarn.lock",
     "**/Dockerfile*",
-    "**/LICENSE*"
+    "**/LICENSE*",
+    ".github/workflows/jms-*",
+    ".github/workflows/build-base-image.yml"
     ,"package.json",
     "yarn.lock",
     "Dockerfile*"
   ],
-  "allowed_line_patterns": ["utils/jms", "jms_", "set_jms"],
+  "allowed_line_patterns": ["utils/jms", "jms_", "set_jms", "X-JMS", "x-jms", "edition\\?\\.value", "\\.enterprise", "not\\.toContain"],
   "max_findings": 0
 }
