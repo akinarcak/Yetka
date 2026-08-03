@@ -95,3 +95,9 @@ enterprise surfaces.
 - A deployment rehearsal initially rolled back because the release tag pointed at an older Core commit; a clean deploy tag (`yetka-deploy-20260803`) was published at the package-discovery fix and used for the controlled test deployment.
 - Test server deployment completed successfully. All four services are active, `/api/health/` reports `status`, `db_status`, and `redis_status` true, and the permanent wrapper passes 13/13 tests with no system-check issues.
 - The updater backup/rollback path remains exercised and preserved the 1.0.4 state during prior failures; the current server is running the deployed commit `yetka-deploy-20260803`.
+
+## Follow-up goal findings
+
+- Nginx currently forwards `/ws/` with HTTP/1.1 upgrade headers and Koko reports `Start ws client success`; this rules out a missing proxy upgrade as the primary cause.
+- The browser notification socket is `/ws/notifications/site-msg/`. Its backend route is protected by `CustomerTenantWebSocketMiddleware`, which denies authenticated users when no active customer-tenant membership can be resolved. This is the leading cause to reproduce with the affected admin session before changing behavior.
+- Lina currently ships `en`, `ja`, `zh`, and `zh_hant` locale bundles; there is no Turkish locale bundle. The Turkish maintenance text therefore comes from the server/update overlay rather than a consistent frontend locale.
