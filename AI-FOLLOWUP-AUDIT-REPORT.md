@@ -54,3 +54,9 @@ enterprise surfaces.
   (`1ad57d8`); the cleaned Lina commit is pinned by Core PR #28.
 - Foundation CI `30771066232` passed provenance, container, replay/signature,
   tenant-isolation and pinned Lina build checks.
+- Test deployment evidence (2026-08-03): Lina production build completed with
+  the legacy Webpack OpenSSL compatibility flag and was deployed to
+  `/opt/yetka/lina`; Nginx configuration validated successfully. Core was
+  deployed with WebSocket fixes `aa0712c47`, `27fc785ff`, `cec7a7f2a`, and
+  `9f1904906`. Koko systemd now waits for Core health, and the server log
+  confirms `/ws/terminal-task/` accepted followed by `Start ws client success`.
