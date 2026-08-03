@@ -72,3 +72,6 @@ enterprise surfaces.
 - Release-hardening policy tests (`tools/tests/test_product_language_policy.py`)
   pass 2/2 locally; Foundation CI PR run `30791863890` passed Lina policy/build,
   container security, provenance, replay-signature, and tenant-isolation jobs.
+- `tools/verify_release.py --lina <path>` now runs the component-lock,
+  provenance/security, and Lina product-language checks as one command; local
+  execution passed all 9 tests and the Lina scan.
