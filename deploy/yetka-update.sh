@@ -173,7 +173,12 @@ create_backups() {
   tar -czf "$BACKUP_DIR/host-config.tar.gz" "$ENV_FILE" "$YETKA_CONFIG_DIR" "$YETKA_INSTALL_DIR/app/config.yml"
   backup_database
   if [[ "$YETKA_UPDATE_BACKUP_DATA" == true ]]; then
-    tar -czf "$BACKUP_DIR/data.tar.gz" "$YETKA_DATA_DIR"
+    # Runtime logs are written while the services are still online; excluding
+    # them keeps the safety backup deterministic instead of failing with tar's
+    # "file changed as we read it" exit status. Logs remain on the persistent
+    # volume and are not part of the rollback-critical application state.
+    tar --exclude="$YETKA_DATA_DIR/logs" --exclude="$YETKA_DATA_DIR/logs/**" \
+      -czf "$BACKUP_DIR/data.tar.gz" "$YETKA_DATA_DIR"
   else
     log "Persistent data archive disabled by YETKA_UPDATE_BACKUP_DATA=false"
   fi
