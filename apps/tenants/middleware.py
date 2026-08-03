@@ -5,6 +5,10 @@ from .exceptions import TenantAccessDenied, TenantContextError, TenantSelectionR
 from .models import CustomerTenantMembership, TenantOrganization
 from channels.db import database_sync_to_async
 from channels.exceptions import DenyConnection
+from common.utils import get_logger
+
+
+logger = get_logger(__name__)
 
 
 TENANT_HEADER = 'HTTP_X_YETKA_TENANT'
