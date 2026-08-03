@@ -10,6 +10,9 @@ on:
       - tools/validate_components_lock.py
       - tools/scan_release_artifacts.py
       - tools/tests/test_release_provenance.py
+      - tools/forbidden-content-policy.json
+      - tools/validate_product_language.py
+      - tools/tests/test_product_language_policy.py
       - tools/tests/test_container_security.py
       - tools/backup_restore_smoke.py
       - tools/tests/test_backup_restore_smoke.py
@@ -137,6 +140,7 @@ jobs:
       - name: Run release provenance tests
         run: |
           python -m unittest tools.tests.test_release_provenance -v
+          python -m unittest tools.tests.test_product_language_policy -v
           python -m unittest tools.tests.test_container_security -v
           python -m unittest tools.tests.test_backup_restore_smoke -v
           python -m unittest tools.tests.test_component_matrix -v

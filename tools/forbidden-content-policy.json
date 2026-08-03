@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "description": "Product-facing terms are forbidden; technical identifiers and attribution are explicitly allowlisted.",
+  "forbidden_terms": ["enterprise", "enterprise trial", "community edition", "jumpserver", "jms"],
+  "allowed_globs": [
+    "**/utils/jms/**",
+    "**/package.json",
+    "**/yarn.lock",
+    "**/Dockerfile*",
+    "**/LICENSE*"
+    ,"package.json",
+    "yarn.lock",
+    "Dockerfile*"
+  ],
+  "allowed_line_patterns": ["utils/jms", "jms_", "set_jms"],
+  "max_findings": 0
+}
