@@ -114,3 +114,5 @@ enterprise surfaces.
 - Added `RELEASE-NOTES-yetka-1.0.6-final-ws.md` and `docs/PRODUCTION-DEPLOY-CHECKLIST.md`.
 - Real terminal connectivity is still pending a registered test asset; the shared test workspace currently reports zero assets.
 - The first ws3 updater attempt rolled back safely because the tracked empty `tmp/` directory triggered setuptools flat-layout discovery. The directory was removed in commit `3d9c47fbb`; ws4 was dispatched from that fix. The rollback left all services healthy and the database backup at `/var/backups/yetka/20260803T135933Z-yetka-1.0.6-final-ws-to-yetka-1.0.6-final-ws3`.
+- Lina follow-up commit `7657ad7` replaces the remaining user-visible JumpServer release URL in the trust-domain alert with the Yetka documentation URL. It is pushed to `yetka-v4.10.16` but is not yet in a deployable final release artifact.
+- Release workflow attempts ws7/ws8 were cancelled while building `core/Dockerfile` for the security scan; no final artifact containing the latest Core/Lina changes is available. Production deployment and real terminal smoke therefore remain open.
