@@ -126,7 +126,7 @@ class CustomerTenantWebSocketMiddleware:
         # System administrators are not customer-tenant members, but the
         # global notification socket is not tenant-scoped. Keep tenant
         # binding mandatory for terminal and component sockets.
-        if user.is_superuser and scope.get('path') == '/ws/notifications/site-msg/':
+        if scope.get('path') == '/ws/notifications/site-msg/' and user.is_superuser:
             return await self.app(scope, receive, send)
         # Component service accounts (Koko/Lion/etc.) authenticate with a
         # signed access key and are intentionally not customer members.
