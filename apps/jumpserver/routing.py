@@ -107,8 +107,8 @@ application = ProtocolTypeRouter({
 
     # WebSocket chat handler
     "websocket": SocketContextMiddleware(
-        WsSignatureAuthMiddleware(
-            AuthMiddlewareStack(
+        AuthMiddlewareStack(
+            WsSignatureAuthMiddleware(
                 CustomerTenantWebSocketMiddleware(
                     URLRouter(urlpatterns)
                 )
