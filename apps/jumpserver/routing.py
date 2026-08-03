@@ -36,7 +36,6 @@ if settings.XPACK_ENABLED:
 def get_signature_user(scope):
     headers = dict(scope["headers"])
     if not headers.get(b'authorization'):
-        logger.info("WebSocket auth: no authorization header")
         return
     if scope['type'] == 'websocket':
         scope['method'] = 'GET'
@@ -48,7 +47,6 @@ def get_signature_user(scope):
         try:
             user, _ = backend.authenticate(request)
             if user:
-                logger.info("WebSocket auth: authenticated user=%s terminal=%s", user.username, bool(getattr(user, 'terminal', None)))
                 return user
         except Exception as e:
             logger.warning("WebSocket auth backend failed: %s", e)
