@@ -113,3 +113,4 @@ enterprise surfaces.
 - Removed the remaining user-visible JumpServer documentation URL from the API-key modal and changed Koko's service description/default certificate subject to Yetka/CareonCloud.
 - Added `RELEASE-NOTES-yetka-1.0.6-final-ws.md` and `docs/PRODUCTION-DEPLOY-CHECKLIST.md`.
 - Real terminal connectivity is still pending a registered test asset; the shared test workspace currently reports zero assets.
+- The first ws3 updater attempt rolled back safely because the tracked empty `tmp/` directory triggered setuptools flat-layout discovery. The directory was removed in commit `3d9c47fbb`; ws4 was dispatched from that fix. The rollback left all services healthy and the database backup at `/var/backups/yetka/20260803T135933Z-yetka-1.0.6-final-ws-to-yetka-1.0.6-final-ws3`.
