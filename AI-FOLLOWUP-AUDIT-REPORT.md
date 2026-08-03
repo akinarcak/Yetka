@@ -75,3 +75,8 @@ enterprise surfaces.
 - `tools/verify_release.py --lina <path>` now runs the component-lock,
   provenance/security, and Lina product-language checks as one command; local
   execution passed all 9 tests and the Lina scan.
+### Release policy rollout (2026-08-03)
+
+- Pinned cleaned Luna (`315f6d26b64e99bb4b749d61a13dc549fbef3a97`) and Koko (`4a7deb7e3c2b068f959fbb1976d74e3935a3030e`) sources in the component lock and release workflow.
+- `verify_release.py` now runs component-lock, provenance, product-language, and container-security policy tests before scanning each supplied component root.
+- Local verification with Lina completed successfully (15 tests, product-language policy v1 clean).

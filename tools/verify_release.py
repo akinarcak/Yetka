@@ -22,7 +22,10 @@ def main() -> int:
     args = parser.parse_args()
     checks = [
         ("component lock", [sys.executable, "tools/validate_components_lock.py", "--lock", "components.lock.yml"]),
-        ("provenance and security tests", [sys.executable, "-m", "unittest", "tools.tests.test_release_provenance", "tools.tests.test_product_language_policy"]),
+        ("provenance, product policy, and container policy tests", [
+            sys.executable, "-m", "unittest", "tools.tests.test_release_provenance",
+            "tools.tests.test_product_language_policy", "tools.tests.test_container_security",
+        ]),
     ]
     components = list(args.component)
     if args.lina:
