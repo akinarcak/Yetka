@@ -6,6 +6,7 @@ import argparse
 import fnmatch
 import json
 import re
+import sys
 from pathlib import Path
 
 
@@ -44,6 +45,8 @@ def violations(root: Path, policy: dict) -> list[str]:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser()
     parser.add_argument("roots", nargs="+", type=Path)
     parser.add_argument("--policy", type=Path, default=Path("tools/forbidden-content-policy.json"))
