@@ -66,3 +66,6 @@ enterprise surfaces.
   component lock and provenance tests remain green (7/7).
 - Isolated Linux test runner on the test host completed successfully after the
   runtime fixes: 13 tests, 13 passed, no system-check issues.
+- Foundation CI run `30791411997` passed after the latest immutable Lina pin:
+  provenance, Lina source-level policy/build, container security, replay
+  signature, and customer-tenant isolation jobs all succeeded.
