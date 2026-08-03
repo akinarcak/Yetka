@@ -64,3 +64,5 @@ enterprise surfaces.
   `8124685bd8b1205c3a7fbad177303b2d70f62053`; Core component/workflow pins now
   reference that immutable commit (`13ffeee9c`). Targeted Lina ESLint passed;
   component lock and provenance tests remain green (7/7).
+- Isolated Linux test runner on the test host completed successfully after the
+  runtime fixes: 13 tests, 13 passed, no system-check issues.
