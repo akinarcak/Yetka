@@ -170,6 +170,7 @@ jobs:
               test "$(id -u)" = 10001
               test ! -d /opt/jumpserver/apps/xpack
               touch /opt/jumpserver/data/.write-test
+              mkdir -p "$(readlink -m /opt/jumpserver/tmp)"
               touch /opt/jumpserver/tmp/.write-test
               test ! -w /opt/jumpserver/apps
             '
