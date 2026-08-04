@@ -1236,15 +1236,12 @@ wheels = [
 
 [[package]]
 name = "django-radius"
-version = "1.4.0"
-source = { url = "https://github.com/ibuler/django-radius/archive/refs/tags/1.5.0.zip" }
+version = "1.5.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyrad" },
 ]
-sdist = { hash = "sha256:b50680dd1c577a099f90d510856b3e55aa496d8c876beabb5b0a79fc94fcfae9" }
-
-[package.metadata]
-requires-dist = [{ name = "pyrad", specifier = ">=1.2,!=2.2" }]
+sdist = { url = "https://files.pythonhosted.org/packages/95/c1/438b39ea03675b58179d9aca6e2c108eb3494e9430ef5c4440061dc19807/django-radius-1.5.1.tar.gz", hash = "sha256:57c64e618cd233392933274b24ea9d78bcab3df6660c482a4d9ac44ee9206656", size = 8365, upload-time = "2024-04-09T13:03:03.068Z" }
 
 [[package]]
 name = "django-ranged-response"
@@ -2337,7 +2334,7 @@ requires-dist = [
     { name = "django-oauth-toolkit", specifier = "==2.4.0" },
     { name = "django-private-storage", specifier = "==3.1.3" },
     { name = "django-proxy", specifier = "==1.2.2" },
-    { name = "django-radius", url = "https://github.com/ibuler/django-radius/archive/refs/tags/1.5.0.zip" },
+    { name = "django-radius", specifier = "==1.5.1" },
     { name = "django-ranged-response", specifier = "==0.2.0" },
     { name = "django-redis", specifier = "==5.4.0" },
     { name = "django-simple-captcha", specifier = "==0.5.18" },
