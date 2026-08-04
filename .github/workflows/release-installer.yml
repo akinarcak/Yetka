@@ -21,7 +21,7 @@ permissions:
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
-  LINA_COMMIT: 7657ad7355ff7fbfdf80afade49fa036fd3a224e
+  LINA_COMMIT: f6f272c65509fa2be0f21d3883f192a8074519b8
   LUNA_COMMIT: 315f6d26b64e99bb4b749d61a13dc549fbef3a97
   KOKO_COMMIT: 7117df15a1c828929bf6da3a2c07270f4225cff5
 
