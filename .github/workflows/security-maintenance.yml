@@ -5,7 +5,9 @@ on:
     - cron: '30 2 * * 1'
   workflow_dispatch:
   push:
-    branches: [dev]
+    # Was [dev], which is an ancestor of main rather than a branch ahead of it,
+    # so this trigger had never fired for any dependency change that shipped.
+    branches: [main]
     paths: ['pyproject.toml', 'uv.lock', '.github/workflows/security-maintenance.yml']
 
 permissions:
@@ -26,11 +28,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # trivy-action never completed a single scheduled run: 2026-07-20 and
+      # 2026-07-27 failed at job setup, 2026-08-03 and 2026-08-04 failed while
+      # its installer downloaded the binary. In every case the "Run Trivy" step
+      # was skipped while the job still reported failure, so a control that
+      # produced no signal at all looked from the outside like a scan reporting
+      # findings. The release workflow scans with a digest-pinned image and has
+      # never hit this, so use the same mechanism.
       - name: Scan source and lock files
-        uses: aquasecurity/trivy-action@v0.33.1
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: '1'
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/scan:ro" \
+            aquasec/trivy:0.65.0@sha256:a22415a38938a56c379387a8163fcb0ce38b10ace73e593475d3658d578b2436 fs /scan \
+            --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1
