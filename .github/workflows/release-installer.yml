@@ -21,13 +21,16 @@ permissions:
 
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
-  LINA_COMMIT: b108a4027cdcfd1703a7aa3c2774714b111a41e7
+  LINA_COMMIT: 7657ad7355ff7fbfdf80afade49fa036fd3a224e
   LUNA_COMMIT: 315f6d26b64e99bb4b749d61a13dc549fbef3a97
-  KOKO_COMMIT: 2c7f292193b67710c9681e9fae2a51a1b0ffbb08
+  KOKO_COMMIT: 7117df15a1c828929bf6da3a2c07270f4225cff5
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    # The job normally finishes in ~10 minutes. Bound it well above that so a
+    # genuine hang fails visibly instead of occupying a runner for the 6h default.
+    timeout-minutes: 60
     steps:
       - name: Checkout Yetka core
         uses: actions/checkout@v4
@@ -68,7 +71,25 @@ jobs:
         run: |
           python tools/validate_components_lock.py \
             --lock components.lock.yml --checkout-root ..
-          python -m unittest tools.tests.test_release_provenance -v
+          python -m unittest tools.tests.test_release_provenance \
+            tools.tests.test_editable_packaging -v
+      - name: Verify editable installation matches the release updater
+        # Reproduces deploy/yetka-update.sh: a flat-layout discovery failure here
+        # previously aborted live deployments and forced a rollback.
+        timeout-minutes: 15
+        run: |
+          set -eux
+          python -m pip install --quiet uv
+          uv venv --python 3.14 /tmp/pkgcheck-venv
+          uv pip install --python /tmp/pkgcheck-venv/bin/python --no-deps -e core
+          # The flat-layout directories must not have been claimed as packages.
+          site_packages="$(/tmp/pkgcheck-venv/bin/python -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')"
+          for name in apps data deploy tmp; do
+            if [ -e "$site_packages/$name" ]; then
+              echo "Flat-layout directory '$name' was installed as a package" >&2
+              exit 1
+            fi
+          done
       - name: Scan core source for high and critical vulnerabilities
         run: |
           docker run --rm \
@@ -82,7 +103,16 @@ jobs:
             zricethezav/gitleaks:v8.24.3@sha256:e1b35e12a8c6fa8901f060459cfb6b2fc4c484d3afbe3b029733a3bbfab07055 detect \
             --source /repo --no-git --redact --exit-code 1
       - name: Build release container for security scan
-        run: docker build --file core/Dockerfile --tag yetka/core:release-scan core
+        # This build takes ~90s. Earlier release attempts were cancelled by hand
+        # around the 1-2 minute mark because the default buildkit output prints
+        # nothing while long RUN layers execute, which read as a stall. Plain
+        # progress keeps the log advancing and the timeout bounds a real hang.
+        timeout-minutes: 20
+        env:
+          DOCKER_BUILDKIT: '1'
+        run: |
+          docker build --progress=plain \
+            --file core/Dockerfile --tag yetka/core:release-scan core
       - name: Scan release container for high and critical vulnerabilities
         run: |
           docker run --rm \
