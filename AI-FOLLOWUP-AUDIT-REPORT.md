@@ -2,6 +2,13 @@
 
 Date: 2026-08-03
 
+## Turkish locale follow-up (2026-08-04)
+
+- Root cause: Lina `src/i18n/utils.js` excluded `tr` from the supported locale list, so `tr` and `tr-TR` were normalized to English. Commit `0e2350009240cb29cc6825c39202b819c89ad2bf` adds Turkish normalization and is pinned in the release workflow, foundation gates, and component lock.
+- Release workflow `30909729054` (`yetka-1.0.6-final-ws17`) passed all gates and published signed artifacts.
+- The full server updater reached dependency installation but rolled back because the editable Core package currently contains multiple top-level packages (`tmp` and others); this packaging issue is independent of the locale patch. Health and all services were restored to ws14.
+- The ws17 Lina artifact was checksum-verified (`4b7bd3df3a56e8a9a0e84f664d882e2aca729407e0663a9a7d135e7c60b1456c`) and installed separately on the test server with the ws14 Lina backup retained; nginx was reloaded. Core/Luna/Koko remain on ws14 until the packaging failure is fixed and a complete release is redeployed.
+
 ## Scope
 
 This is the productization follow-up after MSP Foundation W5-W7. It separates
