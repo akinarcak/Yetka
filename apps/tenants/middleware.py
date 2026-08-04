@@ -113,6 +113,12 @@ def is_terminal_service_user(user):
     return hasattr(user, 'terminal')
 
 
+@database_sync_to_async
+def is_system_admin_user(user):
+    """Read the role-backed administrator flag outside the async event loop."""
+    return bool(user.is_superuser)
+
+
 class CustomerTenantWebSocketMiddleware:
     """Bind every authenticated websocket to an authorized customer tenant."""
 
@@ -126,7 +132,10 @@ class CustomerTenantWebSocketMiddleware:
         # System administrators are not customer-tenant members, but the
         # global notification socket is not tenant-scoped. Keep tenant
         # binding mandatory for terminal and component sockets.
-        if scope.get('path') == '/ws/notifications/site-msg/' and user.is_superuser:
+        if (
+            scope.get('path') == '/ws/notifications/site-msg/'
+            and await is_system_admin_user(user)
+        ):
             return await self.app(scope, receive, send)
         # Component service accounts (Koko/Lion/etc.) authenticate with a
         # signed access key and are intentionally not customer members.
