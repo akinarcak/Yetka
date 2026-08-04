@@ -13,8 +13,13 @@ class SupportedComponentsApiTests(SimpleTestCase):
         manifest = {'koko': {'status': 'supported'}, 'lion': {'status': 'unavailable'}}
         loader.return_value = manifest
         request = APIRequestFactory().get('/api/v1/components/')
+        # DRF throttling builds its cache key from request.user.pk before the
+        # view runs, so the stand-in user needs one. Without it the request
+        # never reached the view and this test raised AttributeError instead of
+        # asserting anything -- unnoticed, because the gate step it runs in
+        # discarded the exit code.
         request.user = SimpleNamespace(
-            is_authenticated=True, is_active=True, is_valid=True
+            pk=1, is_authenticated=True, is_active=True, is_valid=True
         )
         response = SupportedComponentsApi.as_view()(request)
         self.assertEqual(response.status_code, 200)
