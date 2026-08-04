@@ -158,17 +158,24 @@ jobs:
           cp koko/README.md koko/LICENSE koko/config_example.yml koko/entrypoint.sh artifacts/koko-package/
           cp -r koko/locale/. artifacts/koko-package/locale/
           tar -C artifacts/koko-package -czf "artifacts/koko-${RELEASE_TAG}-linux-amd64.tar.gz" .
-          tar -C core --create --gzip --file "artifacts/yetka-installer-${RELEASE_TAG}.tar.gz" deploy
-          python core/tools/scan_release_artifacts.py artifacts/*.tar.gz
-          python core/tools/validate_release_licenses.py \
-            --lock core/components.lock.yml \
-            artifacts/lina-*.tar.gz artifacts/luna-*.tar.gz artifacts/koko-*.tar.gz
+          # The manifest is generated before the installer archive so it can be
+          # packaged inside it. The updater resolves the core commit from that
+          # copy, which SHA256SUMS and the cosign signature both cover. The
+          # release tag is not a trustworthy source for that commit: it is
+          # created by "gh release create" below and lands on the default branch
+          # unless the workflow pins it explicitly.
           python core/tools/validate_components_lock.py \
             --lock core/components.lock.yml \
             --artifacts-dir artifacts \
             --release-tag "$RELEASE_TAG" \
             --core-commit "$(git -C core rev-parse HEAD)" \
             --output artifacts/components.release.json
+          cp artifacts/components.release.json core/deploy/components.release.json
+          tar -C core --create --gzip --file "artifacts/yetka-installer-${RELEASE_TAG}.tar.gz" deploy
+          python core/tools/scan_release_artifacts.py artifacts/*.tar.gz
+          python core/tools/validate_release_licenses.py \
+            --lock core/components.lock.yml \
+            artifacts/lina-*.tar.gz artifacts/luna-*.tar.gz artifacts/koko-*.tar.gz
           cd artifacts
           sha256sum *.tar.gz > SHA256SUMS
           while read -r hash file; do printf '%s  %s\n' "$hash" "$file" > "$file.sha256"; done < SHA256SUMS
@@ -194,8 +201,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
-            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --title "Yetka ${RELEASE_TAG#yetka-}" --generate-notes
+          core_commit="$(git -C core rev-parse HEAD)"
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            # An existing tag is never moved automatically, but it must not
+            # silently disagree with the commit these assets were built from.
+            tagged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$RELEASE_TAG" --jq '.sha')
+            if [ "$tagged" != "$core_commit" ]; then
+              echo "::error::Tag $RELEASE_TAG points at $tagged but these assets were built from $core_commit"
+              exit 1
+            fi
+          else
+            # Without --target the tag is created on the default branch. That is
+            # how every tag from ws7 onward came to point at the pre-ws7 main.
+            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+              --title "Yetka ${RELEASE_TAG#yetka-}" --generate-notes --target "$core_commit"
+          fi
           gh release upload "$RELEASE_TAG" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS artifacts/SHA256SUMS.sig artifacts/SHA256SUMS.sigstore.json artifacts/*.sbom.cdx.json \
             artifacts/components.release.json \
             --repo "$GITHUB_REPOSITORY" --clobber

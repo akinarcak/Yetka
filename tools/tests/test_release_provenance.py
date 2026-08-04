@@ -54,6 +54,29 @@ class ComponentLockTests(TestCase):
         self.assertIn("success()", release_workflow)
         self.assertIn("publish_release", release_workflow)
         self.assertIn("inputs.publish_release == true", release_workflow)
+        # Every tag from ws7 to ws20 was created by "gh release create" without
+        # --target, so GitHub placed it on the default branch and the published
+        # assets described a commit the tag did not point at.
+        self.assertIn('--target "$core_commit"', release_workflow)
+        # The manifest must be inside the installer archive, which SHA256SUMS
+        # and the cosign signature cover; the loose release asset does not.
+        self.assertIn(
+            "cp artifacts/components.release.json core/deploy/components.release.json",
+            release_workflow,
+        )
+
+    def test_updater_pins_core_commit_from_release_manifest(self):
+        root = Path(__file__).resolve().parents[2]
+        updater = (root / "deploy/yetka-update.sh").read_text(encoding="utf-8")
+        installer = (root / "deploy/install-baremetal.sh").read_text(encoding="utf-8")
+
+        self.assertIn("package/deploy/components.release.json", updater)
+        self.assertIn("git_ref=$core_commit", updater)
+        # The tag must never again be the source of the deployed core commit.
+        self.assertNotIn("${YETKA_GIT_REF_OVERRIDE:-$TARGET_VERSION}", updater)
+        # A pinned commit reaches the installer as a bare SHA, which neither the
+        # branch nor the tag lookup resolves.
+        self.assertIn("^[0-9a-f]{40}$", installer)
 
     def test_release_manifest_records_artifact_hashes(self):
         with TemporaryDirectory() as directory:

@@ -139,9 +139,40 @@ installer="$WORK_DIR/package/deploy/install-baremetal.sh"
 [[ -f "$installer" ]] || die "Release archive does not contain the bare-metal installer"
 chmod 0700 "$installer"
 
+# The core source is pinned to the commit recorded in the release manifest, not
+# to the release tag. Tags are created by the release workflow and have pointed
+# at the wrong commit before; the manifest ships inside this archive, so the
+# checksum and signature that gated the download cover it too.
+manifest="$WORK_DIR/package/deploy/components.release.json"
+[[ -f "$manifest" ]] || die "Release archive does not contain deploy/components.release.json"
+core_commit=$(python3 - "$manifest" "$TARGET_VERSION" <<'PY'
+import json
+import re
+import sys
+
+with open(sys.argv[1], encoding='utf-8') as stream:
+    manifest = json.load(stream)
+if manifest.get('schema_version') != 1:
+    raise SystemExit('Unsupported release manifest schema')
+if manifest.get('release') != sys.argv[2]:
+    raise SystemExit(f'Release manifest describes {manifest.get("release")!r}, not {sys.argv[2]!r}')
+commit = manifest.get('components', {}).get('core', {}).get('commit', '')
+if not re.fullmatch(r'[0-9a-f]{40}', commit):
+    raise SystemExit('Release manifest has no immutable core commit')
+print(commit)
+PY
+)
+
 target_env="$WORK_DIR/target.env"
 cp -- "$ENV_FILE" "$target_env"
-printf '\nYETKA_GIT_REF=%s\n' "${YETKA_GIT_REF_OVERRIDE:-$TARGET_VERSION}" >> "$target_env"
+if [[ -n "${YETKA_GIT_REF_OVERRIDE:-}" ]]; then
+  log "WARNING: YETKA_GIT_REF_OVERRIDE=$YETKA_GIT_REF_OVERRIDE in $ENV_FILE outranks the $TARGET_VERSION core commit $core_commit"
+  git_ref=$YETKA_GIT_REF_OVERRIDE
+else
+  log "Core source pinned to $TARGET_VERSION commit $core_commit"
+  git_ref=$core_commit
+fi
+printf '\nYETKA_GIT_REF=%s\n' "$git_ref" >> "$target_env"
 chmod 0600 "$target_env"
 log "Running the target installer preflight"
 "$installer" --env "$target_env" --dry-run --yes

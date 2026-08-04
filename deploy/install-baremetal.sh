@@ -140,7 +140,15 @@ install_uv_python() {
 install_source() {
   if [[ -d "$YETKA_INSTALL_DIR/app/.git" ]]; then
     run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" fetch --tags origin
-    if git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" show-ref --verify --quiet "refs/remotes/origin/$YETKA_GIT_REF"; then
+    if [[ "$YETKA_GIT_REF" =~ ^[0-9a-f]{40}$ ]]; then
+      # The updater pins a commit SHA. A shallow or single-branch clone will not
+      # have it after the default fetch above, and it need not be on any branch
+      # this clone tracks, so ask the remote for the commit itself.
+      if ! git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" cat-file -e "$YETKA_GIT_REF^{commit}" 2>/dev/null; then
+        run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" fetch --no-tags origin "$YETKA_GIT_REF"
+      fi
+      run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "$YETKA_GIT_REF"
+    elif git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" show-ref --verify --quiet "refs/remotes/origin/$YETKA_GIT_REF"; then
       run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout -B "$YETKA_GIT_REF" "origin/$YETKA_GIT_REF"
     elif git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" show-ref --verify --quiet "refs/tags/$YETKA_GIT_REF"; then
       run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "refs/tags/$YETKA_GIT_REF"
@@ -149,7 +157,14 @@ install_source() {
     fi
   else
     [[ ! -e "$YETKA_INSTALL_DIR/app" ]] || die "$YETKA_INSTALL_DIR/app exists but is not a git checkout"
-    run git clone --branch "$YETKA_GIT_REF" --depth 1 "$YETKA_GIT_URL" "$YETKA_INSTALL_DIR/app"
+    if [[ "$YETKA_GIT_REF" =~ ^[0-9a-f]{40}$ ]]; then
+      # --branch rejects a commit SHA, and the commit need not be on the default
+      # branch, so clone in full and pin afterwards.
+      run git clone "$YETKA_GIT_URL" "$YETKA_INSTALL_DIR/app"
+      run git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "$YETKA_GIT_REF"
+    else
+      run git clone --branch "$YETKA_GIT_REF" --depth 1 "$YETKA_GIT_URL" "$YETKA_INSTALL_DIR/app"
+    fi
   fi
   run bash "$YETKA_INSTALL_DIR/app/requirements/static_files.sh"
   run env UV_PYTHON_INSTALL_DIR="$YETKA_INSTALL_DIR/python" uv venv --clear --python 3.14 "$YETKA_INSTALL_DIR/venv"
