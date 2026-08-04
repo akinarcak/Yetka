@@ -11,7 +11,10 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     PATH=/opt/py3/bin:$PATH \
     UV_PROJECT_ENVIRONMENT=/opt/py3 \
-    UV_FROZEN=1 \
+    # UV_LOCKED, not UV_FROZEN: this applies to every uv invocation in the
+    # image, so setting it to frozen here silently disabled the lock/manifest
+    # consistency check regardless of the flags passed below.
+    UV_LOCKED=1 \
     ANSIBLE_COLLECTIONS_PATHS=/opt/py3/lib/python3.14/site-packages/ansible_collections
 
 WORKDIR /opt/jumpserver
