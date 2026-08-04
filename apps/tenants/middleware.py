@@ -5,6 +5,10 @@ from .exceptions import TenantAccessDenied, TenantContextError, TenantSelectionR
 from .models import CustomerTenantMembership, TenantOrganization
 from channels.db import database_sync_to_async
 from channels.exceptions import DenyConnection
+from common.utils import get_logger
+
+
+logger = get_logger(__name__)
 
 
 TENANT_HEADER = 'HTTP_X_YETKA_TENANT'
@@ -104,6 +108,17 @@ def resolve_websocket_tenant(user, requested_id=None, organization_id=None):
     return resolve_tenant_for_user(user, requested_id, organization)
 
 
+@database_sync_to_async
+def is_terminal_service_user(user):
+    return hasattr(user, 'terminal')
+
+
+@database_sync_to_async
+def is_system_admin_user(user):
+    """Read the role-backed administrator flag outside the async event loop."""
+    return bool(user.is_superuser)
+
+
 class CustomerTenantWebSocketMiddleware:
     """Bind every authenticated websocket to an authorized customer tenant."""
 
@@ -114,6 +129,20 @@ class CustomerTenantWebSocketMiddleware:
         user = scope.get('user')
         if not user or not user.is_authenticated:
             raise DenyConnection()
+        # System administrators are not customer-tenant members, but the
+        # global notification socket is not tenant-scoped. Keep tenant
+        # binding mandatory for terminal and component sockets.
+        if (
+            scope.get('path') == '/ws/notifications/site-msg/'
+            and await is_system_admin_user(user)
+        ):
+            return await self.app(scope, receive, send)
+        # Component service accounts (Koko/Lion/etc.) authenticate with a
+        # signed access key and are intentionally not customer members.
+        # Their terminal task channel must be available before a user tenant
+        # context exists; user-facing sockets still require tenant binding.
+        if await is_terminal_service_user(user):
+            return await self.app(scope, receive, send)
         requested_id = _scope_value(scope, 'x-yetka-tenant')
         organization_id = _workspace_from_cookie(scope)
         try:

@@ -804,7 +804,7 @@ class Config(dict):
         'TRUSTED_IP_SIGN_HEADER': '',
         'TRUSTED_IP_SIGN_KEY': '',
 
-        'REMOTE_APP_STORE_URL': 'https://apps.fit2cloud.com/jumpserver',
+        'REMOTE_APP_STORE_URL': '',
         'LANGUAGES_SUPPORTED': 'en,tr',
 
         # rdp sign cert

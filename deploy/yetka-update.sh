@@ -130,6 +130,7 @@ log "Downloading $TARGET_VERSION installer and checksum"
 curl --fail --silent --show-error --location --retry 3 -o "$archive" "$release_base/$archive_name"
 curl --fail --silent --show-error --location --retry 3 -o "$checksum" "$release_base/$archive_name.sha256"
 read -r expected_hash listed_name < "$checksum" || die "Invalid checksum file"
+listed_name=${listed_name%$'\r'}
 [[ "$expected_hash" =~ ^[a-fA-F0-9]{64}$ && "$listed_name" == "$archive_name" ]] || die "Checksum file does not describe the expected archive"
 (cd "$WORK_DIR" && printf '%s  %s\n' "$expected_hash" "$archive_name" | sha256sum -c -)
 mkdir "$WORK_DIR/package"
@@ -138,9 +139,40 @@ installer="$WORK_DIR/package/deploy/install-baremetal.sh"
 [[ -f "$installer" ]] || die "Release archive does not contain the bare-metal installer"
 chmod 0700 "$installer"
 
+# The core source is pinned to the commit recorded in the release manifest, not
+# to the release tag. Tags are created by the release workflow and have pointed
+# at the wrong commit before; the manifest ships inside this archive, so the
+# checksum and signature that gated the download cover it too.
+manifest="$WORK_DIR/package/deploy/components.release.json"
+[[ -f "$manifest" ]] || die "Release archive does not contain deploy/components.release.json"
+core_commit=$(python3 - "$manifest" "$TARGET_VERSION" <<'PY'
+import json
+import re
+import sys
+
+with open(sys.argv[1], encoding='utf-8') as stream:
+    manifest = json.load(stream)
+if manifest.get('schema_version') != 1:
+    raise SystemExit('Unsupported release manifest schema')
+if manifest.get('release') != sys.argv[2]:
+    raise SystemExit(f'Release manifest describes {manifest.get("release")!r}, not {sys.argv[2]!r}')
+commit = manifest.get('components', {}).get('core', {}).get('commit', '')
+if not re.fullmatch(r'[0-9a-f]{40}', commit):
+    raise SystemExit('Release manifest has no immutable core commit')
+print(commit)
+PY
+)
+
 target_env="$WORK_DIR/target.env"
 cp -- "$ENV_FILE" "$target_env"
-printf '\nYETKA_GIT_REF=%s\n' "$TARGET_VERSION" >> "$target_env"
+if [[ -n "${YETKA_GIT_REF_OVERRIDE:-}" ]]; then
+  log "WARNING: YETKA_GIT_REF_OVERRIDE=$YETKA_GIT_REF_OVERRIDE in $ENV_FILE outranks the $TARGET_VERSION core commit $core_commit"
+  git_ref=$YETKA_GIT_REF_OVERRIDE
+else
+  log "Core source pinned to $TARGET_VERSION commit $core_commit"
+  git_ref=$core_commit
+fi
+printf '\nYETKA_GIT_REF=%s\n' "$git_ref" >> "$target_env"
 chmod 0600 "$target_env"
 log "Running the target installer preflight"
 "$installer" --env "$target_env" --dry-run --yes
@@ -173,7 +205,12 @@ create_backups() {
   tar -czf "$BACKUP_DIR/host-config.tar.gz" "$ENV_FILE" "$YETKA_CONFIG_DIR" "$YETKA_INSTALL_DIR/app/config.yml"
   backup_database
   if [[ "$YETKA_UPDATE_BACKUP_DATA" == true ]]; then
-    tar -czf "$BACKUP_DIR/data.tar.gz" "$YETKA_DATA_DIR"
+    # Runtime logs are written while the services are still online; excluding
+    # them keeps the safety backup deterministic instead of failing with tar's
+    # "file changed as we read it" exit status. Logs remain on the persistent
+    # volume and are not part of the rollback-critical application state.
+    tar --exclude="$YETKA_DATA_DIR/logs" --exclude="$YETKA_DATA_DIR/logs/**" \
+      -czf "$BACKUP_DIR/data.tar.gz" "$YETKA_DATA_DIR"
   else
     log "Persistent data archive disabled by YETKA_UPDATE_BACKUP_DATA=false"
   fi
@@ -201,7 +238,7 @@ rollback_application() {
   [[ -n "$PREVIOUS_COMMIT" ]] || return 0
   log "Health/update failure: restoring application commit $PREVIOUS_COMMIT"
   git -c safe.directory="$YETKA_INSTALL_DIR/app" -C "$YETKA_INSTALL_DIR/app" checkout --detach "$PREVIOUS_COMMIT" || true
-  uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -r "$YETKA_INSTALL_DIR/app/pyproject.toml" || true
+  uv pip install --python "$YETKA_INSTALL_DIR/venv/bin/python" -e "$YETKA_INSTALL_DIR/app" || true
   chown -R "$YETKA_USER:$YETKA_USER" "$YETKA_INSTALL_DIR/app" "$YETKA_INSTALL_DIR/venv" || true
   if [[ -n "$PREVIOUS_RELEASE" ]]; then
     printf '%s\n' "$PREVIOUS_RELEASE" > "$YETKA_DATA_DIR/release-version"

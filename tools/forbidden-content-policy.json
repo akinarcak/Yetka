@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "description": "Product-facing terms are forbidden; technical identifiers and attribution are explicitly allowlisted.",
+  "forbidden_terms": ["enterprise", "enterprise trial", "community edition", "jumpserver", "jms"],
+  "allowed_globs": [
+    "**/utils/jms/**",
+    "**/package.json",
+    "**/yarn.lock",
+    "**/Dockerfile*",
+    "**/LICENSE*",
+    ".github/workflows/jms-*",
+    ".github/workflows/build-base-image.yml"
+    ,"package.json",
+    "yarn.lock",
+    "Dockerfile*",
+    ".travis.yml",
+    ".goreleaser.yaml",
+    "config_example.yml",
+    "docker-bake.hcl",
+    "Makefile",
+    "go.mod",
+    "go.sum",
+    "utils/**",
+    "pkg/**",
+    "cmd/**",
+    "src/app/services/**",
+    "src/app/utils/**",
+    "src/app/elements/**",
+    "ui/src/**",
+    "ui/public/**"
+    ,"entrypoint.sh"
+    ,"SECURITY.md"
+    ,"templates/**"
+    ,"static/**"
+  ],
+  "allowed_line_patterns": ["utils/jms", "jms_", "set_jms", "X-JMS", "x-jms", "edition\\?\\.value", "edition: ['\\\"]enterprise", "default: ['\\\"]enterprise", "\\.enterprise", "not\\.toContain", "JUMPSERVER_APIHOST", "jumpserver:330", "jumpserver\\.pem", "apps\\.fit2cloud\\.com/jumpserver", "github\\.com/jumpserver/jumpserver/releases"],
+  "max_findings": 0
+}

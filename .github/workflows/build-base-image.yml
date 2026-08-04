@@ -1,24 +1,11 @@
 name: Build and Push Base Image
 
+# Inherited from upstream. It publishes to DockerHub and needs
+# DOCKERHUB_USERNAME/DOCKERHUB_TOKEN, which this fork does not set, so the
+# pull_request trigger only ever produced a failing "build-and-push" check that
+# no Yetka release gate depends on. Manual dispatch is kept so the workflow can
+# be used again once those credentials exist.
 on:
-  pull_request:
-    branches:
-        - 'dev'
-        - 'v*'
-    paths:
-        - poetry.lock
-        - pyproject.toml
-        - Dockerfile-base
-        - package.json
-        - go.mod
-        - yarn.lock
-        - pom.xml
-        - install_deps.sh
-        - utils/clean_site_packages.sh
-    types:
-        - opened
-        - synchronize
-        - reopened
   workflow_dispatch:
     inputs:
       branch:
@@ -35,16 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository (PR branch)
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 0
-
-      - name: Checkout repository (manual)
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}

@@ -3,21 +3,21 @@
   "components": {
     "lina": {
       "repository": "https://github.com/akinarcak/Yetka-Lina.git",
-      "commit": "1ad57d8ab4f286ec60e991b47d2114fe374e934f",
+      "commit": "956dacadeeb4535c4e7495ff475f06f2eba6d694",
       "version": "yetka-v4.10.16",
       "license": "GPL-3.0-or-later",
       "artifact": "lina-{release_tag}.tar.gz"
     },
     "luna": {
       "repository": "https://github.com/akinarcak/Yetka-Luna.git",
-      "commit": "505590f439b76c4360032a6016a2684c12ec660f",
+      "commit": "315f6d26b64e99bb4b749d61a13dc549fbef3a97",
       "version": "yetka-v4.10.16",
       "license": "GPL-3.0-or-later",
       "artifact": "luna-{release_tag}.tar.gz"
     },
     "koko": {
       "repository": "https://github.com/akinarcak/Yetka-Koko.git",
-      "commit": "aead66ac6718cd4d838a0f84781eece42f712ab1",
+      "commit": "7117df15a1c828929bf6da3a2c07270f4225cff5",
       "version": "yetka-v4.10.16",
       "license": "GPL-3.0-or-later",
       "artifact": "koko-{release_tag}-linux-amd64.tar.gz"

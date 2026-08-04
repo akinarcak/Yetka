@@ -49,7 +49,8 @@ def get_signature_user(scope):
             if user:
                 return user
         except Exception as e:
-            print(e)
+            logger.warning("WebSocket auth backend failed: %s", e)
+    logger.warning("WebSocket auth: signature did not resolve a user")
     return None
 
 
@@ -107,8 +108,8 @@ application = ProtocolTypeRouter({
 
     # WebSocket chat handler
     "websocket": SocketContextMiddleware(
-        WsSignatureAuthMiddleware(
-            AuthMiddlewareStack(
+        AuthMiddlewareStack(
+            WsSignatureAuthMiddleware(
                 CustomerTenantWebSocketMiddleware(
                     URLRouter(urlpatterns)
                 )

@@ -87,7 +87,8 @@ urlpatterns = [
     path('captcha/', include('captcha.urls')),
 
     path('oauth2-provider/', include(('authentication.backends.oauth2_provider.urls', 'authentication'), namespace='oauth2-provider')),
-    path('user-agreement/', views.UserAgreementView.as_view(), name='user-agreement'),
-    path('privacy-policy/', views.PrivacyPolicyView.as_view(), name='privacy-policy'),
+    # The upstream user-agreement and privacy-policy pages served a third
+    # party's legal text naming products Yetka does not ship. They are removed
+    # rather than rewritten; publishing replacement terms is a legal decision.
 
 ]
