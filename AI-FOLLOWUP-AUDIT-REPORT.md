@@ -8,6 +8,7 @@ Date: 2026-08-03
 - Release workflow `30909729054` (`yetka-1.0.6-final-ws17`) passed all gates and published signed artifacts.
 - The full server updater reached dependency installation but rolled back because the editable Core package currently contains multiple top-level packages (`tmp` and others); this packaging issue is independent of the locale patch. Health and all services were restored to ws14.
 - The ws17 Lina artifact was checksum-verified (`4b7bd3df3a56e8a9a0e84f664d882e2aca729407e0663a9a7d135e7c60b1456c`) and installed separately on the test server with the ws14 Lina backup retained; nginx was reloaded. Core/Luna/Koko remain on ws14 until the packaging failure is fixed and a complete release is redeployed.
+- Browser verification after selecting Türkçe: `document.documentElement.lang` is `tr`; the header shows `Türkçe` and dashboard labels render as `Gösterge paneli`, `Hesaplar`, `Hesap verileri`, and `Görev özeti`.
 
 ## Scope
 
