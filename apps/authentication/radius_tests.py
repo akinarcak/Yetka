@@ -19,13 +19,24 @@ from unittest.mock import Mock, patch
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 
-from authentication.backends.radius.backends import (
-    CreateUserMixin,
-    RadiusBackend,
-    RadiusRealmBackend,
-)
-
 User = get_user_model()
+
+
+def _backends():
+    """Import lazily.
+
+    Importing the RADIUS backend at module scope pulls in radiusauth during test
+    discovery, which happens before setup_databases. That reliably broke test
+    database creation while applying users.0001_initial, so the import is
+    deferred until a test actually needs it.
+    """
+    from authentication.backends.radius.backends import (
+        CreateUserMixin,
+        RadiusBackend,
+        RadiusRealmBackend,
+    )
+
+    return CreateUserMixin, RadiusBackend, RadiusRealmBackend
 
 
 @override_settings(EMAIL_SUFFIX='radius.example.com')
@@ -35,26 +46,26 @@ class RadiusUserCreationTests(TestCase):
             username='someone', name='someone', email='someone@elsewhere.test'
         )
 
-        user = CreateUserMixin.get_django_user('someone')
+        user = _backends()[0].get_django_user('someone')
 
         self.assertEqual(user.pk, existing.pk)
         self.assertEqual(user.email, 'someone@elsewhere.test')
         self.assertEqual(User.objects.filter(username='someone').count(), 1)
 
     def test_new_user_gets_the_configured_email_suffix(self):
-        user = CreateUserMixin.get_django_user('newcomer')
+        user = _backends()[0].get_django_user('newcomer')
 
         self.assertEqual(user.username, 'newcomer')
         self.assertEqual(user.name, 'newcomer')
         self.assertEqual(user.email, 'newcomer@radius.example.com')
 
     def test_username_that_is_already_an_address_is_used_as_the_email(self):
-        user = CreateUserMixin.get_django_user('person@corp.test')
+        user = _backends()[0].get_django_user('person@corp.test')
 
         self.assertEqual(user.email, 'person@corp.test')
 
     def test_bytes_username_is_decoded(self):
-        user = CreateUserMixin.get_django_user(b'bytesuser')
+        user = _backends()[0].get_django_user(b'bytesuser')
 
         self.assertEqual(user.username, 'bytesuser')
         self.assertEqual(User.objects.filter(username='bytesuser').count(), 1)
@@ -63,7 +74,7 @@ class RadiusUserCreationTests(TestCase):
         with patch(
             'authentication.backends.radius.backends.radius_create_user'
         ) as signal:
-            user = CreateUserMixin.get_django_user('signalled')
+            user = _backends()[0].get_django_user('signalled')
 
         signal.send.assert_called_once()
         self.assertEqual(signal.send.call_args.kwargs['user'], user)
@@ -74,7 +85,7 @@ class RadiusUserCreationTests(TestCase):
         with patch(
             'authentication.backends.radius.backends.radius_create_user'
         ) as signal:
-            CreateUserMixin.get_django_user('quiet')
+            _backends()[0].get_django_user('quiet')
 
         signal.send.assert_not_called()
 
@@ -84,7 +95,7 @@ class RadiusRemotePrivilegeTests(TestCase):
     """A RADIUS server must not be able to grant Django staff or superuser."""
 
     def test_remote_roles_are_discarded_for_a_new_user(self):
-        user = CreateUserMixin.get_django_user(
+        user = _backends()[0].get_django_user(
             'elevated',
             None,
             ['admins'],
@@ -100,7 +111,7 @@ class RadiusRemotePrivilegeTests(TestCase):
             username='plain', name='plain', email='plain@x.test'
         )
 
-        user = CreateUserMixin.get_django_user(
+        user = _backends()[0].get_django_user(
             'plain', None, groups=['admins'], is_staff=True, is_superuser=True
         )
 
@@ -112,6 +123,7 @@ class RadiusRemotePrivilegeTests(TestCase):
         # If a dependency bump ever moved this project's override out of the
         # way, the two assertions above would still pass while the real backend
         # started honouring remote roles.
+        CreateUserMixin, RadiusBackend, RadiusRealmBackend = _backends()
         for backend in (RadiusBackend, RadiusRealmBackend):
             with self.subTest(backend=backend.__name__):
                 self.assertEqual(
@@ -139,6 +151,8 @@ class RadiusClassAttributeDecodingTests(TestCase):
                 if side_effect is not None:
                     raise side_effect
                 return return_value
+
+        CreateUserMixin = _backends()[0]
 
         class Backend(CreateUserMixin, Stub):
             pass
@@ -174,10 +188,12 @@ class RadiusClassAttributeDecodingTests(TestCase):
 class RadiusBackendEnablementTests(TestCase):
     @override_settings(AUTH_RADIUS=True)
     def test_enabled_when_configured(self):
+        _, RadiusBackend, RadiusRealmBackend = _backends()
         self.assertTrue(RadiusBackend.is_enabled())
         self.assertTrue(RadiusRealmBackend.is_enabled())
 
     @override_settings(AUTH_RADIUS=False)
     def test_disabled_when_not_configured(self):
+        _, RadiusBackend, RadiusRealmBackend = _backends()
         self.assertFalse(RadiusBackend.is_enabled())
         self.assertFalse(RadiusRealmBackend.is_enabled())
