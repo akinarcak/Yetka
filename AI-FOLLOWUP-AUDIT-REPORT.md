@@ -331,3 +331,44 @@ user-visible: locale `msgid` entries (the Turkish catalog already maps
 `FIT2CLOUD` to `Yetka` and `JumpServer - An open-source PAM` to
 `Yetka - Acik kaynak PAM`), the xpack settings module, build scripts and this
 report.
+
+### ws12 release and deployment
+
+- Workflow run: https://github.com/akinarcak/Yetka/actions/runs/30902527128 (success)
+- Foundation gates on the same commit:
+  https://github.com/akinarcak/Yetka/actions/runs/30902529905 (success:
+  provenance, container-build, lina-source). `container-build` runs the Django
+  suites inside the built image, which is what validates the removal of the
+  authentication views and URLs.
+- Tag `yetka-1.0.6-final-ws12`, core commit
+  `aeea9925fe5b97294012fac74c49b860c8d974ef`. Lina `f6f272c`, Koko `7117df1`
+  and Luna `315f6d26b` are unchanged from ws11.
+
+```
+eee263a0acd2b3f9aa0b6437714e5e36c31f06c67f7e3af22a0bf38b3e4b40ea  koko-yetka-1.0.6-final-ws12-linux-amd64.tar.gz
+42a0a069e6fd9aa936dbb9e56a562d2950778622055368d255a7c316bf71e334  lina-yetka-1.0.6-final-ws12.tar.gz
+b21805de26c7394fde2662d8c7a949e667118ef032ffba13ea5dd205e53e8602  luna-yetka-1.0.6-final-ws12.tar.gz
+c929554b15a8680dd1d495594f5c4b8bcc293ab4f44eb2663a86ff2ec37bd503  yetka-installer-yetka-1.0.6-final-ws12.tar.gz
+```
+
+The host environment was repointed at ws12 (backup
+`/etc/yetka-install.env.bak-pre-ws12`) and the update applied on the first
+attempt: `Update complete: yetka-1.0.6-final-ws12`, backup retained at
+`/var/backups/yetka/20260804T110433Z-yetka-1.0.6-final-ws11-to-yetka-1.0.6-final-ws12`.
+
+Verification on `100.86.171.110`:
+
+- Deployed core commit `aeea992`; all four services active.
+- `/api/health/` returns `status`, `db_status`, `redis_status` true; public UI 200;
+  unauthenticated API 401.
+- `/core/auth/user-agreement/` and `/core/auth/privacy-policy/` now return **404**,
+  confirming the third-party legal pages are no longer served.
+- Koko reports `Yetka Koko Version yetka-1.0.6-final-ws12` and `Start ws client
+  success` (11:07:56); `server.key` mode `0600`.
+- `/usr/local/bin/yetka-run-tests`: 13 tests, 13 passed, no system-check issues.
+- Asset connectivity re-verified through Yetka's automation: `ok` at 11:15:33 UTC.
+
+With this the branding scan has no open user-visible findings. The remaining
+limitations are unchanged: the browser dashboard WebSocket and a Luna terminal
+session still need an authenticated operator, and `yetka-smoke-localhost` should
+be deleted before the workspace is used for anything real.
