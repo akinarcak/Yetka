@@ -7,7 +7,7 @@ requires-python = ">=3.14"
 dependencies = [
     'aiofiles==23.1.0',
     'amqp==5.1.1',
-    'ansible-core',
+    'ansible-core==2.16.19',
     'ansible==9.13.0',
     'ansible-runner',
     'asn1crypto==1.5.1',
@@ -208,7 +208,15 @@ xpack = [
 ]
 
 [tool.uv.sources]
-ansible-core = { url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz" }
+# ansible-core is deliberately absent here. Its URL pin resolved to
+# files.pythonhosted.org -- byte for byte the official PyPI sdist for 2.16.19,
+# carrying no fork or patch. The only thing the URL added was opacity:
+# pip-audit reports "URL requirements cannot be pinned to a specific package
+# version" and skips it, so ansible-core was never audited. The version
+# specifier above pins exactly the same release while leaving it visible.
+#
+# The remaining entries are genuine forks and cannot be swapped for a version
+# specifier without first establishing what they change relative to upstream.
 ansible-runner = { url = "https://github.com/jumpserver-dev/ansible-runner/archive/refs/tags/v2.4.0.2.zip" }
 django-cas-ng = { url = "https://github.com/ibuler/django-cas-ng/releases/download/v4.3.2/django-cas-ng-4.3.2.zip" }
 django-radius = { url = "https://github.com/ibuler/django-radius/archive/refs/tags/1.5.0.zip" }
