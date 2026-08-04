@@ -175,6 +175,27 @@ class MaintenanceStatusTestCase(SimpleTestCase):
         self.assertTrue(status['upstream']['review_required'])
         self.assertTrue(status['attention_required'])
 
+    @override_settings(VERSION='yetka-1.0.6-final-ws14')
+    @patch('common.security_updates.cache.set')
+    @patch('common.security_updates._installed_python_packages', return_value=[])
+    def test_same_numeric_release_rebuild_is_available(self, packages, cache_set):
+        yetka_response = Mock()
+        yetka_response.json.return_value = {
+            'tag_name': 'yetka-1.0.6-final-ws17', 'published_at': None, 'html_url': None,
+        }
+        upstream_response = Mock()
+        upstream_response.json.return_value = {
+            'tag_name': 'v4.10.16', 'published_at': None, 'html_url': None,
+        }
+        session = Mock()
+        session.get.side_effect = [yetka_response, upstream_response]
+
+        with patch('common.security_updates.cache.get', return_value=None):
+            status = refresh_maintenance_status(session=session)
+
+        self.assertTrue(status['update']['available'])
+        self.assertEqual(status['update']['latest_version'], 'yetka-1.0.6-final-ws17')
+
     @patch('jumpserver.api.maintenance.get_maintenance_status')
     def test_status_api_is_restricted_to_system_admins(self, get_status):
         get_status.return_value = {'attention_required': False}

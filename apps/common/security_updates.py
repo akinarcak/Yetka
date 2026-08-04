@@ -119,10 +119,13 @@ def _check_yetka_release(session):
     current = _current_yetka_version()
     current_version = _version(current)
     latest_version = _version(latest)
+    # Release channels can publish rebuilds with the same numeric version
+    # (for example ``ws14`` -> ``ws17``).  Comparing only numeric tuples would
+    # hide those verified artifacts from the GUI update control.
     available = bool(
-        latest_version and (
-            current_version is None or latest_version > current_version
-        )
+        latest_version
+        and latest != current
+        and (current_version is None or latest_version >= current_version)
     )
     result = {
         'available': available,
