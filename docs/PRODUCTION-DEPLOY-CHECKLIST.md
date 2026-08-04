@@ -27,6 +27,19 @@
 - If a source checkout is dirty, preserve it with `git stash push -m pre-rollback` before updating.
 - Re-run health, service, and smoke checks after rollback.
 
+## Test asset
+
+The shared test server carries a disposable asset, `yetka-smoke-localhost`
+(127.0.0.1:22, CareOnCloud workspace, account `test`), created solely for
+connectivity smoke tests. Yetka's own connectivity automation reports `ok`
+against it. Delete it before the workspace is used for anything real:
+
+```
+Host.objects.get(name="yetka-smoke-localhost").delete()
+```
+
 ## Known limitation
 
-The shared test server currently has no registered asset, so a real asset session must be supplied before declaring end-to-end terminal connectivity complete.
+A browser-driven Luna terminal session still needs an operator login; the
+automated checks above cover the connection path up to that point but do not
+replace a human opening a session in the UI.

@@ -81,6 +81,12 @@ jobs:
           set -eux
           python -m pip install --quiet uv
           uv venv --python 3.14 /tmp/pkgcheck-venv
+          # A live host also has the runtime tmp/ directory that holds service
+          # PID files, and data/ is populated. A bare checkout does not, so
+          # recreate them here: their presence is what makes setuptools'
+          # flat-layout fallback fire, and a check without them is not
+          # representative of the machine the updater actually runs on.
+          mkdir -p core/tmp core/data
           uv pip install --python /tmp/pkgcheck-venv/bin/python --no-deps -e core
           # The flat-layout directories must not have been claimed as packages.
           site_packages="$(/tmp/pkgcheck-venv/bin/python -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')"

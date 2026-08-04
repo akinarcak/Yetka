@@ -116,3 +116,186 @@ enterprise surfaces.
 - The first ws3 updater attempt rolled back safely because the tracked empty `tmp/` directory triggered setuptools flat-layout discovery. The directory was removed in commit `3d9c47fbb`; ws4 was dispatched from that fix. The rollback left all services healthy and the database backup at `/var/backups/yetka/20260803T135933Z-yetka-1.0.6-final-ws-to-yetka-1.0.6-final-ws3`.
 - Lina follow-up commit `7657ad7` replaces the remaining user-visible JumpServer release URL in the trust-domain alert with the Yetka documentation URL. It is pushed to `yetka-v4.10.16` but is not yet in a deployable final release artifact.
 - Release workflow attempts ws7/ws8 were cancelled while building `core/Dockerfile` for the security scan; no final artifact containing the latest Core/Lina changes is available. Production deployment and real terminal smoke therefore remain open.
+
+## Release ws11 and controlled deployment (2026-08-04)
+
+### CI blocker: root cause
+
+The container build was never stalling. It completes in roughly 85-100 seconds
+in every run that was allowed to finish:
+
+| Run | Build step | Duration |
+| --- | --- | --- |
+| 30816457145 | 13:08:12 -> 13:09:41 | 1m29s |
+| 30818586486 | 13:35:23 -> 13:36:47 | 1m24s |
+| 30821793826 | 14:15:50 -> 14:17:15 | 1m25s |
+| 30886193715 (ws11) | 07:02:54 -> 07:04:34 | 1m40s |
+
+Runs ws7/ws8 were cancelled by hand before that point: `30824410578` was
+cancelled 2m01s in, at the exact second `30824682171` was created, and
+`30824682171` was then cancelled after only 57 seconds. BuildKit prints nothing
+while long `RUN` layers execute, so a normal build read as a hang.
+
+Fix (`6107d4c52`), with both Trivy scans left intact: `--progress=plain` so the
+log keeps advancing, `timeout-minutes: 20` on the step and `60` on the job so a
+genuine hang fails visibly instead of holding a runner for the 6h default.
+
+### Genuine CI failures found and fixed
+
+- Run `30884443360` failed the Trivy **source** scan on three HIGH CVEs
+  published after the 2026-08-03 runs: CVE-2026-69244 (aiohttp 3.14.1 ->
+  3.14.3), CVE-2026-69247 (cryptography 48.0.1 -> 50.0.0) and CVE-2026-69249
+  (-> 49.0.0). cryptography 50 required lifting pyopenssl, which capped it at
+  `<49`; 26.4.0 accepts `>=49,<51`. Lock regenerated with uv 0.11.32 to match
+  the Dockerfile's `UV_VERSION`, keeping revision 3 (`63d07e5c2`).
+- Run `30884760338` failed `Build Lina` with "No tests found". See the Lina
+  lineage section below.
+
+### Lina lineage correction
+
+The handoff asked for Lina `7657ad7`, but that commit is on `yetka-v4.10.16`, a
+lineage **disjoint** from the shipping `foundation/source-ui` branch; they share
+only the fork point `009ee6e`. Pinning it would have dropped 21 commits,
+including the CareonCloud branding, the native maintenance/update control behind
+the dashboard's Guncelle button, the tenant-aware cloud sync UI, and all four
+Yetka unit specs. `c88d99a04` had already reverted this same swap once.
+
+Of the four candidate branding commits, only the Turkish locale fallback was
+still missing from the shipping branch; the rest were already superseded there:
+
+- `b6ce843` removes the marketplace action, but `772cf23` had already pointed it
+  at careoncloud.com, so no upstream link remains either way.
+- `552f871` targets carry no upstream branding on this branch.
+- `7657ad7` swapped the trust-domain alert URL but kept the Chinese upstream
+  wording; this branch had already replaced that whole string with Turkish text
+  and no URL, which is the stronger fix.
+
+Lina is therefore pinned at `f6f272c` (`b108a4027` plus the cherry-picked
+Turkish locale). Koko moved to `7117df1`, a linear descendant of `2c7f292`.
+
+### Packaging
+
+`[tool.setuptools] packages = []` is correct and load-bearing. Verified locally
+that an editable install succeeds with `apps/`, `data/`, `deploy/` **and**
+`tmp/` all present, and that none leak into site-packages; removing the stanza
+reproduces `error: Multiple top-level packages discovered in a flat-layout`.
+Guarded by `tools/tests/test_editable_packaging.py` and by a release-workflow
+step that runs the updater's exact `uv pip install -e` under Python 3.14. That
+step now creates `tmp/` and `data/` first, because a bare checkout lacks them
+and a check without them does not represent the host the updater runs on.
+
+### Runtime fix: missing service tmp directory
+
+The test server was crash-looping with restart counter **4232**:
+`FileNotFoundError: '/opt/yetka/app/tmp/gunicorn.pid'`. `3d9c47fbb` had removed
+the tracked empty `tmp/` to stop setuptools discovering it, but nothing
+recreates it, so every service died in `write_pid()`. Since discovery is now
+disabled explicitly, `hands.py` creates `TMP_DIR` on demand (`c9298fd08`); in
+the container image that path is a symlink to `/tmp/yetka`, which
+`makedirs(exist_ok=True)` accepts.
+
+### Stale host installer environment
+
+The first two `apply` attempts rolled back safely at the editable-install step.
+Root cause was not packaging: `/etc/yetka-install.env` carried
+`YETKA_GIT_REF_OVERRIDE=yetka-1.0.6-final-ws6`, which silently outranks
+`--version`, so the installer checked out `1a8762e` (ws6) — a commit predating
+`packages = []`. The Lina/Luna/Koko URLs and checksums were also still pinned to
+ws6, so even a successful install would have shipped old components. The file
+was backed up to `/etc/yetka-install.env.bak-pre-ws11`, repointed at ws11, and
+the `YETKA_GIT_REF_OVERRIDE` line removed so `--version` governs future deploys.
+
+### Release ws11
+
+- Workflow run: https://github.com/akinarcak/Yetka/actions/runs/30886193715 (success, 9m48s)
+- Tag `yetka-1.0.6-final-ws11`, core commit `1c13712a22f1f3949baf2ffd0dc070418018234b`
+  (contains the required `4cc286f2b`)
+- Components: lina `f6f272c65509fa2be0f21d3883f192a8074519b8`, koko
+  `7117df15a1c828929bf6da3a2c07270f4225cff5`, luna `315f6d26b64e99bb4b749d61a13dc549fbef3a97`
+
+```
+c0d061f9297db4f2e2fbfe28a9b8ae8ef51aaf780cc27fe62a4c2ddb99317b88  koko-yetka-1.0.6-final-ws11-linux-amd64.tar.gz
+57caddd3d5175905659aa29b8b9f4b9b727b20fa8570756c20723d1257c5c658  lina-yetka-1.0.6-final-ws11.tar.gz
+bfe4bc285e24e7c39aa8092e5c56f46cbd3411d378b4e6862b6d1d5a3e5ce8bc  luna-yetka-1.0.6-final-ws11.tar.gz
+69edce3f3755dc75ad48c6ef43be9ab590126273c4ceafcee105cc5aa7d30be2  yetka-installer-yetka-1.0.6-final-ws11.tar.gz
+```
+
+### Deployment verification (100.86.171.110)
+
+`yetka-update apply --env /etc/yetka-install.env --version yetka-1.0.6-final-ws11 --yes`
+reported `Update complete: yetka-1.0.6-final-ws11`; backup retained at
+`/var/backups/yetka/20260804T073653Z-yetka-1.0.6-final-ws-to-yetka-1.0.6-final-ws11`.
+
+- Deployed core commit `1c13712`; four services `yetka-web`, `yetka-worker`,
+  `yetka-scheduler`, `yetka-koko` all `active`.
+- `/api/health/` returns `status`, `db_status`, `redis_status` all true; public
+  UI 200; unauthenticated `/api/v1/users/users/` 401; unauthenticated
+  notification WebSocket refused through nginx (404, no upgrade).
+- Koko reports `Yetka Koko Version yetka-1.0.6-final-ws11` and `Start ws client
+  success` (07:40:13) with no current certificate warning;
+  `/opt/yetka/koko/server.crt` present and `server.key` mode `0600`.
+- `/usr/local/bin/yetka-run-tests`: 13 tests, 13 passed, no system-check issues.
+- Deployed Lina carries `careoncloud-logo.png`, confirming the correct lineage.
+
+### Terminal smoke test
+
+The workspace previously had zero assets. A disposable asset
+`yetka-smoke-localhost` (127.0.0.1:22, CareOnCloud workspace, account `test`)
+was registered. On the ws11 deployment its connectivity was reset to `unknown`
+and re-verified through Yetka's own connectivity automation, which returned
+`ok` at 07:49:09 UTC — a real SSH connection over the product's connection path.
+
+### WebSocket scoping
+
+`apps/tenants/middleware.py:129` still evaluates the socket path **before**
+`user.is_superuser`. Python's `and` short-circuits, so the superuser exception
+can only apply to `/ws/notifications/site-msg/` and is never reached for Koko's
+terminal socket, which is the ordering the earlier regression required.
+Koko's live `Start ws client success` confirms the service-account path.
+
+### Branding scan
+
+`tools/verify_release.py` against the pinned Lina (`f6f272c`) and Koko
+(`7117df1`) roots: 15 tests pass and both report `product-language policy v1:
+clean`. Scans for user-visible `JumpServer`, `FIT2CLOUD`, `kurumsal surum` and
+upstream release URLs classify as follows.
+
+Allowlisted, not user-visible:
+
+- Go module import paths (`github.com/jumpserver/koko`) in Koko `pkg/`, `cmd/`,
+  `go.mod`, `go.sum`, `Makefile`, `Dockerfile`, `.goreleaser.yaml`.
+- Django module and container paths (`apps/jumpserver/...`,
+  `/opt/jumpserver/data`, `DJANGO_SETTINGS_MODULE=jumpserver.settings`) in Core
+  and in CI workflow files.
+- Upstream CI leftovers (`fit2cloud/LLM-CodeReview-Action`) in Lina/Koko
+  `.github/workflows`.
+- `apps/templates/_header_bar.html` still links to `jumpserver.com/docs`, but it
+  is dead: nothing extends `base.html`, and served templates extend
+  `_without_nav_base.html`.
+- Lina `About.vue` compares against the upstream corporation string only to
+  suppress a non-matching value, so nothing upstream is rendered.
+- Locale `msgid` entries and GPL attribution in `LICENSE`, `NOTICE`, `README`.
+
+Open, user-visible:
+
+1. `apps/i18n/core/tr/LC_MESSAGES/django.po:9473` translates
+   `This is enterprise edition applet` into Turkish using the phrase
+   `kurumsal surum`. It is reachable: `terminal/api/applet/applet.py:74` raises
+   it when an enterprise-edition applet is uploaded without a valid xpack
+   licence.
+2. `/user-agreement/` is routed (`authentication/urls/view_urls.py:90`) and
+   serves FIT2CLOUD ("Feizhiyun") Community Edition legal text naming
+   JumpServer, MeterSphere, DataEase and others, with fit2cloud.com legal URLs
+   and a Beijing postal contact. Rewriting third-party legal text is a
+   business/legal decision, not a branding edit; recommendation is to disable
+   the route rather than author replacement terms.
+
+### Remaining limitations
+
+- The browser-level dashboard notification WebSocket was not exercised: it needs
+  an authenticated operator session and no Chrome browser is connected to this
+  environment. Code ordering, the regression test and Koko's live socket are
+  verified instead.
+- A Luna terminal session in the UI likewise needs an operator login. The
+  connection path is verified up to that point via the connectivity automation.
+- Delete `yetka-smoke-localhost` before the workspace is used for anything real.
