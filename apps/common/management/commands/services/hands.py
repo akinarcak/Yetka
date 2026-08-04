@@ -28,7 +28,10 @@ TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 # Service PID files are written here. The directory is deliberately untracked so
 # it cannot be mistaken for a package, and bare-metal installs never create it,
 # so a fresh deployment would otherwise crash-loop on a missing gunicorn.pid.
-# In the container image this path is a symlink to /tmp/yetka, which exist_ok
-# accepts unchanged.
+# In the container image this path is a symlink to /tmp/yetka. If that target is
+# missing -- which is what --tmpfs /tmp does, by masking the image's /tmp -- the
+# symlink dangles and exist_ok does NOT accept it: makedirs sees the link, gets
+# EEXIST, finds isdir() false and re-raises. The entrypoint therefore creates
+# the symlink target before anything imports this module.
 os.makedirs(TMP_DIR, exist_ok=True)
 CELERY_WORKER_COUNT = CONFIG.CELERY_WORKER_COUNT or 10
