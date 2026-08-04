@@ -310,7 +310,7 @@ wheels = [
 [[package]]
 name = "ansible-core"
 version = "2.16.19"
-source = { url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
     { name = "jinja2" },
@@ -318,15 +318,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "resolvelib" },
 ]
-sdist = { hash = "sha256:5125f26412039ffb99a3a7723618535ab80e6ef38944aa2453997350388f4ef4" }
-
-[package.metadata]
-requires-dist = [
-    { name = "cryptography" },
-    { name = "jinja2", specifier = ">=3.0.0" },
-    { name = "packaging" },
-    { name = "pyyaml", specifier = ">=5.1" },
-    { name = "resolvelib", specifier = ">=0.5.3,<1.1.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz", hash = "sha256:5125f26412039ffb99a3a7723618535ab80e6ef38944aa2453997350388f4ef4", size = 3172397, upload-time = "2026-06-18T19:40:08.358Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3e/0a/fdb88b61521a1f263acf420d27bca357a38a2ac5865364016cedd41c15a5/ansible_core-2.16.19-py3-none-any.whl", hash = "sha256:d7a32ba0f96f9c6582b7ff159a4a6f0e694662cfc4840497c88fed63bf58cd14", size = 2261447, upload-time = "2026-06-18T19:40:06.223Z" },
 ]
 
 [[package]]
@@ -2310,7 +2304,7 @@ requires-dist = [
     { name = "annotated-types", specifier = ">=0.6.0" },
     { name = "ansible", specifier = "==9.13.0" },
     { name = "ansible-builder", specifier = ">=3.1.1" },
-    { name = "ansible-core", url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz" },
+    { name = "ansible-core", specifier = "==2.16.19" },
     { name = "ansible-runner", url = "https://github.com/jumpserver-dev/ansible-runner/archive/refs/tags/v2.4.0.2.zip" },
     { name = "asn1crypto", specifier = "==1.5.1" },
     { name = "azure-identity", specifier = "==1.16.1" },
