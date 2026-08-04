@@ -386,3 +386,104 @@ With this the branding scan has no open user-visible findings. The remaining
 limitations are unchanged: the browser dashboard WebSocket and a Luna terminal
 session still need an authenticated operator, and `yetka-smoke-localhost` should
 be deleted before the workspace is used for anything real.
+
+## ws21–ws22: release tags pointed at pre-ws7 code (2026-08-04)
+
+### Root cause
+
+`gh release create` ran without `--target`, so GitHub created each release tag
+on the default branch. Every change since ws7 has lived on
+`foundation/enterprise-badge-pin-final` while `main` has not moved, so each tag
+from ws7 onward resolved to the pre-ws7 `main` head:
+
+```
+yetka-1.0.6-final-ws20  ->  1a8762e3aa890840bb7c8de640ff3052fcfc0694
+yetka-1.0.6-final-ws19  ->  1a8762e3aa890840bb7c8de640ff3052fcfc0694
+yetka-1.0.6-final-ws17  ->  1a8762e3aa890840bb7c8de640ff3052fcfc0694
+```
+
+The assets were built from the branch regardless: the ws20 manifest records core
+`32276c8ca`, whose `pyproject.toml` is 215 lines and carries `[tool.setuptools]`
+/ `packages = []`. At the tagged commit the same file is 209 lines with no such
+stanza.
+
+`install-baremetal.sh` checked out the tag, so a full updater run deployed
+pre-ws7 core, whose editable install fails with "multiple top-level packages".
+That resolves the contradiction between this report and `HANDOFF_CLAUDE.md`.
+Both were right: the stanza was correct and load-bearing, but it was absent from
+the commit the installer actually checked out. It is the same defect that rolled
+back ws13 and again ws17.
+
+### A second pin that never moved
+
+`install_optional_assets` read `YETKA_LINA_URL`, `YETKA_LUNA_URL` and
+`YETKA_KOKO_URL` from the host environment file, and `yetka-update` only appends
+`YETKA_GIT_REF` to that file. Component pins therefore stayed at the last
+installed release: a ws21 plan against a host last touched by ws17 fetched ws17
+Lina, Luna and Koko beside a ws21 core, which would have reverted the Lina
+markdown fix carried by `956dacad`.
+
+### Fixes (`0ffe88ffd`, `750c33b90`)
+
+- The tag is created on the built commit, and the workflow fails when an
+  existing tag disagrees with it instead of publishing assets under a tag that
+  describes different code.
+- `components.release.json` is generated before the installer archive and
+  packaged inside it, so `SHA256SUMS` and the cosign signature cover it. The
+  updater resolves the core commit from that manifest rather than from the tag.
+- `install-baremetal.sh` resolves component URLs and digests from the same
+  manifest, falling back to the environment file when it is absent so manual
+  installs keep working. The installer runs out of the downloaded archive, so
+  this took effect on the next deploy without first needing a new updater.
+- `YETKA_GIT_REF_OVERRIDE` still wins but now logs a warning instead of silently
+  outranking `--version`.
+- `tools/tests/test_release_provenance.py` guards all of the above.
+
+### ws22 release and deployment
+
+`yetka-1.0.6-final-ws21` (`0ffe88ffd`) is the first tag since ws6 to point at
+real code. `yetka-1.0.6-final-ws22` (`750c33b90`) carries the component fix too
+and is what was deployed. The plan confirmed the new resolution:
+
+```
+[yetka] Component archives pinned to yetka-1.0.6-final-ws22 by the release manifest
+```
+
+`/etc/yetka-install.env` was not edited; its `YETKA_LINA_URL` and siblings still
+name ws17 and no longer govern. No `YETKA_GIT_REF_OVERRIDE` line is present.
+
+`Update complete: yetka-1.0.6-final-ws22`, backup retained at
+`/var/backups/yetka/20260804T173136Z-yetka-1.0.6-final-ws14-to-yetka-1.0.6-final-ws22`.
+The host was on ws14 beforehand; the ws17 attempt had been rolled back.
+
+Verification on `100.86.171.110`:
+
+- Deployed core commit `750c33b90aaae48e305515bbc8492a0079b718b6`, matching both
+  the ws22 tag and the manifest; `/var/lib/yetka/release-version` reads
+  `yetka-1.0.6-final-ws22`.
+- `yetka-web`, `yetka-worker`, `yetka-scheduler`, `yetka-koko` and `nginx` all
+  active.
+- `/api/health/` returns `status`, `db_status` and `redis_status` true; public
+  UI 200. Note that `curl http://127.0.0.1/api/health/` as written in earlier
+  handoffs returns an nginx 404 — the endpoint listens on `YETKA_HTTP_PORT`
+  (8080), not port 80.
+- Koko logs `Start ws client success` after the restart.
+- `/usr/local/bin/yetka-run-tests`: 13 tests, 13 passed.
+- `/opt/yetka/lina` was rewritten during the deploy and still contains
+  `careoncloud-logo.png`, so the CareonCloud branding survived the component
+  update.
+- `/usr/local/sbin/yetka-update` now carries the manifest-pinning logic, so core
+  and component resolution are both automatic from the next release onward.
+
+### Remaining limitations
+
+- The notification panel's raw `####` check and `document.documentElement.lang`
+  still require an authenticated operator session. The static `index.html`
+  carries no `lang` attribute because the SPA sets it at runtime, so it cannot
+  stand in for that check.
+- `yetka-1.0.6-final-ws17`, `-ws19` and `-ws20` still point at `1a8762e3`. They
+  were deliberately left as a historical record; the new workflow guard fails
+  rather than rebuilding against them.
+- `/etc/yetka-install.env` holds duplicated `YETKA_GIT_REF` and component blocks
+  (lines 2 and 36 onward, repeated from line 42). Behaviour is correct because
+  the last assignment wins, but the file accumulates entries on each deploy.
