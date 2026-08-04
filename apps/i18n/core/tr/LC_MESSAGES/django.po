@@ -9469,8 +9469,8 @@ msgid "Invalid zip file"
 msgstr "Geçersiz zip dosyası"
 
 #: terminal/api/applet/applet.py:74
-msgid "This is enterprise edition applet"
-msgstr "Bu, kurumsal sürüm applet'idir"
+msgid "This applet is not supported by this installation"
+msgstr "Bu applet bu kurulumda desteklenmiyor"
 
 #: terminal/api/applet/applet.py:91
 #, python-brace-format

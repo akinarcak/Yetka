@@ -276,19 +276,7 @@ Allowlisted, not user-visible:
   suppress a non-matching value, so nothing upstream is rendered.
 - Locale `msgid` entries and GPL attribution in `LICENSE`, `NOTICE`, `README`.
 
-Open, user-visible:
-
-1. `apps/i18n/core/tr/LC_MESSAGES/django.po:9473` translates
-   `This is enterprise edition applet` into Turkish using the phrase
-   `kurumsal surum`. It is reachable: `terminal/api/applet/applet.py:74` raises
-   it when an enterprise-edition applet is uploaded without a valid xpack
-   licence.
-2. `/user-agreement/` is routed (`authentication/urls/view_urls.py:90`) and
-   serves FIT2CLOUD ("Feizhiyun") Community Edition legal text naming
-   JumpServer, MeterSphere, DataEase and others, with fit2cloud.com legal URLs
-   and a Beijing postal contact. Rewriting third-party legal text is a
-   business/legal decision, not a branding edit; recommendation is to disable
-   the route rather than author replacement terms.
+Both user-visible findings were resolved in ws12 (see below).
 
 ### Remaining limitations
 
@@ -299,3 +287,47 @@ Open, user-visible:
 - A Luna terminal session in the UI likewise needs an operator login. The
   connection path is verified up to that point via the connectivity automation.
 - Delete `yetka-smoke-localhost` before the workspace is used for anything real.
+
+## ws12: removal of the last user-visible upstream surfaces (2026-08-04)
+
+Both open branding items were closed.
+
+### Enterprise-edition wording
+
+The Turkish catalog rendered `This is enterprise edition applet` as
+`Bu, kurumsal surum applet'idir`, reachable from
+`terminal/api/applet/applet.py:74` when an enterprise-edition applet is uploaded
+without a valid xpack licence. Rather than patching only the Turkish string and
+leaving every other language advertising an edition Yetka does not sell, the
+source message was changed to `This applet is not supported by this
+installation`. The Turkish entry was updated to match
+(`Bu applet bu kurulumda desteklenmiyor`).
+
+The bare-metal deployment path never runs `compilemessages` and the `.mo` files
+are tracked, so `apps/i18n/core/tr/LC_MESSAGES/django.mo` was regenerated:
+2680 entries before and after, the new msgid present, and no remaining
+`kurumsal surum` string.
+
+Other locales keep an entry for the old msgid; since the msgid changed they no
+longer match and those languages fall back to the neutral English source string,
+which is the intended outcome.
+
+### Third-party legal pages
+
+`/user-agreement/` and `/privacy-policy/` served FIT2CLOUD ("Feizhiyun")
+Community Edition legal text naming JumpServer, MeterSphere, DataEase and
+others, with fit2cloud.com legal URLs and a Beijing postal contact. The routes,
+the `UserAgreementView`/`PrivacyPolicyView` views and the six template files
+were removed. No replacement terms were authored: publishing legal text is a
+business decision, not a branding edit.
+
+Nothing referenced the removed routes by name, so no `NoReverseMatch` is
+possible; `grep` for `UserAgreementView`, `PrivacyPolicyView`, `user_agreement`
+and `privacy_policy` across `apps/` returns nothing, and Lina never linked to
+them.
+
+`fit2cloud` now appears in 16 files rather than 21, and none of the remainder is
+user-visible: locale `msgid` entries (the Turkish catalog already maps
+`FIT2CLOUD` to `Yetka` and `JumpServer - An open-source PAM` to
+`Yetka - Acik kaynak PAM`), the xpack settings module, build scripts and this
+report.
