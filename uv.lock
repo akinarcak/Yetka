@@ -1024,16 +1024,16 @@ wheels = [
 
 [[package]]
 name = "daphne"
-version = "4.0.0"
+version = "4.2.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "autobahn" },
     { name = "twisted", extra = ["tls"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/77/57b19d5caabf8537879aa4cf3a017b99d0b727f2521ffca7fd9140573509/daphne-4.0.0.tar.gz", hash = "sha256:cce9afc8f49a4f15d4270b8cfb0e0fe811b770a5cc795474e97e4da287497666", size = 28600, upload-time = "2022-10-07T13:17:22.244Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/64/d3/65ff32c01cc64d44441b038dbb7cfb0c6a5507a1c937b3d41bd99af7bdc4/daphne-4.2.2.tar.gz", hash = "sha256:6c3527d4ce32630ae054dfb0ef5578e9a35d2f39f0ebcd02ef4f9129a121ce8d", size = 47601, upload-time = "2026-06-03T10:53:13.31Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/04/f6/86145f59db1b19e2d1c6a1a4981c7923b7fb3136f2461d4378c9047f2efa/daphne-4.0.0-py3-none-any.whl", hash = "sha256:a288ece46012b6b719c37150be67c69ebfca0793a8521bf821533bad983179b2", size = 30091, upload-time = "2022-10-07T13:17:20.283Z" },
+    { url = "https://files.pythonhosted.org/packages/78/ab/85534d9cbca09f3c10f58fc2093659062280ed5703707c0b41dbca8ec297/daphne-4.2.2-py3-none-any.whl", hash = "sha256:466ba8a7c31c5b758953095b451dbad9dc23e5783c68a3716e5fc7aa5f26d168", size = 29466, upload-time = "2026-06-03T10:53:11.841Z" },
 ]
 
 [[package]]
@@ -2457,7 +2457,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "daphne", specifier = "==4.0.0" },
+    { name = "daphne", specifier = "==4.2.2" },
     { name = "django-debug-toolbar", specifier = "==4.1.0" },
     { name = "forgerypy3", specifier = "==0.3.1" },
     { name = "ipython", specifier = "==8.30.0" },
