@@ -32,7 +32,16 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=yetka-core-build 
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache \
     python -m pip install --no-cache-dir "uv==${UV_VERSION}" --index-url "${PIP_MIRROR}" \
-    && uv sync --frozen --no-dev --no-group xpack --no-install-project
+    # --locked, not --frozen. uv's --frozen installs from uv.lock without
+    # checking that it still agrees with pyproject.toml, so a manifest edit that
+    # never reached the lock is installed as if it had never been made. A
+    # dependabot PR bumping ansible to 12.2.0 in pyproject.toml alone passed
+    # every gate while the image resolved ansible==9.13.0, the version the
+    # advisory was filed against. --locked fails instead.
+    #
+    # Note that yarn's --frozen-lockfile elsewhere in this repository means the
+    # opposite: it does fail on a stale lockfile. Same word, inverted guarantee.
+    && uv sync --locked --no-dev --no-group xpack --no-install-project
 
 COPY . .
 

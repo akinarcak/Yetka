@@ -20,7 +20,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - name: Export locked production dependencies
-        run: uv export --frozen --no-dev --format requirements-txt --output-file requirements-audit.txt
+        # --locked so the audit fails loudly when pyproject.toml and uv.lock
+        # disagree, rather than quietly auditing whichever versions the lock
+        # happens to hold. See the note in Dockerfile.
+        run: uv export --locked --no-dev --format requirements-txt --output-file requirements-audit.txt
       # PYSEC-2026-1325 is the Minerva timing attack on P-256 in python-ecdsa
       # (0.* through 0.19.2, CVSS 7.4). Upstream has declared side-channel
       # attacks out of scope and plans no fix, so no upgrade can clear it and
