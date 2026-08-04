@@ -10,7 +10,16 @@ updates:
     target-branch: main
     open-pull-requests-limit: 10
     groups:
-      python-security-and-maintenance:
+      # Security fixes are separated from routine version bumps deliberately.
+      # A single group covering everything produced one all-or-nothing pull
+      # request per week -- #15 bundled 103 updates, including the paramiko
+      # advisory fix, and sat unreviewed from 2026-07-27 because there was no
+      # way to take the security change without the maintenance churn.
+      python-security:
+        applies-to: security-updates
+        patterns: ["*"]
+      python-maintenance:
+        applies-to: version-updates
         patterns: ["*"]
   - package-ecosystem: github-actions
     directory: /
@@ -21,5 +30,9 @@ updates:
       timezone: Europe/Istanbul
     target-branch: main
     groups:
+      actions-security:
+        applies-to: security-updates
+        patterns: ["*"]
       actions-maintenance:
+        applies-to: version-updates
         patterns: ["*"]
