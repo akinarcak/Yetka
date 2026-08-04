@@ -191,15 +191,22 @@ them is load-bearing here:
    validates it through `serializers.IntegerField`. The value is an integer on
    every path.
 
-3. **`RADIUS_REMOTE_ROLES` gate.** The interesting one, since it decides
-   whether a RADIUS server's `Class` attribute may set `is_staff` and
-   `is_superuser` — that is, whether an external directory can mint Django
-   superusers. It is inert here: the setting appears nowhere in this codebase,
-   so the fork's own `hasattr` fallback sets it to `True` and the behaviour is
-   identical to upstream's unconditional assignment.
+3. **`RADIUS_REMOTE_ROLES` gate.** This looked like the one that mattered,
+   since it decides whether a RADIUS server's `Class` attribute may set
+   `is_staff` and `is_superuser` — whether an external directory can mint
+   Django superusers.
 
-   If remote privilege elevation should be switchable, that is a feature to add
-   deliberately in this project, not a side effect of a dependency fork.
+   It is unreachable. `apps/authentication/backends/radius/backends.py`
+   defines `CreateUserMixin.get_django_user`, and the MRO
+   (`RadiusBackend` -> `RadiusBaseBackend` -> `CreateUserMixin` -> ... ->
+   `RADIUSBackend`) puts it ahead of the library's. That override creates the
+   user from the username and e-mail suffix and never touches `is_staff` or
+   `is_superuser`; it accepts them only as `*args, **kwargs` and discards
+   them.
+
+   So remote role elevation does not happen with the fork, and would not
+   happen with upstream either. The gate, the setting and upstream's
+   unconditional assignment are all in a method this project replaces.
 
 Replaced with `django-radius==1.5.1` from PyPI, the upstream author's latest
 release. There was no "same version" to preserve — the fork's 1.5.0 was never
