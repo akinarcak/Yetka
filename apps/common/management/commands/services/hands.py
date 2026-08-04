@@ -25,4 +25,10 @@ BASE_DIR = os.path.dirname(settings.BASE_DIR)
 LOG_DIR = os.path.join(BASE_DIR, 'data', 'logs')
 APPS_DIR = os.path.join(BASE_DIR, 'apps')
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')
+# Service PID files are written here. The directory is deliberately untracked so
+# it cannot be mistaken for a package, and bare-metal installs never create it,
+# so a fresh deployment would otherwise crash-loop on a missing gunicorn.pid.
+# In the container image this path is a symlink to /tmp/yetka, which exist_ok
+# accepts unchanged.
+os.makedirs(TMP_DIR, exist_ok=True)
 CELERY_WORKER_COUNT = CONFIG.CELERY_WORKER_COUNT or 10
