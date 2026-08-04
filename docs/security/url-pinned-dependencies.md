@@ -75,10 +75,44 @@ The cleanest case: ahead 1, behind 0, a single commit.
 
 - `6eae8dddf` — `fix: connectionPool deadlock triggered by gc`
 
-**To resolve:** check whether that deadlock fix has landed upstream. redis-py
-has released many versions since 5.0.3, and a garbage-collection deadlock in
-the connection pool is the kind of defect upstream would have taken. If it is
-fixed, drop the fork.
+The patch is one line, in `ConnectionPool.reset()`:
+
+```python
+-        self._lock = threading.Lock()
++        self._lock = threading.RLock()
+```
+
+A non-reentrant lock deadlocks when garbage collection re-enters the pool while
+the lock is held.
+
+**Answered (2026-08-04):** upstream has taken the same fix, but not in the 5.x
+line. Checking `redis/connection.py` at each tag:
+
+| Version | Pool lock |
+| --- | --- |
+| `v5.0.3` – `v6.1.0` | `threading.Lock()` — unfixed |
+| `v6.2.0` | `RLock`, except when client-side caching is enabled |
+| `v7.0.0`, `v8.0.0` | `RLock` unconditionally |
+
+`v6.2.0` carries the fix behind a condition upstream documented as temporary:
+
+```python
+if self.cache is None:
+    self._lock = threading.RLock()
+else:
+    # TODO: To avoid breaking changes during the bug fix, we have to keep non-reentrant lock.
+    # TODO: Remove this before next major version (7.0.0)
+    self._lock = threading.Lock()
+```
+
+Client-side caching arrived in redis-py 5.1, so a project pinned at 5.0.3
+cannot be using it and `v6.2.0` would be sufficient.
+
+**What this costs:** dropping the fork is not a swap. It requires moving from
+5.0.3 to at least 6.2.0 — a major version step in the Redis client of a
+privileged access product, with `django-redis`, `channels-redis` and
+`python-redis-lock` all sitting on top of it. The fork is a one-line patch; the
+replacement is a migration. Worth doing, but not worth doing casually.
 
 ## django-cas-ng
 
