@@ -9,6 +9,7 @@ Date: 2026-08-03
 - The full server updater reached dependency installation but rolled back because the editable Core package currently contains multiple top-level packages (`tmp` and others); this packaging issue is independent of the locale patch. Health and all services were restored to ws14.
 - The ws17 Lina artifact was checksum-verified (`4b7bd3df3a56e8a9a0e84f664d882e2aca729407e0663a9a7d135e7c60b1456c`) and installed separately on the test server with the ws14 Lina backup retained; nginx was reloaded. Core/Luna/Koko remain on ws14 until the packaging failure is fixed and a complete release is redeployed.
 - Browser verification after selecting Türkçe: `document.documentElement.lang` is `tr`; the header shows `Türkçe` and dashboard labels render as `Gösterge paneli`, `Hesaplar`, `Hesap verileri`, and `Görev özeti`.
+- Notification preview follow-up (2026-08-04): Lina commit `41c8b246330d73d63d95723c99828bbb470ba25c` renders notification bodies through the existing Markdown component instead of the sanitizer-only text span. After checksum-verified ws19 Lina deployment, the notification drawer shows `[KoKo]-akin-linux-dev01-ZsrADSk` and `The component is offline: ...` without raw `####` markers.
 
 ## Scope
 
