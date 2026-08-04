@@ -77,6 +77,11 @@ class ComponentLockTests(TestCase):
         # A pinned commit reaches the installer as a bare SHA, which neither the
         # branch nor the tag lookup resolves.
         self.assertIn("^[0-9a-f]{40}$", installer)
+        # Component archives must follow the manifest too. The env file records
+        # only the previously installed release, so trusting it pairs a new core
+        # with the previous release's Lina, Luna and Koko.
+        self.assertIn("resolve_components_from_manifest", installer)
+        self.assertIn("SCRIPT_DIR/components.release.json", installer)
 
     def test_release_manifest_records_artifact_hashes(self):
         with TemporaryDirectory() as directory:

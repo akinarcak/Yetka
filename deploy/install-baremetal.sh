@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 ENV_FILE=""
 DRY_RUN=false
 ASSUME_YES=false
@@ -288,7 +289,47 @@ download_archive() {
   fi
 }
 
+# The release manifest ships next to this installer inside the release archive,
+# so it is covered by the checksum and signature that gated the download. Where
+# it exists it is the authority for the component pins: the env file only ever
+# records what was installed last, so trusting it reinstalls the previous
+# release's Lina, Luna and Koko archives alongside the new core. That is how a
+# ws21 core would have been paired with ws17 components.
+resolve_components_from_manifest() {
+  local manifest=$SCRIPT_DIR/components.release.json name url sha
+  [[ -f "$manifest" ]] || return 0
+  command -v python3 >/dev/null || die "python3 is required to read $manifest"
+  # Process substitution rather than a pipe: a pipe would run the loop in a
+  # subshell and the assignments would not survive it.
+  while read -r name url sha; do
+    case "$name" in
+      lina) YETKA_LINA_URL=$url; YETKA_LINA_SHA256=$sha ;;
+      luna) YETKA_LUNA_URL=$url; YETKA_LUNA_SHA256=$sha ;;
+      koko) YETKA_KOKO_URL=$url; YETKA_KOKO_SHA256=$sha ;;
+      release) log "Component archives pinned to $url by the release manifest" ;;
+    esac
+  done < <(python3 - "$manifest" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding='utf-8') as stream:
+    manifest = json.load(stream)
+if manifest.get('schema_version') != 1:
+    raise SystemExit('Unsupported release manifest schema')
+release = manifest['release']
+print('release', release, '-')
+base = f'https://github.com/akinarcak/Yetka/releases/download/{release}'
+for name, component in manifest['components'].items():
+    artifact = component.get('artifact')
+    digest = component.get('sha256')
+    if artifact and digest:
+        print(name, f'{base}/{artifact}', digest)
+PY
+)
+}
+
 install_optional_assets() {
+  resolve_components_from_manifest
   download_archive Lina "${YETKA_LINA_URL:-}" "${YETKA_LINA_SHA256:-}" "$YETKA_INSTALL_DIR/lina" || true
   download_archive Luna "${YETKA_LUNA_URL:-}" "${YETKA_LUNA_SHA256:-}" "$YETKA_INSTALL_DIR/luna" || true
   if download_archive Koko "${YETKA_KOKO_URL:-}" "${YETKA_KOKO_SHA256:-}" "$YETKA_INSTALL_DIR/koko"; then
