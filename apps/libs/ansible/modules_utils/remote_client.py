@@ -125,7 +125,6 @@ class OldSSHTransport(paramiko.transport.Transport):
         "ssh-rsa",
         "rsa-sha2-256",
         "rsa-sha2-512",
-        "ssh-dss",
     )
 
 

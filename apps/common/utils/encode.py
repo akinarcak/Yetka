@@ -11,14 +11,12 @@ from io import StringIO
 import paramiko
 import sshpubkeys
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import dsa
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from itsdangerous import (
-    TimedJSONWebSignatureSerializer, JSONWebSignatureSerializer,
-    BadSignature, SignatureExpired
-)
 from six import string_types
 
+from . import jws_compat
 from .http import http_date
 
 UUID_PATTERN = re.compile(r'[0-9a-zA-Z\-]{36}')
@@ -38,39 +36,50 @@ class Singleton(type):
 
 
 class Signer(metaclass=Singleton):
-    """用来加密,解密,和基于时间戳的方式验证token"""
+    """用来加密,解密,和基于时间戳的方式验证token
+
+    Backed by `common.utils.jws_compat` rather than itsdangerous, which removed
+    the JWS serializers in 2.0. The format is unchanged: `unsign` still reads
+    tokens written by every previous release, which matters because
+    `common.db.utils` calls it to decrypt values stored before the crypto
+    migration. See common/jws_compat_tests.py for the byte-level proof.
+    """
 
     def __init__(self, secret_key=None):
         self.secret_key = secret_key
 
     def sign(self, value):
-        s = JSONWebSignatureSerializer(self.secret_key, algorithm_name='HS256')
-        return s.dumps(value).decode()
+        return jws_compat.dumps(
+            value, self.secret_key, algorithm='HS256'
+        ).decode()
 
     def unsign(self, value):
         if value is None:
             return value
-        s = JSONWebSignatureSerializer(self.secret_key, algorithm_name='HS256')
         try:
-            return s.loads(value)
-        except BadSignature:
+            return jws_compat.loads(value, self.secret_key)
+        except jws_compat.BadSignature:
             return None
 
     def sign_t(self, value, expires_in=3600):
-        s = TimedJSONWebSignatureSerializer(self.secret_key, expires_in=expires_in)
-        return str(s.dumps(value), encoding="utf8")
+        return jws_compat.dumps_timed(
+            value, self.secret_key, expires_in=expires_in
+        ).decode()
 
     def unsign_t(self, value):
-        s = TimedJSONWebSignatureSerializer(self.secret_key)
         try:
-            return s.loads(value)
-        except (BadSignature, SignatureExpired):
+            return jws_compat.loads_timed(value, self.secret_key)
+        except (jws_compat.BadSignature, jws_compat.SignatureExpired):
             return None
 
 
+# DSA is absent deliberately. paramiko 5.0.0 removed DSSKey, and this
+# tuple is evaluated at import, so naming it there is what breaks the
+# upgrade. DSA has been unsafe for years and OpenSSH disabled it by
+# default long ago; there is no version of paramiko that has both the
+# current security fixes and DSA.
 _supported_paramiko_ssh_key_types = (
     paramiko.RSAKey,
-    paramiko.DSSKey,
     paramiko.Ed25519Key,
     paramiko.ECDSAKey,)
 
@@ -124,10 +133,8 @@ def ssh_key_gen(length=2048, type='rsa', password=None, username='jumpserver', h
     try:
         if type == 'rsa':
             private_key_obj = paramiko.RSAKey.generate(length)
-        elif type == 'dsa':
-            private_key_obj = paramiko.DSSKey.generate(length)
         else:
-            raise IOError('SSH private key must be `rsa` or `dsa`')
+            raise IOError('SSH private key must be `rsa`')
         private_key_obj.write_private_key(f, password=password)
         private_key = f.getvalue()
         public_key = ssh_pubkey_gen(private_key_obj, username=username, hostname=hostname)
@@ -190,10 +197,18 @@ def _parse_ssh_private_key(text, password=None):
 
     try:
         if is_openssh_format_key(text):
-            return serialization.load_ssh_private_key(text, password=password)
-        return serialization.load_pem_private_key(text, password=password)
+            key = serialization.load_ssh_private_key(text, password=password)
+        else:
+            key = serialization.load_pem_private_key(text, password=password)
     except (ValueError, TypeError):
         return None
+
+    # This path parses fine for DSA, but the paramiko path above can no
+    # longer use one. Accepting a key here that cannot be used later
+    # would move the failure from the form to the connection attempt.
+    if isinstance(key, dsa.DSAPrivateKey):
+        return None
+    return key
 
 
 def is_openssh_format_key(text: bytes):
