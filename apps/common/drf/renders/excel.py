@@ -1,8 +1,21 @@
+from io import BytesIO
+
 from openpyxl import Workbook
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
-from openpyxl.writer.excel import save_virtual_workbook
 
 from .base import BaseFileRenderer
+
+
+def workbook_to_bytes(workbook):
+    """Serialize a workbook to bytes.
+
+    Replaces `openpyxl.writer.excel.save_virtual_workbook`, which was
+    deprecated in openpyxl 3.0 and removed in 3.1. This is what it did: save
+    into an in-memory buffer and return the bytes.
+    """
+    buffer = BytesIO()
+    workbook.save(buffer)
+    return buffer.getvalue()
 
 
 class ExcelFileRenderer(BaseFileRenderer):
@@ -40,8 +53,6 @@ class ExcelFileRenderer(BaseFileRenderer):
             adjusted_width = 300 if adjusted_width > 300 else adjusted_width
             adjusted_width = 30 if adjusted_width < 30 else adjusted_width
             self.ws.column_dimensions[column].width = adjusted_width
-            self.wb.save('/tmp/test.xlsx')
 
     def get_rendered_value(self):
-        value = save_virtual_workbook(self.wb)
-        return value
+        return workbook_to_bytes(self.wb)
