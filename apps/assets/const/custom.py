@@ -1,7 +1,12 @@
+import logging
 from collections import defaultdict
+
+from django.db import DatabaseError
 
 from common.decorators import cached_method
 from .base import BaseType
+
+logger = logging.getLogger(__name__)
 
 
 class CustomTypes(BaseType):
@@ -9,7 +14,19 @@ class CustomTypes(BaseType):
     def get_choices(cls):
         try:
             platforms = list(cls.get_custom_platforms())
-        except Exception:
+        except DatabaseError:
+            # Serializer fields resolve their choices through here while apps
+            # load, which on a fresh database happens before assets_platform
+            # exists. Having no custom types then is correct, so the query
+            # failing is expected and handled.
+            #
+            # Only database errors are handled. This was `except Exception`,
+            # which meant every fault in this path -- including ones with
+            # nothing to do with a missing table -- disappeared silently. That
+            # cost a day: it hid the primary failure behind a secondary
+            # TransactionManagementError and finding it needed a wrapped
+            # cursor. See docs/testing/database-backed-tests.md.
+            logger.debug('Custom platform types unavailable; treating as none')
             return []
         types = set([p.type for p in platforms])
         choices = [(t, t) for t in types]
