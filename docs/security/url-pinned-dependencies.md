@@ -208,6 +208,15 @@ them is load-bearing here:
    happen with upstream either. The gate, the setting and upstream's
    unconditional assignment are all in a method this project replaces.
 
+   Confirmed by execution on 2026-08-05, and the conclusion holds for a second
+   reason the reasoning above did not reach. `is_staff` is not a stored field
+   on this project's `User` at all: `apps/users/models/user/_role.py` defines it
+   as `self.is_authenticated and self.is_valid` with a setter that is a no-op,
+   and `is_superuser` is derived from system role membership. Even a caller that
+   did pass those arguments through could not make them stick. The
+   characterization suite that established this could not run in CI for reasons
+   unrelated to RADIUS; see `docs/testing/database-backed-tests.md`.
+
 Replaced with `django-radius==1.5.1` from PyPI, the upstream author's latest
 release. There was no "same version" to preserve — the fork's 1.5.0 was never
 upstream's 1.5.0 — so moving to the maintained release rather than an older
