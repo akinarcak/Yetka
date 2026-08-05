@@ -2,7 +2,8 @@
 
 Date: 2026-08-04
 
-Five entries in `[tool.uv.sources]` are declared by URL rather than by version.
+Five entries in `[tool.uv.sources]` were declared by URL rather than by version.
+Two have since been resolved (`ansible-core`, `django-radius`); three remain.
 `pip-audit` cannot resolve a URL requirement to a package version, so it skips
 them and says so:
 
@@ -30,7 +31,7 @@ the next person does not have to derive it again.
 | `ansible-runner` | fork | ahead 24, behind 0 of `2.4.0` | 1 commit | `2.4.3` |
 | `redis` (redis-py) | fork | ahead 1, behind 0 of `v5.0.3` | 1 commit | well past `5.0.3` |
 | `django-cas-ng` | fork | ahead 32, behind 0 of `v4.3.0` | 2 commits | `v5.1.1` |
-| `django-radius` | fork | ahead 6, **behind 6** of `1.5.0` | none identified | `1.5.0` |
+| `django-radius` | fork | ahead 6, **behind 6** of `1.5.0` | none load-bearing | resolved, now `==1.5.1` |
 
 The headline is smaller than it looks. `ansible-runner` and `django-cas-ng`
 appear heavily diverged, but almost all of those commits are upstream's own
@@ -161,9 +162,56 @@ The tag collision deserves attention on its own. `django-radius 1.5.0` means
 different code depending on which repository it is fetched from, which defeats
 version identity for a RADIUS authentication library.
 
-**To resolve:** this looks like the most straightforward removal. If nothing
-local depends on the six merged pull requests, `django-radius` can come from
-PyPI directly, which also settles the tag ambiguity.
+### Three version identities (2026-08-04)
+
+The tag collision is not the whole of it. Relocking against PyPI reported:
+
+```
+Updated django-radius v1.4.0 -> v1.5.1
+```
+
+The lock had been recording the fork as **1.4.0**. The URL says `1.5.0.zip`,
+the git tag says `1.5.0`, and the package metadata in `setup.py` says `1.4.0` —
+the fork changed that line but never bumped it to match its own tag. So the
+installed RADIUS backend reported a version that matched neither the tag it was
+fetched by nor the upstream release of the same name.
+
+### Resolved: replaced with upstream `1.5.1`
+
+The fork's changes to `radiusauth/backends/radius.py` are three, and none of
+them is load-bearing here:
+
+1. **Python 2 shims removed** (`from future import standard_library`,
+   `past.builtins.basestring`). Cosmetic. `future==0.18.3` remains a declared
+   dependency, so upstream's imports still resolve.
+
+2. **`int(settings.RADIUS_PORT)`.** Redundant in this project. The default in
+   `apps/jumpserver/conf.py` is the integer `1812`; `Config.convert_type()`
+   coerces environment values to the type of the default; and the settings API
+   validates it through `serializers.IntegerField`. The value is an integer on
+   every path.
+
+3. **`RADIUS_REMOTE_ROLES` gate.** This looked like the one that mattered,
+   since it decides whether a RADIUS server's `Class` attribute may set
+   `is_staff` and `is_superuser` — whether an external directory can mint
+   Django superusers.
+
+   It is unreachable. `apps/authentication/backends/radius/backends.py`
+   defines `CreateUserMixin.get_django_user`, and the MRO
+   (`RadiusBackend` -> `RadiusBaseBackend` -> `CreateUserMixin` -> ... ->
+   `RADIUSBackend`) puts it ahead of the library's. That override creates the
+   user from the username and e-mail suffix and never touches `is_staff` or
+   `is_superuser`; it accepts them only as `*args, **kwargs` and discards
+   them.
+
+   So remote role elevation does not happen with the fork, and would not
+   happen with upstream either. The gate, the setting and upstream's
+   unconditional assignment are all in a method this project replaces.
+
+Replaced with `django-radius==1.5.1` from PyPI, the upstream author's latest
+release. There was no "same version" to preserve — the fork's 1.5.0 was never
+upstream's 1.5.0 — so moving to the maintained release rather than an older
+point release is the smaller risk, not the larger one.
 
 ## Re-verifying this
 

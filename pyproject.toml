@@ -97,7 +97,7 @@ dependencies = [
     'websockets==11.0.3',
     'python-ldap==3.4.5',
     'ldap3==2.9.1',
-    'django-radius',
+    'django-radius==1.5.1',
     'django-cas-ng',
     'python-cas==1.6.0',
     'django-auth-ldap==4.4.0',
@@ -219,5 +219,4 @@ xpack = [
 # specifier without first establishing what they change relative to upstream.
 ansible-runner = { url = "https://github.com/jumpserver-dev/ansible-runner/archive/refs/tags/v2.4.0.2.zip" }
 django-cas-ng = { url = "https://github.com/ibuler/django-cas-ng/releases/download/v4.3.2/django-cas-ng-4.3.2.zip" }
-django-radius = { url = "https://github.com/ibuler/django-radius/archive/refs/tags/1.5.0.zip" }
 redis = { url = "https://github.com/jumpserver-dev/redis-py/archive/refs/tags/v5.0.3.zip" }
