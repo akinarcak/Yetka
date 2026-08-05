@@ -7,7 +7,6 @@ from django.db.models import Q
 from django.utils import timezone
 from django_filters import rest_framework as drf_filters
 from rest_framework import filters
-from rest_framework.compat import coreapi
 
 from assets.models import Node
 from assets.utils import get_node_from_request
@@ -37,14 +36,6 @@ class UUIDFilterMixin:
 class NodeFilterBackend(filters.BaseFilterBackend):
     fields = ['node_id']
 
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name=field, location='query', required=False,
-                type='string', example='', description='', schema=None,
-            )
-            for field in self.fields
-        ]
 
     def filter_queryset(self, request, queryset, view):
         node = get_node_from_request(request)

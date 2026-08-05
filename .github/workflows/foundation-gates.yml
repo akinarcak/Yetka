@@ -56,7 +56,6 @@ on:
       - apps/reports/mixins.py
       - apps/common/excel_render_tests.py
       - apps/common/ssh_key_type_tests.py
-      - apps/common/utils/encode.py
       - apps/terminal/api/session/session.py
       - apps/terminal/tenant_tests.py
       - apps/terminal/tasks.py
@@ -65,6 +64,13 @@ on:
       - docs/security/customer-tenant-isolation.md
       - docs/security/ssh-host-key-policy.md
       - docs/security/service-signature-v2.md
+      - apps/common/drf/filters.py
+      - apps/assets/filters.py
+      - apps/audits/filters.py
+      - apps/accounts/filters.py
+      - apps/authentication/filters.py
+      - apps/jumpserver/views/schema.py
+      - apps/jumpserver/settings/libs.py
   push:
     paths:
       - components.lock.yml
@@ -117,7 +123,6 @@ on:
       - apps/reports/mixins.py
       - apps/common/excel_render_tests.py
       - apps/common/ssh_key_type_tests.py
-      - apps/common/utils/encode.py
       - apps/terminal/api/session/session.py
       - apps/terminal/tenant_tests.py
       - apps/terminal/tasks.py
@@ -127,6 +132,13 @@ on:
       - docs/security/ssh-host-key-policy.md
       - docs/security/service-signature-v2.md
 
+      - apps/common/drf/filters.py
+      - apps/assets/filters.py
+      - apps/audits/filters.py
+      - apps/accounts/filters.py
+      - apps/authentication/filters.py
+      - apps/jumpserver/views/schema.py
+      - apps/jumpserver/settings/libs.py
 permissions:
   contents: read
 

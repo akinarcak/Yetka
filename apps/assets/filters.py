@@ -2,7 +2,6 @@
 #
 from django.db.models import Q
 from rest_framework import filters
-from rest_framework.compat import coreapi, coreschema
 
 from assets.utils import get_node_from_request, is_query_node_all_assets
 
@@ -10,14 +9,6 @@ from assets.utils import get_node_from_request, is_query_node_all_assets
 class AssetByNodeFilterBackend(filters.BaseFilterBackend):
     fields = ['node', 'all']
 
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name=field, location='query', required=False,
-                type='string', example='', description='', schema=None,
-            )
-            for field in self.fields
-        ]
 
     def filter_node_related_all(self, queryset, node):
         return queryset.filter(
@@ -46,14 +37,6 @@ class NodeFilterBackend(filters.BaseFilterBackend):
     """
     fields = ['node', 'all']
 
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name=field, location='query', required=False,
-                type='string', example='', description='', schema=None,
-            )
-            for field in self.fields
-        ]
 
     def filter_queryset(self, request, queryset, view):
         node = get_node_from_request(request)
@@ -79,13 +62,3 @@ class IpInFilterBackend(filters.BaseFilterBackend):
         queryset = queryset.filter(address__in=ip_list)
         return queryset
 
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name='ips', location='query', required=False, type='string',
-                schema=coreschema.String(
-                    title='ips',
-                    description='address in filter'
-                )
-            )
-        ]
