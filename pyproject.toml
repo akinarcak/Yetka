@@ -7,7 +7,7 @@ requires-python = ">=3.14"
 dependencies = [
     'aiofiles==25.1.0',
     'amqp==5.3.1',
-    'ansible-core==2.19.4',
+    'ansible-core==2.19.11',
     'ansible==12.2.0',
     'ansible-runner',
     'asn1crypto==1.5.1',

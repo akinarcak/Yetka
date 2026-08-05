@@ -3,7 +3,8 @@
 Date: 2026-08-04
 
 Five entries in `[tool.uv.sources]` were declared by URL rather than by version.
-Two have since been resolved (`ansible-core`, `django-radius`); three remain.
+Two have since been resolved (`ansible-core`, `django-radius`) and
+`ansible-runner` was re-based onto current upstream; three remain by URL.
 `pip-audit` cannot resolve a URL requirement to a package version, so it skips
 them and says so:
 
@@ -28,7 +29,7 @@ the next person does not have to derive it again.
 | Entry | Kind | Divergence from upstream | Genuinely fork-specific | Upstream today |
 | --- | --- | --- | --- | --- |
 | `ansible-core` | not a fork | none | none | resolved, see below |
-| `ansible-runner` | fork | ahead 24, behind 0 of `2.4.0` | 1 commit | `2.4.3` |
+| `ansible-runner` | fork | ahead 1, behind 0 of `2.4.3` | 1 commit | `2.4.3` |
 | `redis` (redis-py) | fork | ahead 1, behind 0 of `v5.0.3` | 1 commit | well past `5.0.3` |
 | `django-cas-ng` | fork | ahead 32, behind 0 of `v4.3.0` | 2 commits | `v5.1.1` |
 | `django-radius` | fork | ahead 6, **behind 6** of `1.5.0` | none load-bearing | resolved, now `==1.5.1` |
@@ -51,21 +52,47 @@ Converted to `ansible-core==2.16.19`. The relocked entry keeps
 identical. One real difference: a registry source exposes wheels, so the build
 installs the wheel rather than compiling the sdist.
 
-## ansible-runner
+## ansible-runner — resolved, still a fork
 
-Pinned: `jumpserver-dev/ansible-runner` tag `v2.4.0.2`.
-Upstream: `ansible/ansible-runner`, now at `2.4.3`.
+Pinned: `akinarcak/ansible-runner` tag `v2.4.3.1`.
+Upstream: `ansible/ansible-runner`, at `2.4.3`.
 
-Against upstream `2.4.0` the fork is ahead 24 and behind 0. Twenty-three of
-those are upstream commits (#1435, #1443, #1449, #1454, #1462 and similar), so
-the fork is roughly upstream's post-2.4.0 line. The fork-specific change is one
-commit:
+Previously `jumpserver-dev/ansible-runner` `v2.4.0.2`, a snapshot of upstream's
+post-2.4.0 line carrying one fork-specific commit, `8f9316545`
+(`fix: disable env (#1)`).
 
-- `8f9316545` — `fix: disable env (#1)`
+**Answered (2026-08-06):** the commit is load-bearing and upstream has not
+taken it. It edits `src/ansible_runner/config/runner.py`, where the bubblewrap
+argument list is built, and does two things:
 
-**To resolve:** establish what `fix: disable env` does and whether upstream
-2.4.3 makes it unnecessary. If it does, the fork can be dropped for
-`ansible-runner==2.4.3` from PyPI.
+- unsets every environment variable whose name contains `KEY`, `PASSWORD`,
+  `TOKEN`, `SECRET`, `PASSWD`, `REDIS_` or `DB_` before the sandbox starts, so
+  `SECRET_KEY` and the database and Redis credentials in the web process's
+  environment are not inherited by automation subprocesses;
+- replaces the `/lib` and `/lib64` symlink bindings with read-only binds.
+
+That path is live: `PlaybookRunner` defaults to `isolate = True` and, when
+docker isolation is off, passes `process_isolation_executable='bwrap'`
+(`apps/ops/ansible/runner.py`). Upstream `2.4.1`, `2.4.2` and `2.4.3` change
+volume mounts, callback plugins and tty detection; none touches environment
+handling or the sandbox arguments. Swapping the fork for `ansible-runner==2.4.3`
+from PyPI would therefore drop a credential-isolation control.
+
+**What was done instead:** the fork was re-based rather than removed. Upstream
+`2.4.3` plus a cherry-pick of `8f9316545` — which applies cleanly, since
+`config/runner.py` is untouched between `2.4.0` and `2.4.3` — is published as
+`akinarcak/ansible-runner` `v2.4.3.1`. The fork is now ahead 1, behind 0 of
+current upstream, which is the smallest divergence this entry can have while
+the patch remains unmerged.
+
+The audit blind spot is unchanged: pip-audit still skips this entry because it
+is a URL requirement. `ops.ansible_engine_tests.RunnerForkTripwireTest` covers
+what the audit cannot — it asserts the installed distribution is on the 2.4.3
+line and that the env-sanitizing code is present, so a silent swap to plain
+upstream fails the gate.
+
+**To fully resolve:** propose `8f9316545` upstream. If it merges, this entry
+becomes a version pin like `ansible-core` did.
 
 ## redis (redis-py)
 
