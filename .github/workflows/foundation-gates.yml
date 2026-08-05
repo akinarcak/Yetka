@@ -40,6 +40,9 @@ on:
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
       - apps/libs/ansible/modules_utils/remote_client.py
+      - apps/libs/ansible/**
+      - apps/ops/ansible_engine_tests.py
+      - requirements/collections.yml
       - apps/ops/ansible/inventory.py
       - config_example.yml
       - apps/ops/celery/__init__.py
@@ -107,6 +110,9 @@ on:
       - apps/common/storage/jms_storage/sftp.py
       - apps/assets/automations/ping_gateway/manager.py
       - apps/libs/ansible/modules_utils/remote_client.py
+      - apps/libs/ansible/**
+      - apps/ops/ansible_engine_tests.py
+      - requirements/collections.yml
       - apps/ops/ansible/inventory.py
       - config_example.yml
       - apps/ops/celery/__init__.py
@@ -251,6 +257,7 @@ jobs:
               /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests --verbosity=2
               /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests common.jws_compat_tests common.excel_render_tests common.ssh_key_type_tests jumpserver.api.components_tests --verbosity=2
               /opt/py3/bin/python -m django test terminal.tenant_tests terminal.recording_tests --verbosity=2
+              /opt/py3/bin/python -m django test ops.ansible_engine_tests --verbosity=2
             '
       # Asserts that a test database was genuinely created, not just that the
       # suite passed. Every suite above is a SimpleTestCase and reports OK
