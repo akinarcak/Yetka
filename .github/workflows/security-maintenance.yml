@@ -17,8 +17,8 @@ jobs:
   python-audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
       - name: Export locked production dependencies
         # --locked so the audit fails loudly when pyproject.toml and uv.lock
         # disagree, rather than quietly auditing whichever versions the lock
@@ -55,7 +55,7 @@ jobs:
   filesystem-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # trivy-action never completed a single scheduled run: 2026-07-20 and
       # 2026-07-27 failed at job setup, 2026-08-03 and 2026-08-04 failed while
       # its installer downloaded the binary. In every case the "Run Trivy" step

@@ -33,31 +33,31 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout Yetka core
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: core
       - name: Checkout Yetka Lina
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: akinarcak/Yetka-Lina
           ref: ${{ env.LINA_COMMIT }}
           path: lina
       - name: Checkout Yetka Luna
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: akinarcak/Yetka-Luna
           ref: ${{ env.LUNA_COMMIT }}
           path: luna
       - name: Checkout Yetka Koko
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: akinarcak/Yetka-Koko
           ref: ${{ env.KOKO_COMMIT }}
           path: koko
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '20'
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version-file: koko/go.mod
           cache-dependency-path: koko/go.sum
@@ -219,7 +219,7 @@ jobs:
           gh release upload "$RELEASE_TAG" artifacts/*.tar.gz artifacts/*.sha256 artifacts/SHA256SUMS artifacts/SHA256SUMS.sig artifacts/SHA256SUMS.sigstore.json artifacts/*.sbom.cdx.json \
             artifacts/components.release.json \
             --repo "$GITHUB_REPOSITORY" --clobber
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ success() }}
         with:
           name: yetka-${{ env.RELEASE_TAG }}
