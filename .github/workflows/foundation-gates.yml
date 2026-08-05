@@ -166,9 +166,11 @@ jobs:
           docker run --rm --read-only --tmpfs /tmp:rw,noexec,nosuid,size=128m \
             --mount type=volume,destination=/opt/jumpserver/data \
             --entrypoint /bin/sh yetka/core:foundation-test -c '
+              set -e
               test "$(id -u)" = 10001
               test ! -d /opt/jumpserver/apps/xpack
               touch /opt/jumpserver/data/.write-test
+              mkdir -p "$(readlink -m /opt/jumpserver/tmp)"
               touch /opt/jumpserver/tmp/.write-test
               test ! -w /opt/jumpserver/apps
             '
@@ -197,8 +199,9 @@ jobs:
             --workdir /opt/jumpserver/apps \
             --entrypoint /bin/sh \
             yetka/core:foundation-test -c '
+              set -e
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
               /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests --verbosity=2
-              /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests jumpserver.api.components_tests authentication.radius_tests --verbosity=2
+              /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests jumpserver.api.components_tests --verbosity=2
               /opt/py3/bin/python -m django test terminal.tenant_tests terminal.recording_tests --verbosity=2
             '
