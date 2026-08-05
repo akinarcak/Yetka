@@ -20,9 +20,37 @@ jobs:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7
       - name: Export locked production dependencies
-        run: uv export --frozen --no-dev --format requirements-txt --output-file requirements-audit.txt
+        # --locked so the audit fails loudly when pyproject.toml and uv.lock
+        # disagree, rather than quietly auditing whichever versions the lock
+        # happens to hold. See the note in Dockerfile.
+        run: uv export --locked --no-dev --format requirements-txt --output-file requirements-audit.txt
+      # PYSEC-2026-1325 is the Minerva timing attack on P-256 in python-ecdsa
+      # (0.* through 0.19.2, CVSS 7.4). Upstream has declared side-channel
+      # attacks out of scope and plans no fix, so no upgrade can clear it and
+      # leaving it would hold this job permanently red. A control that always
+      # fails reports nothing: that is exactly how the filesystem scan sat
+      # broken from 2026-07-20 without anyone being able to tell.
+      #
+      # It is ignored because the vulnerable path is not reachable here. The
+      # advisory covers signing, key generation and ECDH through
+      # ecdsa.SigningKey.sign_digest(); it states verification is unaffected.
+      # In this codebase:
+      #   - nothing imports ecdsa directly; there is no SigningKey or
+      #     sign_digest call in apps/ or tools/;
+      #   - it arrives through sshpubkeys, which apps/accounts/models/base.py
+      #     uses only to parse and inspect public keys;
+      #   - the UKey backend refuses ECDSA outright, in
+      #     apps/authentication/backends/ukey/api.py and backends.py;
+      #   - paramiko.ECDSAKey is paramiko's own class and resolves through
+      #     cryptography, not through this library.
+      #
+      # This exception lapses if anything starts signing with python-ecdsa, or
+      # if sshpubkeys gains a signing path. Re-check on any ecdsa version bump.
       - name: Audit Python dependencies
-        run: uv tool run pip-audit --requirement requirements-audit.txt --no-deps --disable-pip
+        run: |
+          uv tool run pip-audit --requirement requirements-audit.txt \
+            --no-deps --disable-pip \
+            --ignore-vuln PYSEC-2026-1325
 
   filesystem-scan:
     runs-on: ubuntu-latest
