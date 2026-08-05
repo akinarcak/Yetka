@@ -187,12 +187,23 @@ jobs:
             --entrypoint /opt/py3/bin/python \
             yetka/core:foundation-test \
             -m django test common.service_signature_tests --verbosity=2
+      # users.0001_initial adds the default admin to a group, that m2m write
+      # fires an audit signal, and the audit handler reads its cache. Without
+      # Redis the migration cannot complete, so no test database can be created
+      # and every suite here is limited to SimpleTestCase. See
+      # docs/testing/database-backed-tests.md.
+      - name: Start Redis for database-backed tests
+        run: |
+          docker network create yetka-gate-net
+          docker run -d --name yetka-gate-redis --network yetka-gate-net redis:8-bookworm
       - name: Run customer tenant isolation tests in the built image
         run: |
-          docker run --rm --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m \
+          docker run --rm --network yetka-gate-net --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m \
             --mount type=volume,destination=/opt/jumpserver/data \
             --env DB_ENGINE=sqlite3 \
             --env DB_NAME=/tmp/yetka-tests.sqlite3 \
+            --env REDIS_HOST=yetka-gate-redis \
+            --env REDIS_PORT=6379 \
             --env SECRET_KEY=foundation-ci-not-for-production \
             --env BOOTSTRAP_TOKEN=foundation-ci-bootstrap-not-for-production \
             --env DJANGO_SETTINGS_MODULE=jumpserver.settings \
@@ -205,3 +216,32 @@ jobs:
               /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests jumpserver.api.components_tests --verbosity=2
               /opt/py3/bin/python -m django test terminal.tenant_tests terminal.recording_tests --verbosity=2
             '
+      # Asserts that a test database was genuinely created, not just that the
+      # suite passed. Every suite above is a SimpleTestCase and reports OK
+      # without ever touching a database; that is exactly how this gate read as
+      # covering database behaviour when it did not.
+      - name: Run database-backed tests and prove a test database was created
+        run: |
+          set -o pipefail
+          docker run --rm --network yetka-gate-net --read-only --tmpfs /tmp:rw,exec,nosuid,size=256m \
+            --mount type=volume,destination=/opt/jumpserver/data \
+            --env DB_ENGINE=sqlite3 \
+            --env DB_NAME=/tmp/yetka-db-tests.sqlite3 \
+            --env REDIS_HOST=yetka-gate-redis \
+            --env REDIS_PORT=6379 \
+            --env SECRET_KEY=foundation-ci-not-for-production \
+            --env BOOTSTRAP_TOKEN=foundation-ci-bootstrap-not-for-production \
+            --env DJANGO_SETTINGS_MODULE=jumpserver.settings \
+            --workdir /opt/jumpserver/apps \
+            --entrypoint /opt/py3/bin/python \
+            yetka/core:foundation-test \
+            -m django test authentication.radius_tests --verbosity=2 2>&1 | tee radius-tests.log
+          if ! grep -q 'Creating test database' radius-tests.log; then
+            echo "::error::no test database was created -- these tests did not exercise a database"
+            exit 1
+          fi
+      - name: Stop Redis
+        if: always()
+        run: |
+          docker rm -f yetka-gate-redis || true
+          docker network rm yetka-gate-net || true
