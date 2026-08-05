@@ -21,6 +21,20 @@ updates:
       python-maintenance:
         applies-to: version-updates
         patterns: ["*"]
+        # These two cannot be taken as version bumps. Both break
+        # apps/common/utils/encode.py at import time -- itsdangerous 2.x
+        # removed the JWS serializers `Signer` is built on, and paramiko 5.0.0
+        # removed DSSKey, which the module names at import scope. Each needs a
+        # source change first, and itsdangerous needs a reader for the old
+        # format because `signer.unsign` is the legacy path for encrypted
+        # values at rest. Grouped, they held ~100 routine updates behind them:
+        # #43 could not go green no matter how often it was rebased.
+        # Excluded here so each arrives as its own pull request and the rest of
+        # the group stays mergeable. See
+        # docs/security/dependency-upgrade-blockers.md.
+        exclude-patterns:
+          - itsdangerous
+          - paramiko
   - package-ecosystem: github-actions
     directory: /
     schedule:
