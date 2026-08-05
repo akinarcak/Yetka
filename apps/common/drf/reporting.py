@@ -12,9 +12,8 @@ from openpyxl import Workbook
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
-from openpyxl.writer.excel import save_virtual_workbook
 
-from common.drf.renders.excel import ExcelFileRenderer
+from common.drf.renders.excel import ExcelFileRenderer, workbook_to_bytes
 from common.drf.renders.mixins import LogMixin
 
 
@@ -148,7 +147,7 @@ class BaseListReportExporter:
 
     def get_response(self):
         workbook = self.build_workbook()
-        content = save_virtual_workbook(workbook)
+        content = workbook_to_bytes(workbook)
         response = HttpResponse(
             content,
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
