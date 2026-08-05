@@ -3,7 +3,6 @@ from django.utils import translation
 
 from django_filters import rest_framework as drf_filters
 from rest_framework import filters
-from rest_framework.compat import coreapi, coreschema
 from common.drf.filters import BaseFilterSet
 from common.sessions.cache import user_session_manager
 from orgs.utils import current_org
@@ -13,16 +12,6 @@ __all__ = ['CurrentOrgMembersFilter']
 
 
 class CurrentOrgMembersFilter(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name='user', location='query', required=False, type='string',
-                schema=coreschema.String(
-                    title='user',
-                    description='user'
-                )
-            )
-        ]
 
     def _get_user_list(self):
         users = current_org.get_members(exclude=('Auditor',))

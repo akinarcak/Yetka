@@ -12,7 +12,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Q
 from django_filters import rest_framework as drf_filters
 from rest_framework import filters
-from rest_framework.compat import coreapi, coreschema
 from rest_framework.fields import DateTimeField
 from rest_framework.serializers import ValidationError
 from rest_framework.filters import OrderingFilter
@@ -74,27 +73,6 @@ class BaseFilterSet(drf_filters.FilterSet):
 
 
 class DatetimeRangeFilterBackend(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        ret = []
-        fields = self._get_date_range_filter_fields(view)
-
-        for attr, date_range_keyword in fields.items():
-            if len(date_range_keyword) != 2:
-                continue
-            for v in date_range_keyword:
-                ret.append(
-                    coreapi.Field(
-                        name=v,
-                        location="query",
-                        required=False,
-                        type="string",
-                        schema=coreschema.String(
-                            title=v, description="%s %s" % (attr, v)
-                        ),
-                    )
-                )
-
-        return ret
 
     def _get_date_range_filter_fields(self, view):
         if not hasattr(view, "date_range_filter_fields"):
@@ -145,17 +123,6 @@ class DatetimeRangeFilterBackend(filters.BaseFilterBackend):
 
 
 class IDSpmFilterBackend(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name="spm",
-                location="query",
-                required=False,
-                type="string",
-                example="",
-                description="Pre post objects id get spm id, then using filter",
-            )
-        ]
 
     def filter_queryset(self, request, queryset, view):
         spm = request.query_params.get("spm")
@@ -176,17 +143,6 @@ class IDSpmFilterBackend(filters.BaseFilterBackend):
 
 
 class IDInFilterBackend(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name="ids",
-                location="query",
-                required=False,
-                type="string",
-                example="/api/v1/users/users?ids=1,2,3",
-                description="Filter by id set",
-            )
-        ]
 
     def filter_queryset(self, request, queryset, view):
         ids = request.query_params.get("ids")
@@ -198,17 +154,6 @@ class IDInFilterBackend(filters.BaseFilterBackend):
 
 
 class IDNotFilterBackend(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name="id!",
-                location="query",
-                required=False,
-                type="string",
-                example="/api/v1/users/users?id!=1,2,3",
-                description="Exclude by id set",
-            )
-        ]
 
     def filter_queryset(self, request, queryset, view):
         ids = request.query_params.get("id!")
@@ -220,17 +165,6 @@ class IDNotFilterBackend(filters.BaseFilterBackend):
 
 
 class LabelFilterBackend(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name="label",
-                location="query",
-                required=False,
-                type="string",
-                example="/api/v1/users/users?label=abc",
-                description="Filter by label",
-            )
-        ]
 
     @staticmethod
     def parse_labels(labels_id):
@@ -300,23 +234,6 @@ class LabelFilterBackend(filters.BaseFilterBackend):
 
 class CustomFilterBackend(filters.BaseFilterBackend):
 
-    def get_schema_fields(self, view):
-        fields = []
-        defaults = dict(
-            location="query", required=False, type="string", example="", description=""
-        )
-        if not hasattr(view, "custom_filter_fields"):
-            return []
-
-        for field in view.custom_filter_fields:
-            if isinstance(field, str):
-                defaults["name"] = field
-            elif isinstance(field, dict):
-                defaults.update(field)
-            else:
-                continue
-            fields.append(coreapi.Field(**defaults))
-        return fields
 
     def filter_queryset(self, request, queryset, view):
         return queryset
@@ -339,25 +256,6 @@ class NumberInFilter(drf_filters.BaseInFilter, drf_filters.NumberFilter):
 
 
 class AttrRulesFilterBackend(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name="attr_rules",
-                location="query",
-                required=False,
-                type="string",
-                example="/api/v1/users/users?attr_rules=jsonbase64",
-                description='Filter by json like {"type": "attrs", "attrs": []} to base64',
-            ),
-            coreapi.Field(
-                name="attr_rules_instance",
-                location="query",
-                required=False,
-                type="string",
-                example="/api/v1/users/users?attr_rules_instance=jsonbase64",
-                description='Filter by json like {"app": "acls", "model": "LoginAssetACL", "id": "uuid"} to base64',
-            )
-        ]
 
     def filter_queryset(self, request, queryset, view):
         attr_rules = request.query_params.get("attr_rules")
@@ -411,17 +309,6 @@ class AttrRulesFilterBackend(filters.BaseFilterBackend):
         return data
 
 class NotOrRelFilterBackend(filters.BaseFilterBackend):
-    def get_schema_fields(self, view):
-        return [
-            coreapi.Field(
-                name="_rel",
-                location="query",
-                required=False,
-                type="string",
-                example="/api/v1/users/users?name=abc&username=def&_rel=union",
-                description="Filter by rel, or not, default is and",
-            )
-        ]
 
     def filter_queryset(self, request, queryset, view):
         _rel = request.query_params.get("_rel")
