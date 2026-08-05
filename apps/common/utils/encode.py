@@ -11,6 +11,7 @@ from io import StringIO
 import paramiko
 import sshpubkeys
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import dsa
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from itsdangerous import (
@@ -68,9 +69,13 @@ class Signer(metaclass=Singleton):
             return None
 
 
+# DSA is absent deliberately. paramiko 5.0.0 removed DSSKey, and this
+# tuple is evaluated at import, so naming it there is what breaks the
+# upgrade. DSA has been unsafe for years and OpenSSH disabled it by
+# default long ago; there is no version of paramiko that has both the
+# current security fixes and DSA.
 _supported_paramiko_ssh_key_types = (
     paramiko.RSAKey,
-    paramiko.DSSKey,
     paramiko.Ed25519Key,
     paramiko.ECDSAKey,)
 
@@ -124,10 +129,8 @@ def ssh_key_gen(length=2048, type='rsa', password=None, username='jumpserver', h
     try:
         if type == 'rsa':
             private_key_obj = paramiko.RSAKey.generate(length)
-        elif type == 'dsa':
-            private_key_obj = paramiko.DSSKey.generate(length)
         else:
-            raise IOError('SSH private key must be `rsa` or `dsa`')
+            raise IOError('SSH private key must be `rsa`')
         private_key_obj.write_private_key(f, password=password)
         private_key = f.getvalue()
         public_key = ssh_pubkey_gen(private_key_obj, username=username, hostname=hostname)
@@ -190,10 +193,18 @@ def _parse_ssh_private_key(text, password=None):
 
     try:
         if is_openssh_format_key(text):
-            return serialization.load_ssh_private_key(text, password=password)
-        return serialization.load_pem_private_key(text, password=password)
+            key = serialization.load_ssh_private_key(text, password=password)
+        else:
+            key = serialization.load_pem_private_key(text, password=password)
     except (ValueError, TypeError):
         return None
+
+    # This path parses fine for DSA, but the paramiko path above can no
+    # longer use one. Accepting a key here that cannot be used later
+    # would move the failure from the form to the connection attempt.
+    if isinstance(key, dsa.DSAPrivateKey):
+        return None
+    return key
 
 
 def is_openssh_format_key(text: bytes):
