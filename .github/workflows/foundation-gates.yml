@@ -45,6 +45,9 @@ on:
       - apps/ops/celery/__init__.py
       - apps/ops/signal_handlers.py
       - apps/cloud_sync/**
+      - apps/authentication/radius_tests.py
+      - apps/authentication/backends/radius/backends.py
+      - apps/assets/const/custom.py
       - apps/terminal/api/session/session.py
       - apps/terminal/tenant_tests.py
       - apps/terminal/tasks.py
@@ -94,6 +97,9 @@ on:
       - apps/ops/celery/__init__.py
       - apps/ops/signal_handlers.py
       - apps/cloud_sync/**
+      - apps/authentication/radius_tests.py
+      - apps/authentication/backends/radius/backends.py
+      - apps/assets/const/custom.py
       - apps/terminal/api/session/session.py
       - apps/terminal/tenant_tests.py
       - apps/terminal/tasks.py
