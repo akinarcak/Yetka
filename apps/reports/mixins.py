@@ -172,8 +172,8 @@ def export_table_response(table, export):
         worksheet.append(headers)
         for row in table['rows']:
             worksheet.append([row.get(key, '') for key in keys])
-        from openpyxl.writer.excel import save_virtual_workbook
-        content = save_virtual_workbook(workbook)
+        from common.drf.renders.excel import workbook_to_bytes
+        content = workbook_to_bytes(workbook)
         response = HttpResponse(
             content,
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
