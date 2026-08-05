@@ -487,3 +487,73 @@ Verification on `100.86.171.110`:
 - `/etc/yetka-install.env` holds duplicated `YETKA_GIT_REF` and component blocks
   (lines 2 and 36 onward, repeated from line 42). Behaviour is correct because
   the last assignment wins, but the file accumulates entries on each deploy.
+
+## Operational findings (2026-08-04, later)
+
+### Ghost KoKo terminal generating offline alerts every five minutes
+
+The dashboard shows a repeating "component offline" notification for
+`[KoKo]-akin-linux-dev01-ZsrADSk`, at five-minute intervals and current, not
+historical. Earlier handoffs described these as leftovers from updater
+restarts; they are not.
+
+There are four terminals registered:
+
+```
+[Core]-akin-linux-dev01           alive=True   created 2026-07-22
+[Celery]-akin-linux-dev01         alive=True   created 2026-07-22
+[KoKo]-akin-linux-dev01-dAHVgXf   alive=True   created 2026-07-22
+[KoKo]-akin-linux-dev01-ZsrADSk   alive=False  created 2026-08-03 12:14:01
+```
+
+KoKo is registered twice. `dAHVgXf` is the live one, bound by the access key
+at `/opt/yetka/koko/data/keys/.access_key`. `ZsrADSk` was created on
+2026-08-03 at 12:14:01, matching the timestamp of the `keys` directory exactly,
+so a deploy that day recreated the key and caused a second registration. KoKo
+subsequently returned to the original identity and left `ZsrADSk` orphaned.
+Nothing sends its heartbeat, so the health check correctly reports it offline,
+forever.
+
+A third suffix appears in the startup log (`NHvBBrU` on the ws22 start). That is
+a candidate name generated at each launch and discarded because the access key
+already binds the process to `dAHVgXf`. Three suffixes, one real terminal.
+
+The alerts are accurate. The service is healthy: KoKo runs the ws22 build, zero
+restarts, and logged `Start ws client success`. The noise comes from a stale
+row.
+
+**To resolve:** delete the orphaned terminal. To prevent recurrence, component
+updates must preserve `koko/data/keys/`; `download_archive` extracts over the
+destination rather than replacing it, so the mechanism that recreated the key on
+2026-08-03 needs identifying before the next component change.
+
+### The foundation gate was not enforcing its own assertions
+
+Two steps in `.github/workflows/foundation-gates.yml` run several commands in a
+single `sh -c` block with no `set -e`. Each command runs regardless of the
+previous one's exit status and the shell exits with the status of the last
+command, so everything above the last line was advisory.
+
+"Verify non-root read-only runtime and forbidden paths" asserts five properties
+and enforced one. The non-root check and the absence of
+`/opt/jumpserver/apps/xpack` — the xpack/EE eradication gate — were not
+enforced. "Run customer tenant isolation tests" runs four commands and enforced
+the last, so `container-build` only ever reported whether
+`terminal.tenant_tests terminal.recording_tests` passed.
+
+The step between them, "Run replay-resistant service signature tests", invokes a
+single command and propagates its exit code correctly;
+`MSP-FOUNDATION-COMPLETION-REPORT.md` notes that explicitly. The problem was
+understood in one place and not carried to its neighbours.
+
+Adding `set -e` immediately exposed a genuine failure that had been hidden:
+
+```
+touch: cannot touch '/opt/jumpserver/tmp/.write-test': No such file or directory
+```
+
+`/opt/jumpserver/tmp` does not exist in the image. This is the same directory
+behind the earlier crash-loop, where removing a tracked empty `tmp/` left
+services unable to find `gunicorn.pid` and the fix was to create `TMP_DIR` at
+runtime. The assertion checks for it without starting the application, so it
+cannot pass as written and has been failing silently ever since.
