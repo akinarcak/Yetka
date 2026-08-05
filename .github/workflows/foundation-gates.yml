@@ -48,6 +48,9 @@ on:
       - apps/authentication/radius_tests.py
       - apps/authentication/backends/radius/backends.py
       - apps/assets/const/custom.py
+      - apps/common/utils/encode.py
+      - apps/common/utils/jws_compat.py
+      - apps/common/jws_compat_tests.py
       - apps/common/drf/renders/excel.py
       - apps/common/drf/reporting.py
       - apps/reports/mixins.py
@@ -106,6 +109,9 @@ on:
       - apps/authentication/radius_tests.py
       - apps/authentication/backends/radius/backends.py
       - apps/assets/const/custom.py
+      - apps/common/utils/encode.py
+      - apps/common/utils/jws_compat.py
+      - apps/common/jws_compat_tests.py
       - apps/common/drf/renders/excel.py
       - apps/common/drf/reporting.py
       - apps/reports/mixins.py
@@ -231,7 +237,7 @@ jobs:
               set -e
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
               /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests --verbosity=2
-              /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests common.excel_render_tests common.ssh_key_type_tests jumpserver.api.components_tests --verbosity=2
+              /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests common.jws_compat_tests common.excel_render_tests common.ssh_key_type_tests jumpserver.api.components_tests --verbosity=2
               /opt/py3/bin/python -m django test terminal.tenant_tests terminal.recording_tests --verbosity=2
             '
       # Asserts that a test database was genuinely created, not just that the
