@@ -7,8 +7,8 @@ requires-python = ">=3.14"
 dependencies = [
     'aiofiles==25.1.0',
     'amqp==5.3.1',
-    'ansible-core==2.16.19',
-    'ansible==9.13.0',
+    'ansible-core==2.19.11',
+    'ansible==12.2.0',
     'ansible-runner',
     'asn1crypto==1.5.1',
     'bcrypt==5.0.0',
@@ -217,6 +217,6 @@ xpack = [
 #
 # The remaining entries are genuine forks and cannot be swapped for a version
 # specifier without first establishing what they change relative to upstream.
-ansible-runner = { url = "https://github.com/jumpserver-dev/ansible-runner/archive/refs/tags/v2.4.0.2.zip" }
+ansible-runner = { url = "https://github.com/akinarcak/ansible-runner/archive/refs/tags/v2.4.3.1.zip" }
 django-cas-ng = { url = "https://github.com/ibuler/django-cas-ng/releases/download/v4.3.2/django-cas-ng-4.3.2.zip" }
 redis = { url = "https://github.com/jumpserver-dev/redis-py/archive/refs/tags/v5.0.3.zip" }

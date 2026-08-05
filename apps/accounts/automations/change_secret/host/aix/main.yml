@@ -34,7 +34,7 @@
         validate: visudo -cf %s
       when:
         - user_info.msg is defined or params.modify_sudo
-        - params.sudo
+        - params.sudo | length > 0
 
     - name: "Change {{ account.username }} password"
       ansible.builtin.user:
