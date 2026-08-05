@@ -270,14 +270,14 @@ wheels = [
 
 [[package]]
 name = "ansible"
-version = "9.13.0"
+version = "12.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ansible-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d1/63/a136e8c5ff5768c26edb2098dca116bd9cf430d8921fbbc4e199dca51655/ansible-9.13.0.tar.gz", hash = "sha256:b389a97d1e85c2b2ad6ace9e94f410111f69cc5aa3845c930c873b34c0ddd6e2", size = 41412371, upload-time = "2024-12-03T18:14:06.342Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/1e/154896819d41cb9a5266759244285c7b594a199e2543263764a022b86618/ansible-12.2.0.tar.gz", hash = "sha256:0563dfd33ebd28caf6ccdc7a6d22a7fdafbd9c9c42fefcae5179616a53a35211", size = 51095490, upload-time = "2025-11-05T16:09:07.672Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1b/0d/83f1bd6f90d3d5e0ff62f53743ecfc51d199cc9fb6e4992a3ce1dd15b6ac/ansible-9.13.0-py3-none-any.whl", hash = "sha256:b64c6e8cad0171576e0ed4b1fd48a5dc551128580dbb979d0e8b4cd85b969074", size = 51544382, upload-time = "2024-12-03T18:14:01.758Z" },
+    { url = "https://files.pythonhosted.org/packages/94/03/977b161a3c8145ffb4668cf716d47114ff3240664513d3d0a124f9b202b9/ansible-12.2.0-py3-none-any.whl", hash = "sha256:daafa5c528317f60f68033ad70c59733f4a7548b6255759183cfc7cf422c7fda", size = 53595687, upload-time = "2025-11-05T16:09:03.053Z" },
 ]
 
 [[package]]
@@ -297,7 +297,7 @@ wheels = [
 
 [[package]]
 name = "ansible-core"
-version = "2.16.19"
+version = "2.19.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
@@ -306,22 +306,22 @@ dependencies = [
     { name = "pyyaml" },
     { name = "resolvelib" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9d/75/b73552520a48c6a7822445f760e23a59612c0d77df481ba1b9ba8ed4e1d9/ansible_core-2.16.19.tar.gz", hash = "sha256:5125f26412039ffb99a3a7723618535ab80e6ef38944aa2453997350388f4ef4", size = 3172397, upload-time = "2026-06-18T19:40:08.358Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/ef/35f14c0d8877f6ed233c4a03f5bc161b88342e97dec3e8e04f418f28136f/ansible_core-2.19.4.tar.gz", hash = "sha256:888db6593f2fd42cd05bdbe546704d9c969dce99e3373a54498f6dbefcfa1917", size = 3415103, upload-time = "2025-11-04T23:33:17.98Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3e/0a/fdb88b61521a1f263acf420d27bca357a38a2ac5865364016cedd41c15a5/ansible_core-2.16.19-py3-none-any.whl", hash = "sha256:d7a32ba0f96f9c6582b7ff159a4a6f0e694662cfc4840497c88fed63bf58cd14", size = 2261447, upload-time = "2026-06-18T19:40:06.223Z" },
+    { url = "https://files.pythonhosted.org/packages/a3/76/eb7b15279bef040c4f693e01a49cd5b31c7649c74def78623776e705c0e9/ansible_core-2.19.4-py3-none-any.whl", hash = "sha256:f218e2e8ce4cc95216c48c73badd9789f1dd6ea47e15667213491fb79589316c", size = 2405808, upload-time = "2025-11-04T23:33:16.461Z" },
 ]
 
 [[package]]
 name = "ansible-runner"
-version = "2.4.0.2"
-source = { url = "https://github.com/jumpserver-dev/ansible-runner/archive/refs/tags/v2.4.0.2.zip" }
+version = "2.4.3.1"
+source = { url = "https://github.com/akinarcak/ansible-runner/archive/refs/tags/v2.4.3.1.zip" }
 dependencies = [
     { name = "packaging" },
     { name = "pexpect" },
     { name = "python-daemon" },
     { name = "pyyaml" },
 ]
-sdist = { hash = "sha256:fa3a47834cde1b9119631d93b1980445cc1fdb23b2dc200a152f90de841f4dc8" }
+sdist = { hash = "sha256:2da30ed2838e8a6de630c622204f8d3a3fc04d05ca86291d5c9755d65f47b065" }
 
 [package.metadata]
 requires-dist = [
@@ -2388,10 +2388,10 @@ requires-dist = [
     { name = "aliyun-python-sdk-core", specifier = "==2.16.0" },
     { name = "amqp", specifier = "==5.3.1" },
     { name = "annotated-types", specifier = ">=0.8.0" },
-    { name = "ansible", specifier = "==9.13.0" },
+    { name = "ansible", specifier = "==12.2.0" },
     { name = "ansible-builder", specifier = ">=3.1.1" },
-    { name = "ansible-core", specifier = "==2.16.19" },
-    { name = "ansible-runner", url = "https://github.com/jumpserver-dev/ansible-runner/archive/refs/tags/v2.4.0.2.zip" },
+    { name = "ansible-core", specifier = "==2.19.4" },
+    { name = "ansible-runner", url = "https://github.com/akinarcak/ansible-runner/archive/refs/tags/v2.4.3.1.zip" },
     { name = "asn1crypto", specifier = "==1.5.1" },
     { name = "azure-identity", specifier = "==1.25.3" },
     { name = "azure-keyvault-secrets", specifier = "==4.11.0" },
