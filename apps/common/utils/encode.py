@@ -13,12 +13,9 @@ import sshpubkeys
 from cryptography.hazmat.primitives import serialization
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from itsdangerous import (
-    TimedJSONWebSignatureSerializer, JSONWebSignatureSerializer,
-    BadSignature, SignatureExpired
-)
 from six import string_types
 
+from . import jws_compat
 from .http import http_date
 
 UUID_PATTERN = re.compile(r'[0-9a-zA-Z\-]{36}')
@@ -38,33 +35,40 @@ class Singleton(type):
 
 
 class Signer(metaclass=Singleton):
-    """用来加密,解密,和基于时间戳的方式验证token"""
+    """用来加密,解密,和基于时间戳的方式验证token
+
+    Backed by `common.utils.jws_compat` rather than itsdangerous, which removed
+    the JWS serializers in 2.0. The format is unchanged: `unsign` still reads
+    tokens written by every previous release, which matters because
+    `common.db.utils` calls it to decrypt values stored before the crypto
+    migration. See common/jws_compat_tests.py for the byte-level proof.
+    """
 
     def __init__(self, secret_key=None):
         self.secret_key = secret_key
 
     def sign(self, value):
-        s = JSONWebSignatureSerializer(self.secret_key, algorithm_name='HS256')
-        return s.dumps(value).decode()
+        return jws_compat.dumps(
+            value, self.secret_key, algorithm='HS256'
+        ).decode()
 
     def unsign(self, value):
         if value is None:
             return value
-        s = JSONWebSignatureSerializer(self.secret_key, algorithm_name='HS256')
         try:
-            return s.loads(value)
-        except BadSignature:
+            return jws_compat.loads(value, self.secret_key)
+        except jws_compat.BadSignature:
             return None
 
     def sign_t(self, value, expires_in=3600):
-        s = TimedJSONWebSignatureSerializer(self.secret_key, expires_in=expires_in)
-        return str(s.dumps(value), encoding="utf8")
+        return jws_compat.dumps_timed(
+            value, self.secret_key, expires_in=expires_in
+        ).decode()
 
     def unsign_t(self, value):
-        s = TimedJSONWebSignatureSerializer(self.secret_key)
         try:
-            return s.loads(value)
-        except (BadSignature, SignatureExpired):
+            return jws_compat.loads_timed(value, self.secret_key)
+        except (jws_compat.BadSignature, jws_compat.SignatureExpired):
             return None
 
 
