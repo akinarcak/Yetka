@@ -48,7 +48,7 @@ class HostTypes(BaseType):
             '*': {
                 'ansible_enabled': True,
                 'ansible_config': {
-                    'ansible_connection': 'smart',
+                    'ansible_connection': 'ssh',
                 },
                 'ping_enabled': True,
                 'gather_facts_enabled': True,
@@ -61,7 +61,7 @@ class HostTypes(BaseType):
             cls.WINDOWS: {
                 'ansible_config': {
                     'ansible_shell_type': 'cmd',
-                    'ansible_connection': 'smart',
+                    'ansible_connection': 'ssh',
                 },
             },
             cls.OTHER_HOST: {
