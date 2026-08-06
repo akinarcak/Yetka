@@ -45,6 +45,10 @@ on:
       - apps/assets/const/host.py
       - apps/assets/ansible_connection_tests.py
       - apps/assets/migrations/**
+      - apps/common/security_updates.py
+      - apps/common/maintenance_plan_tests.py
+      - apps/jumpserver/api/maintenance.py
+      - deploy/**
       - requirements/collections.yml
       - apps/ops/ansible/inventory.py
       - config_example.yml
@@ -118,6 +122,10 @@ on:
       - apps/assets/const/host.py
       - apps/assets/ansible_connection_tests.py
       - apps/assets/migrations/**
+      - apps/common/security_updates.py
+      - apps/common/maintenance_plan_tests.py
+      - apps/jumpserver/api/maintenance.py
+      - deploy/**
       - requirements/collections.yml
       - apps/ops/ansible/inventory.py
       - config_example.yml
@@ -261,7 +269,7 @@ jobs:
               set -e
               /opt/py3/bin/python -m django makemigrations --check --dry-run tenants cloud_sync
               /opt/py3/bin/python -m django test tenants.tests cloud_sync.tests --verbosity=2
-              /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests common.jws_compat_tests common.excel_render_tests common.ssh_key_type_tests jumpserver.api.components_tests --verbosity=2
+              /opt/py3/bin/python -m django test common.ssh_tests common.security_config_tests common.service_signature_tests common.sftp_audit_tests common.component_manifest_tests common.jws_compat_tests common.excel_render_tests common.ssh_key_type_tests jumpserver.api.components_tests common.maintenance_plan_tests --verbosity=2
               /opt/py3/bin/python -m django test terminal.tenant_tests terminal.recording_tests --verbosity=2
               /opt/py3/bin/python -m django test ops.ansible_engine_tests --verbosity=2
             '

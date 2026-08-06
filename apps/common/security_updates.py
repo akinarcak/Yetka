@@ -25,6 +25,12 @@ RELEASE_TAG_PATTERN = re.compile(
     r'^(?:yetka-|v)?\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$'
 )
 UPDATE_REQUEST_DIR = os.environ.get('YETKA_UPDATE_REQUEST_DIR', '')
+UPDATE_REQUEST_NAME = 'request'
+PLAN_REQUEST_NAME = 'plan-request'
+PLAN_RESULT_NAME = 'plan-result.json'
+# The runner already bounds what it writes; this bounds what a corrupted or
+# tampered result file can make the web process read into memory.
+PLAN_RESULT_READ_LIMIT = 256 * 1024
 YETKA_RELEASE_VERSION_FILE = os.environ.get(
     'YETKA_RELEASE_VERSION_FILE', '/var/lib/yetka/release-version'
 )
@@ -54,24 +60,83 @@ def update_queue_available():
         return False
 
 
-def queue_update(version):
+def _queue_request(name, version, pending_message):
+    """Hand a release tag to the root-side runner.
+
+    The file carries a validated version string and nothing else: that is what
+    keeps the privilege boundary from becoming a command channel. O_EXCL makes
+    a second request fail rather than overwrite a pending one, and O_NOFOLLOW
+    refuses to write through a symlink planted in the queue directory.
+    """
     if not RELEASE_TAG_PATTERN.fullmatch(version or ''):
         raise ValueError('Invalid release tag')
     if not update_queue_available():
         raise RuntimeError('Host update queue is not available')
 
-    request_path = os.path.join(UPDATE_REQUEST_DIR, 'request')
+    request_path = os.path.join(UPDATE_REQUEST_DIR, name)
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
     flags |= getattr(os, 'O_NOFOLLOW', 0)
     try:
         fd = os.open(request_path, flags, 0o600)
     except FileExistsError as exc:
-        raise FileExistsError('Another update request is already pending') from exc
+        raise FileExistsError(pending_message) from exc
     try:
         os.write(fd, f'{version}\n'.encode('ascii'))
         os.fsync(fd)
     finally:
         os.close(fd)
+
+
+def queue_update(version):
+    _queue_request(
+        UPDATE_REQUEST_NAME, version, 'Another update request is already pending'
+    )
+
+
+def queue_plan(version):
+    _queue_request(
+        PLAN_REQUEST_NAME, version, 'Another plan request is already pending'
+    )
+
+
+def plan_pending():
+    if not update_queue_available():
+        return False
+    return os.path.isfile(os.path.join(UPDATE_REQUEST_DIR, PLAN_REQUEST_NAME))
+
+
+def read_plan_result():
+    """Return the last plan the host ran, or None.
+
+    The file is written by the root runner and only read here, so treat it as
+    untrusted input anyway: cap the read, and drop anything that is not the
+    expected shape rather than passing it through to the GUI.
+    """
+    if not update_queue_available():
+        return None
+    result_path = os.path.join(UPDATE_REQUEST_DIR, PLAN_RESULT_NAME)
+    try:
+        if os.path.islink(result_path):
+            return None
+        with open(result_path, encoding='utf-8') as stream:
+            payload = json.loads(stream.read(PLAN_RESULT_READ_LIMIT))
+    except (OSError, UnicodeError, ValueError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    version = payload.get('version')
+    if not RELEASE_TAG_PATTERN.fullmatch(str(version or '')):
+        return None
+    output = payload.get('output')
+    return {
+        'version': version,
+        'started_at': payload.get('started_at'),
+        'finished_at': payload.get('finished_at'),
+        'exit_code': payload.get('exit_code'),
+        'succeeded': payload.get('exit_code') == 0,
+        'truncated': bool(payload.get('truncated')),
+        'output': output if isinstance(output, str) else '',
+    }
 
 
 def _current_yetka_version():
