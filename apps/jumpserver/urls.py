@@ -71,7 +71,6 @@ urlpatterns = [
     path('api/v1/health/', api.HealthCheckView.as_view(), name="health_v1"),
     path('api/v1/hostname/', api.HostnameView.as_view(), name="hostname"),
     path('api/v1/maintenance/status/', api.MaintenanceStatusApi.as_view(), name="maintenance-status"),
-    path('api/v1/maintenance/plan/', api.MaintenancePlanApi.as_view(), name="maintenance-plan"),
     # External apps url
     path('core/auth/captcha/', include('captcha.urls')),
     path('core/', include(app_view_patterns)),

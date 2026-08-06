@@ -28,7 +28,28 @@ Bir kayıt Yetka’nın kullandığı kod yolunu etkilemiyorsa gerekçesi ve kan
 
 Kurucu `/usr/local/sbin/yetka-update` aracını ve kullanılan env dosyasının yolunu kurar. Araç aynı anda yalnız bir güncellemeye izin verir; GitHub release arşivi ile SHA-256 dosyasını indirir, checksum’u doğrular ve hedef kurucuyu önce dry-run olarak çalıştırır.
 
-Bare-metal kurucu ayrıca `yetka-update-request.path` birimini ve root-owned `/run/yetka-update-requests` kuyruğunu kurar. Web süreci yalnızca sürüm etiketini yetkisiz komut içermeyen sabit bir istek dosyasına atomik olarak yazar. Root-owned runner etiketi tekrar doğrular ve aynı checksum, yedek, rollback ve sağlık kontrolü akışını çalıştırır. API yalnız sistem yöneticilerine açıktır ve CSRF korumalı POST isteği kabul eder.
+Bare-metal kurucu ayrıca `/run/yetka-update-requests` kuyruğunu ve iki path
+birimini kurar: `yetka-update-request.path` (apply) ve `yetka-update-plan.path`
+(plan). İkisi de aynı `yetka-update-request-runner` betiğini çalıştırır; hangi
+komutun koşacağını **systemd birimi** söyler (`... runner apply` / `... runner
+plan`), kuyruk dosyası değil.
+
+Bu ayrım kasıtlıdır: web süreci yalnızca doğrulanmış bir sürüm etiketini
+`request` veya `plan-request` dosyasına atomik olarak yazar, komut adını hiçbir
+şekilde etkileyemez. Root-owned runner etiketi kendi tarafında yeniden doğrular
+ve aynı checksum, yedek, rollback ve sağlık kontrolü akışını çalıştırır.
+Argümansız çağrıldığında `apply` yapar, böylece plan eklenmeden önce kurulmuş
+birim değişmeden çalışmaya devam eder.
+
+Her iki eylem de sonucu `/run/yetka-update-requests/last-result.json` dosyasına
+`0640 root:yetka` izinleriyle yazar (eylem, sürüm, zaman damgaları, çıkış kodu
+ve kırpılmış çıktı). GUI bu dosyayı okuyup son çalıştırmanın sonucunu gösterir;
+operatörün journald'a bakması gerekmez.
+
+API yalnız sistem yöneticilerine açıktır ve CSRF korumalı POST isteği kabul
+eder: `POST /api/v1/maintenance/status/` gövdesinde `version` ve isteğe bağlı
+`action` (`apply` varsayılan, `plan` desteklenir). `GET` aynı uçtan güncelleme
+durumunu, bekleyen eylemi ve son sonucu birlikte döndürür.
 
 ```bash
 yetka-update check

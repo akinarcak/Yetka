@@ -3,5 +3,5 @@ from .dashboard import IndexApi
 from .health import PrometheusMetricsApi, HealthCheckView
 from .search import GlobalSearchView
 from .hostname import HostnameView
-from .maintenance import MaintenanceStatusApi, MaintenancePlanApi
+from .maintenance import MaintenanceStatusApi
 from .components import SupportedComponentsApi

@@ -25,12 +25,14 @@ RELEASE_TAG_PATTERN = re.compile(
     r'^(?:yetka-|v)?\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$'
 )
 UPDATE_REQUEST_DIR = os.environ.get('YETKA_UPDATE_REQUEST_DIR', '')
-UPDATE_REQUEST_NAME = 'request'
-PLAN_REQUEST_NAME = 'plan-request'
-PLAN_RESULT_NAME = 'plan-result.json'
+# One queue directory, one file per action, and the root runner decides the
+# command from the systemd unit that started it -- the file itself only ever
+# holds a release tag.
+REQUEST_NAMES = {'apply': 'request', 'plan': 'plan-request'}
+RESULT_NAME = 'last-result.json'
 # The runner already bounds what it writes; this bounds what a corrupted or
 # tampered result file can make the web process read into memory.
-PLAN_RESULT_READ_LIMIT = 256 * 1024
+RESULT_READ_LIMIT = 256 * 1024
 YETKA_RELEASE_VERSION_FILE = os.environ.get(
     'YETKA_RELEASE_VERSION_FILE', '/var/lib/yetka/release-version'
 )
@@ -60,7 +62,7 @@ def update_queue_available():
         return False
 
 
-def _queue_request(name, version, pending_message):
+def queue_action(action, version):
     """Hand a release tag to the root-side runner.
 
     The file carries a validated version string and nothing else: that is what
@@ -68,6 +70,10 @@ def _queue_request(name, version, pending_message):
     a second request fail rather than overwrite a pending one, and O_NOFOLLOW
     refuses to write through a symlink planted in the queue directory.
     """
+    try:
+        name = REQUEST_NAMES[action]
+    except KeyError:
+        raise ValueError('Unknown maintenance action') from None
     if not RELEASE_TAG_PATTERN.fullmatch(version or ''):
         raise ValueError('Invalid release tag')
     if not update_queue_available():
@@ -79,7 +85,7 @@ def _queue_request(name, version, pending_message):
     try:
         fd = os.open(request_path, flags, 0o600)
     except FileExistsError as exc:
-        raise FileExistsError(pending_message) from exc
+        raise FileExistsError(f'A {action} request is already pending') from exc
     try:
         os.write(fd, f'{version}\n'.encode('ascii'))
         os.fsync(fd)
@@ -87,26 +93,18 @@ def _queue_request(name, version, pending_message):
         os.close(fd)
 
 
-def queue_update(version):
-    _queue_request(
-        UPDATE_REQUEST_NAME, version, 'Another update request is already pending'
-    )
-
-
-def queue_plan(version):
-    _queue_request(
-        PLAN_REQUEST_NAME, version, 'Another plan request is already pending'
-    )
-
-
-def plan_pending():
+def pending_action():
+    """Name of the action the host has queued but not finished, if any."""
     if not update_queue_available():
-        return False
-    return os.path.isfile(os.path.join(UPDATE_REQUEST_DIR, PLAN_REQUEST_NAME))
+        return None
+    for action, name in REQUEST_NAMES.items():
+        if os.path.isfile(os.path.join(UPDATE_REQUEST_DIR, name)):
+            return action
+    return None
 
 
-def read_plan_result():
-    """Return the last plan the host ran, or None.
+def read_last_result():
+    """Return the last action the host ran, or None.
 
     The file is written by the root runner and only read here, so treat it as
     untrusted input anyway: cap the read, and drop anything that is not the
@@ -114,12 +112,12 @@ def read_plan_result():
     """
     if not update_queue_available():
         return None
-    result_path = os.path.join(UPDATE_REQUEST_DIR, PLAN_RESULT_NAME)
+    result_path = os.path.join(UPDATE_REQUEST_DIR, RESULT_NAME)
     try:
         if os.path.islink(result_path):
             return None
         with open(result_path, encoding='utf-8') as stream:
-            payload = json.loads(stream.read(PLAN_RESULT_READ_LIMIT))
+            payload = json.loads(stream.read(RESULT_READ_LIMIT))
     except (OSError, UnicodeError, ValueError):
         return None
     if not isinstance(payload, dict):
@@ -127,8 +125,12 @@ def read_plan_result():
     version = payload.get('version')
     if not RELEASE_TAG_PATTERN.fullmatch(str(version or '')):
         return None
+    action = payload.get('action')
+    if action not in REQUEST_NAMES:
+        return None
     output = payload.get('output')
     return {
+        'action': action,
         'version': version,
         'started_at': payload.get('started_at'),
         'finished_at': payload.get('finished_at'),
