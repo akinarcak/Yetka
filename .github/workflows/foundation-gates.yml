@@ -42,6 +42,9 @@ on:
       - apps/libs/ansible/modules_utils/remote_client.py
       - apps/libs/ansible/**
       - apps/ops/ansible_engine_tests.py
+      - apps/assets/const/host.py
+      - apps/assets/ansible_connection_tests.py
+      - apps/assets/migrations/**
       - requirements/collections.yml
       - apps/ops/ansible/inventory.py
       - config_example.yml
@@ -112,6 +115,9 @@ on:
       - apps/libs/ansible/modules_utils/remote_client.py
       - apps/libs/ansible/**
       - apps/ops/ansible_engine_tests.py
+      - apps/assets/const/host.py
+      - apps/assets/ansible_connection_tests.py
+      - apps/assets/migrations/**
       - requirements/collections.yml
       - apps/ops/ansible/inventory.py
       - config_example.yml
@@ -278,7 +284,7 @@ jobs:
             --workdir /opt/jumpserver/apps \
             --entrypoint /opt/py3/bin/python \
             yetka/core:foundation-test \
-            -m django test authentication.radius_tests --verbosity=2 2>&1 | tee radius-tests.log
+            -m django test authentication.radius_tests assets.ansible_connection_tests --verbosity=2 2>&1 | tee radius-tests.log
           if ! grep -q 'Creating test database' radius-tests.log; then
             echo "::error::no test database was created -- these tests did not exercise a database"
             exit 1
