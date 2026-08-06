@@ -1,6 +1,14 @@
 name: MSP foundation gates
 
 on:
+  # The gate normally runs from push and pull_request. Both are delivered as
+  # webhooks, and during the GitHub Actions incident of 2026-08-06 webhooks
+  # were throttled to ~15%, so branches sat with no run at all and there was
+  # no way to ask for one. workflow_dispatch is an API call rather than a
+  # webhook and kept working throughout, so keep a manual handle: run the
+  # gate against any ref from the Actions tab or
+  # `gh workflow run foundation-gates.yml --ref <branch>`.
+  workflow_dispatch:
   pull_request:
     paths:
       - components.lock.yml
