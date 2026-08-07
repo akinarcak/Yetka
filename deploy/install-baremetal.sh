@@ -358,7 +358,9 @@ KillSignal=SIGQUIT"
     printf '[Unit]\nDescription=Yetka %s\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\n%s\nExecStart=%s/venv/bin/python apps/manage.py start %s\n\n[Install]\nWantedBy=multi-user.target\n' "$unit" "$common" "$YETKA_INSTALL_DIR" "$service" > "/etc/systemd/system/yetka-$unit.service"
   done
   printf '[Unit]\nDescription=Watch for administrator-approved Yetka updates\n\n[Path]\nPathExists=/run/yetka-update-requests/request\nUnit=yetka-update-request.service\n\n[Install]\nWantedBy=multi-user.target\n' > /etc/systemd/system/yetka-update-request.path
-  printf '[Unit]\nDescription=Apply an administrator-approved Yetka update\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=oneshot\nEnvironment=YETKA_UPDATE_REQUEST_DIR=/run/yetka-update-requests\nExecStart=/usr/local/sbin/yetka-update-request-runner\n' > /etc/systemd/system/yetka-update-request.service
+  printf '[Unit]\nDescription=Apply an administrator-approved Yetka update\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=oneshot\nEnvironment=YETKA_UPDATE_REQUEST_DIR=/run/yetka-update-requests\nEnvironment=YETKA_USER=%s\nExecStart=/usr/local/sbin/yetka-update-request-runner apply\n' "$YETKA_USER" > /etc/systemd/system/yetka-update-request.service
+  printf '[Unit]\nDescription=Watch for administrator-requested Yetka update plans\n\n[Path]\nPathExists=/run/yetka-update-requests/plan-request\nUnit=yetka-update-plan.service\n\n[Install]\nWantedBy=multi-user.target\n' > /etc/systemd/system/yetka-update-plan.path
+  printf '[Unit]\nDescription=Plan an administrator-requested Yetka update (read-only)\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=oneshot\nEnvironment=YETKA_UPDATE_REQUEST_DIR=/run/yetka-update-requests\nEnvironment=YETKA_USER=%s\nExecStart=/usr/local/sbin/yetka-update-request-runner plan\n' "$YETKA_USER" > /etc/systemd/system/yetka-update-plan.service
   if [[ -x "$YETKA_INSTALL_DIR/koko/koko" ]]; then
     printf '[Unit]\nDescription=Yetka Koko connector\nAfter=yetka-web.service\n\n[Service]\nUser=%s\nGroup=%s\nWorkingDirectory=%s/koko\nEnvironmentFile=%s/cluster-secrets.env\nEnvironment=CORE_HOST=http://127.0.0.1:%s\nExecStart=%s/koko/koko\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=multi-user.target\n' "$YETKA_USER" "$YETKA_USER" "$YETKA_INSTALL_DIR" "$YETKA_CONFIG_DIR" "$YETKA_HTTP_PORT" "$YETKA_INSTALL_DIR" > /etc/systemd/system/yetka-koko.service
   fi
@@ -397,6 +399,7 @@ server {
 EOF
   systemctl daemon-reload
   systemctl enable --now yetka-update-request.path
+  systemctl enable --now yetka-update-plan.path
 }
 
 enable_services() {
